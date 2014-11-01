@@ -1,12 +1,8 @@
-type op = Add | Sub | Mult | Div  (*| Equal | Neq | Less | Leq | Greater | Geq | And | Or*)
+type op = Add | Sub | Mult | Div | Equal | Neq (*| Less | Leq | Greater | Geq | And | Or *)
 
-type program =
-  Binop of program * op * program
-  | Lit of int
+(*type sep = Comma*)
 
-(*type sep = Comma
-
-type data_type = PathType | StrType | IntType | BoolType | VoidType | ListType
+(*type data_type = PathType | StrType | IntType | BoolType | VoidType | ListType
 
 type pathattr_type = Pathname | Pathcreated | Pathkind | Pathext
 
@@ -37,31 +33,38 @@ and expr =
 
 type for_expr = 
     Forid of string
+*)
+type expr =
+    LitInt of int
+  | LitStr of string
+  | Id of string
+  | Binop of expr * op * expr
+  | Assign of string * expr
+  | Noexpr
 
 type stmt =
     Block of stmt list
   | Expr of expr
-  | Return of expr
+ (* | Return of expr
   | If of expr * stmt * stmt 
-  | For of for_expr * for_expr * stmt
+  | For of for_expr * for_expr * stmt *)
   (* | For of expr * expr * stmt*)
-  | While of expr * stmt
+  (*| While of expr * stmt
   | Print of expr
-  | Ifin of list_expr * list_expr * stmt * stmt
-
+  | Ifin of list_expr * list_expr * stmt * stmt *)
+(*
 type var_decl = {
   vtype : data_type;
   vname : string;
   vexpr : expr;
 }
-
-type func_decl = {
-    return : data_type;
+*)
+(*type func_decl = {
+    (*return : data_type;*)
     fname : string;
-    formals : var_decl list;
-    fnlocals : var_decl list;
+    formals : string list;
+    fnlocals : string list;
     body : stmt list;
-  }
+  }*)
 
-
-type program = var_decl list * func_decl list *)
+type program = stmt list

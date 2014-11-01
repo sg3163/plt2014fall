@@ -6,13 +6,14 @@ let quote = '"'
 
 rule token = parse
 	[' ' '\r' '\n' '\t']	{ token lexbuf }	| "/*"		{ comment lexbuf }
+	| '('			{ LPAREN }		| ')'			{ RPAREN }
+	| '{'			{ LBRACE }		| '}'			{ RBRACE }
+(*	| ','			{ COMMA } *)
 	| "++"			{ PLUS }		| "--"			{ MINUS }
 	| "**"			{ TIMES }		| "//"			{ DIVIDE }
-(*	| '='			{ ASSIGN }		| ';'			{ SEMI }
-	| "<<-"			{ MOVE }
-	| "<-"			{ COPY }
+	| '='			{ ASSIGN }		| ';'			{ SEMI }
 	| "=="			{ EQ }			| "!="			{ NEQ }
-	| '<'			{ LT }			| "<="			{ LEQ }
+(*	| '<'			{ LT }			| "<="			{ LEQ }
 	| '>'			{ GT }			| ">="			{ GEQ }
 	| '['			{ LBRACK }		| ']'			{ RBRACK }
 	| "&&"			{ AND }			| "||"			{ OR }
@@ -20,9 +21,9 @@ rule token = parse
 	| "def"			{ DEF }			| ".created_at"	{ PATHCREATED }
 	| "int"			{ INT }			| ".kind"		{ PATHKIND }
 	| "path"		{ PATH }
-	| "string"		{ STR }			| "list"		{ LIST }
-	| "if"			{ IF }			| "else"		{ ELSE }
-	| "then"		{ THEN }		| "print"		{ PRINT }
+	| "string"		{ STR }			| "list"		{ LIST } *)
+	| "print"		{ PRINT } (*| "if"			{ IF }			| "else"		{ ELSE }
+	| "then"		{ THEN }		
 	| "for"			{ FOR }			| "in"			{ IN }
 	| "do"			{ DO }			| "bool"		{ BOOL }
 	| "while"		{ WHILE }		| "return"		{ RETURN }
@@ -31,8 +32,8 @@ rule token = parse
 	| "false"		{ FALSE }		| ".type"		{ PATHEXT } *)
 	| eof			{ EOF }			(* do as microC *)
 	| digit+ as lit					{ LIT_INT(int_of_string lit) }
-(*	| quote [^'"']* quote as lit	{ LIT_STR(lit) }
-	| letter | (letter | digit | '_')* as id		{ ID(id) } *)
+(*	| quote [^'"']* quote as lit	{ LIT_STR(lit) } *)
+	| letter | (letter | digit | '_')* as id		{ ID(id) }
 	| _ as char 		{ raise (Failure("illegal character " ^ Char.escaped char)) }
 
 and comment = parse

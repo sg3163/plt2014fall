@@ -1,14 +1,24 @@
 open Ast
 
-let rec eval = function
-  Lit(x) -> (string_of_int x)
-| Binop(e1, op, e2) ->
-  let v1 = eval e1 and v2 = eval e2 in
-  match op with
-  Add -> v1 ^ " + " ^ v2
-  | Sub ->  v1 ^ " - " ^  v2
-  | Mult ->  v1 ^ " * " ^  v2
-  | Div ->  v1 ^ " / " ^ v2
+let rec string_of_expr = function
+    LitInt(l) -> string_of_int l
+  | LitStr(l) -> l
+  | Id(s) -> s
+  | Binop(e1, o, e2) ->
+      string_of_expr e1 ^ " " ^
+      ( match o with
+          Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
+        | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
+  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
+  | Noexpr -> ""
+
+let rec string_of_stmt = function
+    Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";\n"
+  | Block(stmts) ->
+      "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
+
+let string_of_program program =
+  String.concat "" (List.map string_of_stmt program) ^ "\n"
 
 let _ =
   (* first argument is the filename *)
@@ -23,5 +33,5 @@ let _ =
       let program = Parser.program Scanner.token lexbuf in
       (* added the type check *)
       (*let program_t = Typecheck.check_program program in*)
-      let output = eval program in
+      let output = string_of_program program in
       print_endline output
