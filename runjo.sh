@@ -7,38 +7,37 @@
 #    cd ../..
 #fi
 #
-#if [ ! -f "preprocessor/./preprocessor" ]; then
-#    cd preprocessor
-#    make >> preproc_msgs.txt
-#    cd ..
-#fi
+if [ ! -f "./preprocessor" ]; then
+    make -f MakePreProc >> make.log
+fi
 
 if [ ! -f "./jo" ]; then
-   make >> make.log
+   make -f Makefile >> make.log
 fi
 
 # jo exectutable
 JO="./jo"
+
 # preprocessor executable
-#PRE="./preprocessor/preprocessor"
+PRE="./preprocessor"
 
 function compileAndRun() {
 	basename=`echo $1 | sed 's/.*\\///
                             s/.jo//'`
     #echo $basename
 #	reffile=`echo $1 | sed 's/.jo$//'`
-    prepfile=$basename'.jo'
+    prepfile=$basename'.pjo'
     #echo $prepfile
 #    basedir="`echo $1 | sed 's/\/[^\/]*$//'`/"
 
+    echo "Preprocessing '$1'"
+	$PRE $1 $prepfile
 
-#	$PRE $1 $prepfile
-
-	#echo "Compiling '$prepfile'"
-#	if [ ! -f $prepfile ]; then
-#		echo "$prepfile does not exist"
-#       return
-#	fi
+	echo "Compiling '$prepfile'"
+	if [ ! -f $prepfile ]; then
+		echo "$prepfile does not exist"
+       return
+	fi
 	# converting from fdlp to C
     $JO $prepfile > "${basename}.c" #&& echo "Ocaml to C of $1 succeeded"
 

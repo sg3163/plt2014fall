@@ -15,8 +15,8 @@ let _ =
   let fname = Sys.argv.(1) in
     (* check the extension *)
     let index = (if String.contains fname '.' then String.rindex fname '.' else 0 ) in
-    let suffix = String.sub fname index 3 in
-    if not (suffix = ".jo") then raise (Failure ("Invalid type of source file."))
+    let suffix = String.sub fname index 4 in
+    if not (suffix = ".pjo") then raise (Failure ("Invalid type of source file."))
     else
       let input = open_in fname in
       let lexbuf = Lexing.from_channel input in
