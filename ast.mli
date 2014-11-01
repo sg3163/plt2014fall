@@ -1,7 +1,7 @@
 type op = Add | Sub | Mult | Div  (*| Equal | Neq | Less | Leq | Greater | Geq | And | Or*)
 
-type expr =
-  Binop of expr * op * expr
+type program =
+  Binop of program * op * program
   | Lit of int
 
 (*type sep = Comma
