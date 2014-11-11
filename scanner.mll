@@ -32,7 +32,9 @@ rule token = parse
 	| "false"		{ FALSE }		| ".type"		{ PATHEXT } *)
 	| eof			{ EOF }			(* do as microC *)
 	| digit+ as lit					{ LIT_INT(int_of_string lit) }
-(*	| quote [^'"']* quote as lit	{ LIT_STR(lit) } *)
+	| quote [^'"']* quote as lit	{ LIT_STR(lit) } 
+	| "#{" _* "}#" as lit { LIT_JSON(lit) }
+	| "#[" _* "]#" as lit { LIT_LIST(lit) }
 	| letter | (letter | digit | '_')* as id		{ ID(id) }
 	| _ as char 		{ raise (Failure("illegal character " ^ Char.escaped char)) }
 

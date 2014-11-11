@@ -38,9 +38,11 @@ function compileAndRun() {
 		echo "$prepfile does not exist"
        return
 	fi
-	# converting from fdlp to C
-    $JO $prepfile > "${basename}.c" #&& echo "Ocaml to C of $1 succeeded"
+	# converting from JO to C++
+    $JO $prepfile > "${basename}.java" #&& echo "Ocaml to C++ of $1 succeeded"
 
+
+ # change this to appropriate C++ commands later ----
  #   # compliling the C file
  #   if [ -f "${reffile}.c" ]; then
  #   	gcc -Ic/libraries -Lc/libraries -llist -lpath -w -o "${reffile}" "${reffile}.c" 2>> errors.txt

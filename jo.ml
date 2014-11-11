@@ -1,24 +1,45 @@
+#load "str.cma" ;;
 open Ast
+open Str
 
 let rec string_of_expr = function
-    LitInt(l) -> string_of_int l
-  | LitStr(l) -> l
-  | Id(s) -> s
+    LitInt(l) -> "convertToNumber(" ^ string_of_int l ^ ")"
+  | LitStr(l) -> "convertToString(" ^ l ^ ")"
+	| LitJson(l) -> "convertToJson(" ^ Str.global_replace ( Str.regexp "\"" ) "\"" l ^ ")"
+	| LitList(l) -> "convertToList(" ^ l ^ ")"
+  | Id(s) ->  s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^
       ( match o with
           Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
         | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
-  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
+  | Assign(v, e) -> "CustomType " ^ v ^ " = " ^ string_of_expr e
   | Noexpr -> ""
+(*
+let string_of_vtype = function
+  VoidType -> "void"
+  | IntType -> "int"
+  | StrType -> "char *"
+  | BoolType -> "int"
+  | PathType -> "char *"
+  | ListType -> "struct List *"*)
 
 let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";\n"
   | Block(stmts) ->
       "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
-
+			
+			(* variable declrarations, has ;*)
+(*let string_of_vdecl vdecl = if vdecl.vexpr = Noexpr then
+                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ ";\n"
+                            else
+                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
+*)
 let string_of_program program =
+	"\nimport java.util.* \n public class jo { \n public static void main(String[] args) { \n"  ^
+	
   String.concat "" (List.map string_of_stmt program) ^ "\n"
+ ^	"}\n }" 
 
 let _ =
   (* first argument is the filename *)

@@ -5,6 +5,8 @@
 %token EQ NEQ PRINT
 %token <int> LIT_INT
 %token <string> LIT_STR
+%token <string> LIT_JSON
+%token <string> LIT_LIST
 %token <string> ID
 
 %right ASSIGN
@@ -46,6 +48,8 @@ stmt:
 expr:
     | LIT_INT                      { LitInt($1) }
     | LIT_STR                      { LitStr($1) }
+		| LIT_JSON                     { LitJson($1) }
+		| LIT_LIST                     { LitList($1) }
     | ID                           { Id($1) }
     | expr PLUS   expr             { Binop($1, Add,      $3) }
     | expr MINUS  expr             { Binop($1, Sub,      $3) }

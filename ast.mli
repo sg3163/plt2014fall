@@ -37,6 +37,8 @@ type for_expr =
 type expr =
     LitInt of int
   | LitStr of string
+	| LitJson of string
+	| LitList of string
   | Id of string
   | Binop of expr * op * expr
   | Assign of string * expr
