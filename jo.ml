@@ -1,11 +1,10 @@
-#load "str.cma" ;;
 open Ast
 open Str
 
 let rec string_of_expr = function
     LitInt(l) -> "convertToNumber(" ^ string_of_int l ^ ")"
   | LitStr(l) -> "convertToString(" ^ l ^ ")"
-	| LitJson(l) -> "convertToJson(" ^ Str.global_replace ( Str.regexp "\"" ) "\"" l ^ ")"
+	| LitJson(l) -> "convertToJson(" ^  l ^ ")"
 	| LitList(l) -> "convertToList(" ^ l ^ ")"
   | Id(s) ->  s
   | Binop(e1, o, e2) ->

@@ -39,7 +39,7 @@ function compileAndRun() {
        return
 	fi
 	# converting from JO to C++
-    $JO $prepfile > "${basename}.java" #&& echo "Ocaml to C++ of $1 succeeded"
+    $JO $prepfile > "${basename}.cpp" #&& echo "Ocaml to C++ of $1 succeeded"
 
 
  # change this to appropriate C++ commands later ----
