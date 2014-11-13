@@ -35,10 +35,10 @@ let rec string_of_stmt = function
                               string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
 *)
 let string_of_program program =
-	"\nimport java.util.* \n public class jo { \n public static void main(String[] args) { \n"  ^
+	"\n#include <iostream> \n using namespace std; \n int main() { \n cout << \"Hello World!\" << endl; \n return 0;"  ^
 	
-  String.concat "" (List.map string_of_stmt program) ^ "\n"
- ^	"}\n }" 
+ (* String.concat "" (List.map string_of_stmt program) ^ "\n"
+ ^	*) "}" 
 
 let _ =
   (* first argument is the filename *)

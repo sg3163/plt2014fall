@@ -1,7 +1,0 @@
-a = #{ "name": {"first":"chase", "last":"larson"}, "subject" : "plt", "marks" : [2,3,4] }#
-b = "names"
-c = 2334
-d = [3,[4,6],5,{"first":"chase", "last":"larson"}]
-
-
-
