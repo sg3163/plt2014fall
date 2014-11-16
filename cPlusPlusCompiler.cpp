@@ -151,7 +151,7 @@ int main() {
 	// your code goes here
 
 	string b  = "\"arpit\""; 
-	CustType a = new CustType(b) ; 
+	CustType a = CustType(b) ; 
 	CustType c = a.parse() ; 
 
 	return 0;
