@@ -150,9 +150,9 @@ CustType CustType :: parse ()  {
 int main() {
 	// your code goes here
 
-	string b ; 
-	//CustType a = new CustType(b) ; 
-
+	string b  = "\"arpit\""; 
+	CustType a = new CustType(b) ; 
+	CustType c = a.parse() ; 
 
 	return 0;
 }
