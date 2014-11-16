@@ -8,28 +8,24 @@ rule token = parse
 	[' ' '\r' '\n' '\t']	{ token lexbuf }	| "/*"		{ comment lexbuf }
 	| '('			{ LPAREN }		| ')'			{ RPAREN }
 	| '{'			{ LBRACE }		| '}'			{ RBRACE }
-(*	| ','			{ COMMA } *)
 	| "++"			{ PLUS }		| "--"			{ MINUS }
 	| "**"			{ TIMES }		| "//"			{ DIVIDE }
 	| '='			{ ASSIGN }		| ';'			{ SEMI }
 	| "=="			{ EQ }			| "!="			{ NEQ }
-(*	| '<'			{ LT }			| "<="			{ LEQ }
+	| '<'			{ LT }			| "<="			{ LEQ }
 	| '>'			{ GT }			| ">="			{ GEQ }
 	| '['			{ LBRACK }		| ']'			{ RBRACK }
 	| "&&"			{ AND }			| "||"			{ OR }
-	| '!'			{ NOT }			| ".name"		{ PATHNAME }
-	| "def"			{ DEF }			| ".created_at"	{ PATHCREATED }
-	| "int"			{ INT }			| ".kind"		{ PATHKIND }
-	| "path"		{ PATH }
-	| "string"		{ STR }			| "list"		{ LIST } *)
-	| "print"		{ PRINT } (*| "if"			{ IF }			| "else"		{ ELSE }
+	| '!'			{ NOT }			| '-' { COMMINUS }
+	| '+'     { COMPLUS } | "%%" { MODULUS }
+  | "if"			{ IF }			| '.' { DOT }
+	| "else"		{ ELSE }
 	| "then"		{ THEN }		
 	| "for"			{ FOR }			| "in"			{ IN }
-	| "do"			{ DO }			| "bool"		{ BOOL }
-	| "while"		{ WHILE }		| "return"		{ RETURN }
-	| "void"		{ VOID } 		| ".add"		{ ADD }
-	| "true"		{ TRUE }		| ".remove"		{ REMOVE }
-	| "false"		{ FALSE }		| ".type"		{ PATHEXT } *)
+	| "end"			{ END }			| "not in"  {NOTIN}
+	| "read"    { READ }  |  "print"    {PRINT}
+	| "type"    { TYPE } |  "typeStruct" { TYPESTRUCT }
+	| "join"    { JOIN } | "makeString" { MAKESTRING }
 	| eof			{ EOF }			(* do as microC *)
 	| digit+ as lit					{ LIT_INT(int_of_string lit) }
 	| quote [^'"']* quote as lit	{ LIT_STR(lit) } 
