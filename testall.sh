@@ -71,6 +71,8 @@ function compileAndRun() {
  	# running the binary
     if [ -f "${reffile}.out" ]; then
         eval ${reffile}.out >> ${reffile}.output
+        eval ${reffile}.out 
+        echo "\n"
         Compare ${reffile}.output ${reffile}.exp ${reffile}.error
 
 #        rm -rf ${reffile}.fdlp

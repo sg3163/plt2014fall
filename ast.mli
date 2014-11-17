@@ -2,8 +2,8 @@ type op = Add | Sub | Mult | Div | Equal | Neq (*| Less | Leq | Greater | Geq | 
 
 (*type sep = Comma*)
 
-(*type data_type = PathType | StrType | IntType | BoolType | VoidType | ListType
-
+type data_type =  StrType | IntType | BoolType 
+(*
 type pathattr_type = Pathname | Pathcreated | Pathkind | Pathext
 
 type list_expr = 
@@ -34,6 +34,7 @@ and expr =
 type for_expr = 
     Forid of string
 *)
+
 type expr =
     LitInt of int
   | LitStr of string
@@ -51,16 +52,16 @@ type stmt =
   | If of expr * stmt * stmt 
   | For of for_expr * for_expr * stmt *)
   (* | For of expr * expr * stmt*)
-  (*| While of expr * stmt
+  (*| While of expr * stmt *)
   | Print of expr
-  | Ifin of list_expr * list_expr * stmt * stmt *)
-(*
+ (* | Ifin of list_expr * list_expr * stmt * stmt *)
+
+(* AST does not contain type, type is inferred in SAST *)
 type var_decl = {
-  vtype : data_type;
   vname : string;
   vexpr : expr;
 }
-*)
+
 (*type func_decl = {
     (*return : data_type;*)
     fname : string;
@@ -69,4 +70,4 @@ type var_decl = {
     body : stmt list;
   }*)
 
-type program = stmt list
+type program = var_decl list

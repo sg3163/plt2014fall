@@ -26,8 +26,14 @@
 
 program:
     { [] }
-    | stmt program { $1 :: $2 }
+    | program vdecl { ($2 :: fst $1), snd $1  }
 /*    | program fdecl { fst $1, ($2 :: snd $1) } */
+
+/* Using SEMI to separate variable declarations for now */
+vdecl:
+      ID SEMI    { { vname = $1; vexpr = Noexpr } }
+    | ID ASSIGN expr SEMI  { {vname = $1; vexpr = $3 } }
+
 
 /*stmt_list:
     { [] }
@@ -41,9 +47,9 @@ stmt:
     expr SEMI                                           { Expr($1) }
 /*  | RETURN expr_opt SEMI                              { Return($2) } 
     | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
-    | IF LPAREN expr RPAREN THEN stmt ELSE stmt         { If($3, $6, $8) }
-    | PRINT expr SEMI                                   { Print($2) }
-    | WHILE LPAREN expr RPAREN stmt                     { While($3, $5) } 
+    | IF LPAREN expr RPAREN THEN stmt ELSE stmt         { If($3, $6, $8) }*/
+    | PRINT LPAREN expr RPAREN SEMI                          { Print($3) }
+/*    | WHILE LPAREN expr RPAREN stmt                     { While($3, $5) } 
     | FOR LPAREN for_expr IN for_expr RPAREN stmt       { For($3, $5, $7 ) } 
     | IF list_expr IN list_expr THEN stmt %prec NOELSE  { Ifin($2, $4, $6, Block([])) }
     | IF list_expr IN list_expr THEN stmt ELSE stmt     { Ifin($2, $4, $6, $8) } */
