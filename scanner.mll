@@ -5,32 +5,52 @@ let digit = ['0' - '9']
 let quote = '"'
 
 rule token = parse
-	[' ' '\r' '\n' '\t']	{ token lexbuf }	| "/*"		{ comment lexbuf }
-	| '('			{ LPAREN }		| ')'			{ RPAREN }
-	| '{'			{ LBRACE }		| '}'			{ RBRACE }
-	| "++"			{ PLUS }		| "--"			{ MINUS }
-	| "**"			{ TIMES }		| "//"			{ DIVIDE }
-	| '='			{ ASSIGN }		| ';'			{ SEMI }
-	| "=="			{ EQ }			| "!="			{ NEQ }
-	| '<'			{ LT }			| "<="			{ LEQ }
-	| '>'			{ GT }			| ">="			{ GEQ }
-	| '['			{ LBRACK }		| ']'			{ RBRACK }
-	| "&&"			{ AND }			| "||"			{ OR }
-	| '!'			{ NOT }			| '-' { COMMINUS }
-	| '+'     { COMPLUS } | "%%" { MODULUS }
-  | "if"			{ IF }			| '.' { DOT }
-	| "else"		{ ELSE }
+	[' ' '\r' '\n' '\t']	{ token lexbuf }	
+	| "/*"		{ comment lexbuf }
+	| '('			{ LPAREN }		
+	| ')'			{ RPAREN }
+	| '{'			{ LBRACE }		
+	| '}'			{ RBRACE }
+	| '['			{ LBRACK }		
+	| ']'			{ RBRACK }
+	| '.'			{ ACCESS } 	
+	| "++"			{ PLUS }		
+	| "--"			{ MINUS }
+	| "**"			{ TIMES }		
+	| "//"			{ DIVIDE }
+	| '='			{ ASSIGN }		
+	| ';'			{ SEMI } 
+	| "=="			{ EQ }			
+	| "!="			{ NEQ }
+	| '<'			{ LT }			
+	| "<="			{ LEQ }
+	| '>'			{ GT }			
+	| ">="			{ GEQ }
+	| "&&"			{ AND }			
+	| "||"			{ OR }
+	| '!'			{ NOT }			
+	| '-' 			{ COMMINUS }
+	| '+'     		{ COMPLUS } 
+	| "%%" 			{ MODULUS }
+  	| "if"			{ IF }
+  	| "elif"		{ ELIF }			
+  	| "else"		{ ELSE }
 	| "then"		{ THEN }		
-	| "for"			{ FOR }			| "in"			{ IN }
-	| "end"			{ END }			| "not in"  {NOTIN}
-	| "read"    { READ }  |  "print"    {PRINT}
-	| "type"    { TYPE } |  "typeStruct" { TYPESTRUCT }
-	| "join"    { JOIN } | "makeString" { MAKESTRING }
+	| "for"			{ FOR }			
+	| "in"			{ IN }
+	| "end"			{ END }			
+	| "not"			{ NOTIN }
+	| "read"    	{ READ }  
+	| "print"    	{PRINT}
+	| "type"    	{ TYPE } 
+	| "typeStruct" { TYPESTRUCT }
+	| "join"    	{ JOIN } 
+	| "makeString" 	{ MAKESTRING }
 	| eof			{ EOF }			(* do as microC *)
-	| digit+ as lit					{ LIT_INT(int_of_string lit) }
-	| quote [^'"']* quote as lit	{ LIT_STR(lit) } 
-	| "#{" _* "}#" as lit { LIT_JSON(lit) }
-	| "[" _* "]" as lit { LIT_LIST(lit) }
+	| digit+ as lit					{ NUM_LIT(int_of_string lit) }
+	| quote [^'"']* quote as lit	{ STRING_LIT(lit) } 
+	| "#{" _* "}#" as lit { JSON_LIT(lit) }
+	| "[" _* "]" as lit { LIST_LIT	(lit) }
 	| letter | (letter | digit | '_')* as id		{ ID(id) }
 	| _ as char 		{ raise (Failure("illegal character " ^ Char.escaped char)) }
 
