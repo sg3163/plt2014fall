@@ -26,13 +26,13 @@
 
 program:
     { [] }
-    | program vdecl { ($2 :: fst $1), snd $1  }
+    | program stmt { $2 :: $1  }
 /*    | program fdecl { fst $1, ($2 :: snd $1) } */
 
 /* Using SEMI to separate variable declarations for now */
-vdecl:
-      ID SEMI    { { vname = $1; vexpr = Noexpr } }
-    | ID ASSIGN expr SEMI  { {vname = $1; vexpr = $3 } }
+stmt:
+      ID SEMI    { Assign(Id($1))}
+    | ID ASSIGN expr SEMI  { Assign(Id($1), $3) }
 
 
 /*stmt_list:

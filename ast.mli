@@ -48,6 +48,7 @@ type expr =
 type stmt =
     Block of stmt list
   | Expr of expr
+	| Assign of (expr * expr) 
  (* | Return of expr
   | If of expr * stmt * stmt 
   | For of for_expr * for_expr * stmt *)
@@ -70,4 +71,4 @@ type var_decl = {
     body : stmt list;
   }*)
 
-type program = var_decl list
+type program = stmt list
