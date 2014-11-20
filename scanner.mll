@@ -31,7 +31,7 @@ rule token = parse
 	| '!'			{ NOT }			
 	| '-' 			{ COMMINUS }
 	| '+'     		{ COMPLUS } 
-	| "%%" 			{ MODULUS }
+	| "%%" 			{ MOD }
   	| "if"			{ IF }
   	| "elif"		{ ELIF }			
   	| "else"		{ ELSE }
@@ -39,13 +39,14 @@ rule token = parse
 	| "for"			{ FOR }			
 	| "in"			{ IN }
 	| "end"			{ END }			
-	| "not"			{ NOTIN }
+	| "not_in"		{ NOTIN }			
 	| "read"    	{ READ }  
 	| "print"    	{PRINT}
 	| "type"    	{ TYPE } 
 	| "typeStruct" { TYPESTRUCT }
 	| "join"    	{ JOIN } 
 	| "makeString" 	{ MAKESTRING }
+	| "return"		{ RETURN }
 	| eof			{ EOF }			(* do as microC *)
 	| digit+ as lit					{ NUM_LIT(int_of_string lit) }
 	| quote [^'"']* quote as lit	{ STRING_LIT(lit) } 
