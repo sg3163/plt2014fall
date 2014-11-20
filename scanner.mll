@@ -9,7 +9,8 @@ rule token = parse
 	| "/*"		{ comment lexbuf }
 	| '('			{ LPAREN }		
 	| ')'			{ RPAREN }
-	| '{'			{ LBRACE }		
+	| '{'			{ LBRACE }
+	| ',' 			{ COMMA }		
 	| '}'			{ RBRACE }
 	| '['			{ LBRACK }		
 	| ']'			{ RBRACK }
@@ -33,6 +34,7 @@ rule token = parse
 	| '+'     		{ COMPLUS } 
 	| "%%" 			{ MOD }
   	| "if"			{ IF }
+  	| "func"		{ FUNC }
   	| "elif"		{ ELIF }			
   	| "else"		{ ELSE }
 	| "then"		{ THEN }		
