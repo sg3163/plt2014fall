@@ -38,7 +38,8 @@ rule token = parse
 	| "then"		{ THEN }		
 	| "for"			{ FOR }			
 	| "in"			{ IN }
-	| "end"			{ END }				
+	| "end"			{ END }			
+	| "not_in"		{ NOTIN }			
 	| "read"    	{ READ }  
 	| "print"    	{PRINT}
 	| "type"    	{ TYPE } 
