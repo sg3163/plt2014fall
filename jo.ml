@@ -13,7 +13,7 @@ let rec string_of_expr = function
           Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
         | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
   | Assign(v, e) -> "CustomType " ^ v ^ " = " ^ string_of_expr e
-  | Noexpr -> ""
+  | NoExpr -> ""
 (*
 let string_of_vtype = function
   VoidType -> "void"
@@ -52,6 +52,6 @@ let _ =
       let lexbuf = Lexing.from_channel input in
       let program = Parser.program Scanner.token lexbuf in
       (* added the type check *)
-      (*let program_t = Typecheck.check_program program in*)
+      let program_t = Typecheck.check_program program in
       let output = string_of_program program in
       print_endline output

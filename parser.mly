@@ -1,14 +1,16 @@
 %{ open Ast %}
 
-%token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA SEMI
-%token PLUS MINUS TIMES DIVIDE ASSIGN
-%token EQ NEQ LT GT LEQ GEQ NOT
-%token AND OR
-%token FUNC END
-%token <int> LIT_INT
-%token <string> LIT_STR
-%token <string> LIT_JSON
-%token <string> LIT_LIST
+%token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA SEMI 
+%token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS
+%token EQ NEQ LT GT LEQ GEQ NOT MOD
+%token IF THEN ELSE ELIF
+%token AND OR FOR IN
+%token FUNC END DECL
+%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING RETURN
+%token <int> NUM_LIT
+%token <string> STRING_LIT
+%token <string> JSON_LIT
+%token <string> LIST_LIT
 %token <string> ID
 %token EOF
 
@@ -19,6 +21,7 @@
 %left LT GT LEQ GEQ
 %left PLUS MINUS 
 %left TIMES DIVIDE
+%left COMPLUS COMMINUS
 
 %start program
 %type <Ast.program> program
@@ -33,9 +36,8 @@ program:
 fdecl:
     FUNC ID LPAREN formals_opt RPAREN vdecl_opt stmt_list END
        {{
-        return = StrType;
+        return = Ast.StrType;
         fname = $2;
-        formals = $4;
         fnlocals = List.rev $6;
         body = List.rev $7 }}
 
@@ -48,7 +50,7 @@ formal_list:
     | formal_list COMMA formal { $3 :: $1 }
 
 formal:
-    ID        { { vtype = StrType;  vname = $1; vexpr = Noexpr; } }
+    ID      { { vtype = StrType;  vname = $1; vexpr = NoExpr; } }
     
 /* Var declarations can also be optional */
 vdecl_opt:
@@ -60,7 +62,7 @@ vdecl_list:
     | vdecl_list vdecl { $2 :: $1 }
 
 vdecl:
-     ID ASSIGN expr SEMI  { { vtype = StrType ;  vname = $1; vexpr = $3 } }
+     DECL ID ASSIGN expr SEMI  { { vtype = StrType ;  vname = $2; vexpr = $4 } }
 
 stmt_list:
     { [] }
@@ -81,8 +83,8 @@ stmt:
 
 
 expr:
-    | LIT_INT                      { LitInt($1) }
-    | LIT_STR                      { LitStr($1) }
+    | NUM_LIT                      { LitInt($1) }
+    | STRING_LIT                      { LitStr($1) }
 /*	| LIT_JSON                     { LitJson($1) }
 	| LIT_LIST                     { LitList($1) } */
     | ID                           { Id($1) }
