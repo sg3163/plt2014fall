@@ -2,7 +2,7 @@
 #	$(TESTS:%=tests/test-%.mc) \
 #        $(TESTS:%=tests/test-%.out)
 
-OBJS = parser.cmo scanner.cmo typecheck.cmo jo.cmo
+OBJS = parser.cmo scanner.cmo symboltable.cmo typecheck.cmo jo.cmo
 
 .PHONY: default
 default: jo

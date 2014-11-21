@@ -26,6 +26,7 @@ type var_decl_t = {
 type func_decl_t = {
     return : data_type_t;
     fname : string;
+    formals : var_decl_t list;
     fnlocals : var_decl_t list;
     body : stmt_t list;
   }

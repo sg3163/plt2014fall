@@ -1,5 +1,4 @@
-open Ast
-open Str
+open Sast
 
 let rec string_of_expr = function
     LitInt(l) -> "convertToNumber(" ^ string_of_int l ^ ")"
@@ -13,7 +12,7 @@ let rec string_of_expr = function
           Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
         | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
   | Assign(v, e) -> "CustomType " ^ v ^ " = " ^ string_of_expr e
-  | NoExpr -> ""
+  | Noexpr -> ""
 (*
 let string_of_vtype = function
   VoidType -> "void"

@@ -81,16 +81,24 @@ let match_oper e1 op e2 =
 
 (* it returns the expr and its type *)
 let rec check_expr env = function
-	Ast.LitInt(i) -> Sast.LitInt(i), "int"
-	| Ast.LitStr(s) -> Sast.LitStr(s), "string"
+	Ast.LitInt(i) -> 
+		let _ = print_string "in int" in
+		Sast.LitInt(i), "int"
+
+	| Ast.LitStr(s) -> 
+		let _ = print_string "in string " in
+		Sast.LitStr(s), "string"
 
 	| Ast.Id(id) ->
+		let _ = print_string "in iD" in
 		Sast.Id(id), (get_vtype env id)
 
 	| Ast.Binop(e1, op, e2) ->
+		let _ = print_string "in binop" in
 		match_oper (check_expr env e1) op (check_expr env e2)
 
 	| Ast.Assign(id, e) ->
+		let _ = print_string "in assign" in
 		let t = get_vtype env id in
 		(* if t = "string" then 
 		     Ast.AssignStr(id, (conv_type (check_expr env e))), "void"
@@ -105,9 +113,7 @@ let rec check_expr env = function
 and get_expr_with_type env expr t = 
 	let e = check_expr env expr in
 	(* added special case for the path variable *)
-	if ((snd e) = "string" && t = "path") then (fst e)
-	else if ((snd e) = "int" && t = "bool") then (fst e)
-	else if not((snd e) = t) then raise (Failure ("type error")) else (fst e)
+	fst e
 
 
 	
@@ -131,6 +137,19 @@ let convert_to_sast_type x env =
 		Sast.vname = x.vname;
 		Sast.vexpr = s_expr;
 	}
+
+let check_formal env formal = 
+	let ret = add_local formal.vname formal.vtype env in
+	if (string_of_vtype formal.vtype) = "void" then raise (Failure("cannot use void as variable type")) else
+	if StringMap.is_empty ret then raise (Failure ("local variable " ^ formal.vname ^ " is already defined"))
+	(* update the env with locals from ret *)
+	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
+	convert_to_sast_type formal env, env
+
+let rec check_formals env formals = 
+	match formals with 
+	  [] -> []
+	| hd::tl -> let f, e = (check_formal env hd) in (f, e)::(check_formals e tl) 
 
 
 let check_local env local =
@@ -158,17 +177,31 @@ let check_function env func =
 	Return(_) ->
 	  	let env = {locals = StringMap.empty; globals = env.globals; functions = env.functions } in
 	  	(*  ret is new env *)
-		let ret = add_function func.fname func.return env in
+		let ret = add_function func.fname func.return func.formals env in
 		if StringMap.is_empty ret then raise (Failure ("function " ^ func.fname ^ " is already defined"))
 		(* update the env with functions from ret *)
 		else let env = {locals = env.locals; globals = env.globals; functions = ret } in
-
+		(* check the formal arguments, returns formal list appended with their env *)
+		let f = check_formals env func.formals in
+		(* get the list of formals from f *)
+		let formals = List.map (fun formal -> fst formal) f in
+		
+		(* get the final env from the last formal *)
+		let l, env = 
+		(match f with
+			  [] -> let l = check_locals env func.fnlocals in
+					 l, env
+			| _ -> 	let env = snd (List.hd (List.rev f)) in
+					let l = check_locals env func.fnlocals in
+					l, env
+		) in
 		let fnlocals = List.map (fun fnlocal -> fst fnlocal) l in
 		 (match l with
 		 	(* empty f, no fomal args *)
 	            [] -> let body = check_stmt_list env func func.body in
 	                { Sast.return = get_sast_type func.return; 
 	                  Sast.fname = func.fname; 
+	                  Sast.formals = formals; 
 	                  Sast.fnlocals = fnlocals; 
 	                  Sast.body = body
 	                }, env
@@ -178,6 +211,7 @@ let check_function env func =
 	                   let body = check_stmt_list e func func.body in
 	                  { Sast.return = get_sast_type func.return; 
 	                    Sast.fname = func.fname; 
+	                    Sast.formals = formals; 
 	                    Sast.fnlocals = fnlocals; 
 	                    Sast.body = body
 	                  }, e 
@@ -193,7 +227,8 @@ let rec check_functions env funcs =
 
 (* returns the global and its env *)
 let check_global env global =
- let ret = add_global global.vname global.vtype env in
+ 	let _ = print_string "in iD" in
+	let ret = add_global global.vname global.vtype env in
 	if StringMap.is_empty ret then raise (Failure ("global variable " ^ global.vname ^ " is already defined"))
 	(* update the env with globals from ret *)
 	else let env = {locals = env.locals; globals = ret; functions = env.functions } in

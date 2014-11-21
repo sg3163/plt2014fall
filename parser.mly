@@ -38,6 +38,7 @@ fdecl:
        {{
         return = Ast.StrType;
         fname = $2;
+        formals = $4;
         fnlocals = List.rev $6;
         body = List.rev $7 }}
 
