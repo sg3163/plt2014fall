@@ -38,16 +38,7 @@ let get_expr_type t1 t2 =
 	raise (Failure ("type error"))
 
 
-let check_listexpr env = function
-	| Ast.ListId(id) ->
-		Sast.ListId(id, get_vtype env id), get_vtype env id
-	| Ast.ListItemInt(i) -> Sast.ListItemInt(i), "int"
-	| Ast.ListItemStr(s) -> Sast.ListItemStr(s), "string"
-(* mark int & boolean expression to string type *)
-(* let conv_type = function 
-	(expr, t) -> if t = "void" then raise (Failure ("cannot use void type inside expression")) else
-			(* Need to add a ToStr rule in SAST *)
-		     if not(t = "string") then Ast.ToStr(expr) else expr *)
+
 
 (* check the expression type can be used for
  * the corresponding argument according to definition
@@ -61,7 +52,6 @@ let match_oper e1 op e2 =
 	let expr_t = get_expr_type (snd e1) (snd e2) in
 	(match op with
 	   Ast.Add -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Add, fst e2), "int") else
-	   			if expr_t = "string" then (Sast.Binop(fst e1, Sast.StrAdd, fst e2), "string") else
 		  		raise (Failure ("type error"))
 	 | Ast.Sub -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Sub, fst e2), "int") else
 		  raise (Failure ("type error"))
@@ -72,10 +62,8 @@ let match_oper e1 op e2 =
 		  (* equal and not equal have special case for string comparison 
 		  		we may need to add SAST and Eqs and Neqs *)
 	 | Ast.Equal -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Equal, fst e2), "bool") else
-	 				if expr_t = "string" then (Sast.Binop(fst e1, Sast.StrEqual, fst e2), "bool") else
                   raise (Failure ("type error in == "))
 	 | Ast.Neq -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Neq, fst e2), "bool") else
-	 				if expr_t = "string" then (Sast.Binop(fst e1, Sast.StrNeq, fst e2), "bool") else
                   raise (Failure ("type error"))
 	 | Ast.Less ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Less, fst e2), "bool") else
                   raise (Failure ("type error")) 
@@ -109,21 +97,8 @@ let rec check_expr env = function
 		else  *)
 		Sast.Assign(id, (get_expr_with_type env e t)), "void"
 	
-	| Ast.List(items) -> Sast.List(check_list_items env items), "list"
+	| Ast.NoExpr -> Sast.Noexpr, "void"
 
-	| Ast.Pathattr(id, e) ->
-		if not ((get_vtype env id) = "path")
-			then raise(Failure("cannot use path attributes on non-path variable " ^ id))
-		else
-		(* return type is string assuming path attributes will be treated that way *)
-			Sast.Pathattr(id, fst (get_sast_pathattrtype e)), snd (get_sast_pathattrtype e)
-	| Ast.Noexpr -> Sast.Noexpr, "void"
-
-and check_list_items env = function
-	  Ast.Item(e) ->let i,t = check_expr env e in 
-	  				Sast.Item(i)
-	| Ast.Seq(e1, sep, e2) -> Sast.Seq(fst (check_expr env e1), Sast.Comma, (check_list_items env e2))
-	| Ast.Noitem -> Sast.Noitem
 
 (* get expr_t(sast type) by expr(ast type) with given type
  * raise error if the expression type does match requirement, snd e has the type and fst has the expr *)
@@ -135,24 +110,9 @@ and get_expr_with_type env expr t =
 	else if not((snd e) = t) then raise (Failure ("type error")) else (fst e)
 
 
-let check_forexpr env = function
-	Ast.Forid(id) -> Sast.Forid(id), get_vtype env id
 	
 let rec check_stmt env func = function
-	  Ast.Block(stmt_list) -> (Sast.Block(check_stmt_list env func stmt_list)), env
-	(* | Decl(s1, s2, expr) -> let e = check_expr env expr in
-				(*modified: 1. check s1 cannot be void; 2. expr can be void*)
-							if s1 = "void" then raise (Failure("cannot use void as variable type")) else
-							if not(snd e = s1) && not(snd e = "void") && not(s1 = "string") then raise (Failure ("type error"))
-	        				else let ret = add_local s2 s1 env in 
-	        				if StringMap.is_empty ret then raise (Failure ("local variable " ^ s2 ^ " is already defined")) 
-	        				else let env = {locals = ret; globals = env.globals; functions = env.functions } in
-	        				if s1 = "string" && (snd e = "int" || snd e = "boolean") then (Sast.Decl(s1, s2, Sast.ToStr(fst e))), env 
-							else (Sast.Decl(s1, s2, fst e)), env *)
-	(*| Ast.VarDecl(vardecl) -> let l,e = check_local env vardecl in
-								(Sast.VarDecl(l)),e *)
-	(* will pick only fst of the expr, since need onlt the expr and not the type *)
-	| Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
+	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
 
 and check_stmt_list env func = function 
 	  [] -> []
@@ -162,7 +122,7 @@ and check_stmt_list env func = function
 let convert_to_sast_type x env = 
 	let t = get_vtype env x.vname in
 		let s_expr = 
-		if not (x.vexpr = Ast.Noexpr) then
+		if not (x.vexpr = Ast.NoExpr) then
 			get_expr_with_type env x.vexpr t
 		else Sast.Noexpr
 		in
@@ -172,18 +132,6 @@ let convert_to_sast_type x env =
 		Sast.vexpr = s_expr;
 	}
 
-let check_formal env formal = 
-	let ret = add_local formal.vname formal.vtype env in
-	if (string_of_vtype formal.vtype) = "void" then raise (Failure("cannot use void as variable type")) else
-	if StringMap.is_empty ret then raise (Failure ("local variable " ^ formal.vname ^ " is already defined"))
-	(* update the env with locals from ret *)
-	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
-	convert_to_sast_type formal env, env
-
-let rec check_formals env formals = 
-	match formals with 
-	  [] -> []
-	| hd::tl -> let f, e = (check_formal env hd) in (f, e)::(check_formals e tl) 
 
 let check_local env local =
 	let ret = add_local local.vname local.vtype env in
@@ -210,24 +158,11 @@ let check_function env func =
 	Return(_) ->
 	  	let env = {locals = StringMap.empty; globals = env.globals; functions = env.functions } in
 	  	(*  ret is new env *)
-		let ret = add_function func.fname func.return func.formals env in
+		let ret = add_function func.fname func.return env in
 		if StringMap.is_empty ret then raise (Failure ("function " ^ func.fname ^ " is already defined"))
 		(* update the env with functions from ret *)
 		else let env = {locals = env.locals; globals = env.globals; functions = ret } in
-		(* check the formal arguments, returns formal list appended with their env *)
-		let f = check_formals env func.formals in
-		(* get the list of formals from f *)
-		let formals = List.map (fun formal -> fst formal) f in
-		
-		(* get the final env from the last formal *)
-		let l, env = 
-		(match f with
-			  [] -> let l = check_locals env func.fnlocals in
-					 l, env
-			| _ -> 	let env = snd (List.hd (List.rev f)) in
-					let l = check_locals env func.fnlocals in
-					l, env
-		) in
+
 		let fnlocals = List.map (fun fnlocal -> fst fnlocal) l in
 		 (match l with
 		 	(* empty f, no fomal args *)

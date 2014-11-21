@@ -25,8 +25,7 @@ let string_of_vtype = function
 
 let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";\n"
-  | Block(stmts) ->
-      "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
+ 
 			
 			(* variable declrarations, has ;*)
 (*let string_of_vdecl vdecl = if vdecl.vexpr = Noexpr then
