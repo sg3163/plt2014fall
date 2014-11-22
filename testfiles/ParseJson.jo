@@ -1,1 +1,1 @@
-decl a = 5 
+decl a = "5" 

@@ -105,7 +105,7 @@ let rec check_expr env = function
 		else  *)
 		Sast.Assign(id, (get_expr_with_type env e t)), "void"
 	
-	| Ast.NoExpr -> Sast.Noexpr, "void"
+	| Ast.NoExpr -> Sast.NoExpr, "void"
 
 
 (* get expr_t(sast type) by expr(ast type) with given type
@@ -130,7 +130,7 @@ let convert_to_sast_type x env =
 		let s_expr = 
 		if not (x.vexpr = Ast.NoExpr) then
 			get_expr_with_type env x.vexpr t
-		else Sast.Noexpr
+		else Sast.NoExpr
 		in
 	{
 		Sast.vtype = get_sast_type x.vtype;

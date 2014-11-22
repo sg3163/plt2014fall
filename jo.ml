@@ -1,6 +1,6 @@
 open Sast
 
-let rec string_of_expr = function
+let rec string_of_expr e = match e with
     LitInt(l) -> "convertToNumber(" ^ string_of_int l ^ ")"
   | LitStr(l) -> "convertToString(" ^ l ^ ")"
 	| LitJson(l) -> "convertToJson(" ^  l ^ ")"
@@ -13,30 +13,33 @@ let rec string_of_expr = function
         | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
   | Assign(v, e) -> "CustomType " ^ v ^ " = " ^ string_of_expr e
   | Noexpr -> ""
-(*
-let string_of_vtype = function
-  VoidType -> "void"
-  | IntType -> "int"
-  | StrType -> "char *"
-  | BoolType -> "int"
-  | PathType -> "char *"
-  | ListType -> "struct List *"*)
 
 let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";\n"
- 
-			
-			(* variable declrarations, has ;*)
-(*let string_of_vdecl vdecl = if vdecl.vexpr = Noexpr then
+
+let string_of_vtype = function
+  Decl -> "custType"
+  
+let string_of_vdecl vdecl = if vdecl.vexpr = NoExpr then
                               string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ ";\n"
                             else
                               string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
-*)
-let string_of_program program =
-	"\n#include <iostream> \n using namespace std; \n int main() { \n cout << \"Hello World!\" << endl; \n return 0;"  ^
+
+let string_of_formaldecl vdecl = string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname
+
+let string_of_fdecl fdecl =
+  string_of_vtype fdecl.return ^ " " ^ fdecl.fname ^ "(" ^
+    String.concat ", " (List.map string_of_formaldecl fdecl.formals) ^ ")\n{\n" ^
+  String.concat "" (List.map string_of_vdecl fdecl.fnlocals) ^
+  String.concat "" (List.map string_of_stmt fdecl.body) ^
+  "}\n"
+ 
+let string_of_program (vars, funcs) =
+	"\n#include <iostream> \n using namespace std; \n int main() { \n cout << \"Hello World!\" << endl; \n "  ^
 	
- (* String.concat "" (List.map string_of_stmt program) ^ "\n"
- ^	*) "}" 
+  String.concat "\n" (List.map string_of_vdecl vars) ^ "\n" ^ 
+  String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n"
+ ^ "}" 
 
 let _ =
   (* first argument is the filename *)
@@ -51,5 +54,5 @@ let _ =
       let program = Parser.program Scanner.token lexbuf in
       (* added the type check *)
       let program_t = Typecheck.check_program program in
-      let output = string_of_program program in
+      let output = string_of_program program_t in
       print_endline output

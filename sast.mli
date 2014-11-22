@@ -10,7 +10,7 @@ type expr_t =
   | Id of string
   | Binop of expr_t * op_t * expr_t
   | Assign of string * expr_t
-  | Noexpr
+  | NoExpr
 
 type stmt_t =
 	 Expr of expr_t
