@@ -108,14 +108,15 @@ NumType getNum (string data){
 }
 StringType getString (string data){
 	StringType t; 
-	if ( data.at(0) !='"' || data.at(data.length() - 1 ))  {
+	/*
+	if ( data.at(0) !='"' || data.at(data.length() - 1 ) != '"')  {
 
 		return NULL ;
 
-	}
+	}*/
 	data.erase(0,1) ; 
 	data.erase(data.length() - 1, 1) ;
-	t = string (data)
+	t = string (data) ; 
 	return t ;
 }
 ListType getList (string data){

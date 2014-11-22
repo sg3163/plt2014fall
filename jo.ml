@@ -1,24 +1,31 @@
 open Sast
 
 let rec string_of_expr e = match e with
-    LitInt(l) -> "convertToNumber(" ^ string_of_int l ^ ")"
-  | LitStr(l) -> "convertToString(" ^ l ^ ")"
-	| LitJson(l) -> "convertToJson(" ^  l ^ ")"
-	| LitList(l) -> "convertToList(" ^ l ^ ")"
+    LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"INT\");\n"
+  | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STR\");\n"
+	| LitJson(l) -> "CustType::parse(\"" ^ l ^ "\",\"JSON\");\n"
+	| LitList(l) -> "CustType::parse(\"" ^ l ^ "\",\"LIST\");\n"
   | Id(s) ->  s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^
       ( match o with
-          Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
+          Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/" | Or -> "||"
+          | And -> "&&" | Geq -> ">=" | Leq -> "<=" | Greater -> ">" | Less -> "<"
         | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
   | Assign(v, e) -> "CustomType " ^ v ^ " = " ^ string_of_expr e
-  | Noexpr -> ""
+  | NoExpr -> ""
 
 let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";\n"
+    | Return(expr) -> "return " ^ string_of_expr expr ^ ";\n"
 
 let string_of_vtype = function
-  Decl -> "custType"
+   IntType -> "CustType"
+  | StrType -> "CustType"
+  | BoolType ->"CustType"
+  | ListType -> "CustType"
+  | JsonType -> "CustType"
+
   
 let string_of_vdecl vdecl = if vdecl.vexpr = NoExpr then
                               string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ ";\n"
@@ -35,11 +42,9 @@ let string_of_fdecl fdecl =
   "}\n"
  
 let string_of_program (vars, funcs) =
-	"\n#include <iostream> \n using namespace std; \n int main() { \n cout << \"Hello World!\" << endl; \n "  ^
-	
-  String.concat "\n" (List.map string_of_vdecl vars) ^ "\n" ^ 
-  String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n"
- ^ "}" 
+	"\n#include <iostream>\n#include \"cPlusPlusCompiler.h\"\nusing namespace std;\n\nint main() { \n " ^
+	String.concat "\n" (List.map string_of_vdecl vars) ^ "\n" ^ 
+  String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n" ^ "}" 
 
 let _ =
   (* first argument is the filename *)
