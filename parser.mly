@@ -32,7 +32,7 @@
 program:
     { [] , [] }
     | program vdecl { ($2 :: fst $1) , snd $1 }
-    | program fdecl { fst $1, ($2 :: snd $1) } 
+    | program fdecl { print_string "--fdecl\n"; fst $1, ($2 :: snd $1) } 
 
 fdecl:
     FUNC ID LPAREN formals_opt RPAREN vdecl_opt stmt_list END
