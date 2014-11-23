@@ -73,8 +73,8 @@ stmt_list:
 /* using SEMI to separate stmts for now */
 stmt:
     expr SEMI                                           { Expr($1) }
- /*   | RETURN expr_opt SEMI                              { Return($2) } 
-     | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
+   | RETURN expr_opt SEMI                              { Return($2) } 
+   /*   | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
     | IF LPAREN expr RPAREN THEN stmt ELSE stmt         { If($3, $6, $8) }
     | PRINT expr SEMI                                   { Print($2) }
     | WHILE LPAREN expr RPAREN stmt                     { While($3, $5) } 
@@ -83,6 +83,9 @@ stmt:
     | IF list_expr IN list_expr THEN stmt ELSE stmt     { Ifin($2, $4, $6, $8) } 
     | LBRACE rev_stmt_list RBRACE                       { Block($2) } */
 
+expr_opt:
+    /* nothing */ { NoExpr }
+  | expr          { $1 }
 
 expr:
     | NUM_LIT                      { LitInt($1) }

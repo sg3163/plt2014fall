@@ -1,5 +1,13 @@
-decl x = 5;
-decl y = "abhinav";
-decl a = #{"class":["PLT","OS"]}#;
-decl b = [34,45,56];
-decl c = true;
+func test () 
+return "fromtest";
+end
+
+func main () 
+return 0;
+end
+
+decl a = "apple";
+decl b = 1212;
+decl c = #{"class":["PLT","OS"]}#;
+decl d = [23,34,45];
+decl e = true;

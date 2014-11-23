@@ -17,8 +17,8 @@ let rec string_of_expr e = match e with
   | NoExpr -> ""
 
 let rec string_of_stmt = function
-    Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";\n"
-    | Return(expr) -> "return " ^ string_of_expr expr ^ ";\n"
+    Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr
+    | Return(expr) -> "return " ^ string_of_expr expr 
 
 let string_of_vtype = function
    IntType -> "CustType"
@@ -43,9 +43,9 @@ let string_of_fdecl fdecl =
   "}\n"
  
 let string_of_program (vars, funcs) =
-	"\n#include <iostream>\n#include \"cPlusPlusCompiler.h\"\nusing namespace std;\n\nint main() { \n " ^
+	"\n#include <iostream>\n#include \"cPlusPlusCompiler.h\"\nusing namespace std;\n\n" ^
 	String.concat "\n" (List.map string_of_vdecl vars) ^ "\n" ^ 
-  String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n" ^ "}" 
+  String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n" 
 
 let _ =
   (* first argument is the filename *)
