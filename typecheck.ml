@@ -88,6 +88,18 @@ let rec check_expr env = function
 	| Ast.LitStr(s) -> 
 		let _ = print_string "in string " in
 		Sast.LitStr(s), "string"
+		
+	| Ast.LitJson(s) -> 
+		let _ = print_string "in json " in
+		Sast.LitJson(s), "json"
+		
+	| Ast.LitList(s) -> 
+		let _ = print_string "in list " in
+		Sast.LitList(s), "list"
+		
+	| Ast.LitBool(s) -> 
+		let _ = print_string "in bool " in
+		Sast.LitBool(s), "bool"
 
 	| Ast.Id(id) ->
 		let _ = print_string "in iD" in

@@ -7,6 +7,7 @@ type expr_t =
   | LitStr of string
 	| LitJson of string
   | LitList of string
+	| LitBool of string
   | Id of string
   | Binop of expr_t * op_t * expr_t
   | Assign of string * expr_t

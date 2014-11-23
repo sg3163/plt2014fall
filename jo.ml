@@ -5,6 +5,7 @@ let rec string_of_expr e = match e with
   | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STR\");\n"
 	| LitJson(l) -> "CustType::parse(\"" ^ l ^ "\",\"JSON\");\n"
 	| LitList(l) -> "CustType::parse(\"" ^ l ^ "\",\"LIST\");\n"
+	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\");\n"
   | Id(s) ->  s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^
@@ -28,9 +29,9 @@ let string_of_vtype = function
 
   
 let string_of_vdecl vdecl = if vdecl.vexpr = NoExpr then
-                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ ";\n"
+                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ "\n"
                             else
-                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
+                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ "\n"
 
 let string_of_formaldecl vdecl = string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname
 

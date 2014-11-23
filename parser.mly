@@ -11,6 +11,7 @@
 %token <string> STRING_LIT
 %token <string> JSON_LIT
 %token <string> LIST_LIT
+%token <string> BOOL_LIT
 %token <string> ID
 %token EOF
 
@@ -85,9 +86,10 @@ stmt:
 
 expr:
     | NUM_LIT                      { LitInt($1) }
-    | STRING_LIT                      { LitStr($1) }
-/*	| LIT_JSON                     { LitJson($1) }
-	| LIT_LIST                     { LitList($1) } */
+    | STRING_LIT                   { LitStr($1) }
+		| JSON_LIT                     { LitJson($1) }
+		| LIST_LIT                     { LitList($1) } 
+		| BOOL_LIT                     { LitBool($1) }
     | ID                           { Id($1) }
     | expr PLUS   expr             { Binop($1, Add,      $3) }
     | expr MINUS  expr             { Binop($1, Sub,      $3) }
