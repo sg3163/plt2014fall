@@ -17,8 +17,8 @@ let rec string_of_expr e = match e with
   | NoExpr -> ""
 
 let rec string_of_stmt = function
-    Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";\n"
-    | Return(expr) -> "return " ^ string_of_expr expr ^ ";\n"
+    Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr
+    | Return(expr) -> "return " ^ string_of_expr expr 
 
 let string_of_vtype = function
    IntType -> "CustType"
