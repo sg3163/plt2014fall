@@ -1,1 +1,8 @@
-func test () end
+func test () 
+return "fromtest";
+end
+
+func main () 
+return 0;
+end
+

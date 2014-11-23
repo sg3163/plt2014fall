@@ -131,6 +131,8 @@ and get_expr_with_type env expr t =
 	
 let rec check_stmt env func = function
 	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
+	| Ast.Return(expr) -> let e = check_expr env expr in
+			 (Sast.Return(fst e)), env 
 
 and check_stmt_list env func = function 
 	  [] -> []
@@ -178,7 +180,7 @@ let rec check_locals env locals =
 	| hd::tl -> let l, e = (check_local env hd) in (l, e)::(check_locals e tl)
 
 (* this function will return the updated formals and body as per the abstract syntax tree, the return type, name and locals *)
-let check_function env func =
+let check_function env func = 
 	(* if List.length func.body = 0 then raise (Failure ("The last statement must be return statement"))
 	else if func.fname = "main" && (List.length func.formals) > 0 
 	then raise (Failure ("The main function cannot take any argument"))
