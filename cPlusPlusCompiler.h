@@ -26,7 +26,10 @@ class CustType {
 	CustType () { 
 	
 	}
-	CustType parse () ; 
+	CustType* parse () ; 
+	virtual void print () {
+		cout << "Printing in CustType, Ooops!" ;
+	}
 	
 };
 
@@ -53,6 +56,9 @@ class StringType : public CustType {
 	}
 	StringType(){
 		
+	}
+	void print () {
+		cout << da ; 
 	}
 	
 } ;
@@ -85,7 +91,7 @@ class JsonType : public CustType {
 	}
 } ;
 
-NumType getNum (string data){
+NumType* getNum (string data){
 	double num  = 0 ; 
 	int decimal_bool = 0, decimal = 1 ; 
 	for ( unsigned int i = 0 ; i < data.length() ; i ++ ){
@@ -103,32 +109,31 @@ NumType getNum (string data){
 		
 	}
 	num = num / decimal ; 
-	NumType t (num) ;
+	NumType* t  = new NumType(num) ;
 	return t ;
 }
-StringType getString (string data){
-	StringType t; 
-	/*
+StringType* getString (string data){
 	if ( data.at(0) !='"' || data.at(data.length() - 1 ) != '"')  {
 
 		return NULL ;
 
-	}*/
+	}
 	data.erase(0,1) ; 
 	data.erase(data.length() - 1, 1) ;
-	t = string (data) ; 
+	
+	StringType* t = new StringType (data) ; 
 	return t ;
 }
-ListType getList (string data){
-	ListType t; 
+ListType* getList (string data){
+	ListType* t; 
 	
 	return t ; 
 }
-JsonType getJson (string data){
-	JsonType t ; 
+JsonType* getJson (string data){
+	JsonType* t ; 
 	return t ;
 }
-CustType CustType :: parse ()  { 
+CustType* CustType :: parse ()  { 
 	
 		if (data.at(0) == '"'){
 			dt = STRING ; 

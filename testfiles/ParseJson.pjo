@@ -1,5 +1,1 @@
-decl x = 5;
-decl y = "abhinav";
-decl a = #{"class":["PLT","OS"]}#;
-decl b = [34,45,56];
-decl c = true;
+func test () end
