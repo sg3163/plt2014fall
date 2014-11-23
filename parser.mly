@@ -87,9 +87,9 @@ stmt:
 expr:
     | NUM_LIT                      { LitInt($1) }
     | STRING_LIT                   { LitStr($1) }
-		| JSON_LIT                     { LitJson($1) }
-		| LIST_LIT                     { LitList($1) } 
-		| BOOL_LIT                     { LitBool($1) }
+	| JSON_LIT                     { LitJson($1) }
+	| LIST_LIT                     { LitList($1) } 
+	| BOOL_LIT                     { LitBool($1) }
     | ID                           { Id($1) }
     | expr PLUS   expr             { Binop($1, Add,      $3) }
     | expr MINUS  expr             { Binop($1, Sub,      $3) }
