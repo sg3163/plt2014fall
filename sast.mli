@@ -11,6 +11,7 @@ type expr_t =
   | Id of string
   | Binop of expr_t * op_t * expr_t
   | Assign of string * expr_t
+  | Call of string * expr_t list
   | NoExpr
 
 type stmt_t =

@@ -116,7 +116,14 @@ let rec check_expr env = function
 		     Ast.AssignStr(id, (conv_type (check_expr env e))), "void"
 		else  *)
 		Sast.Assign(id, (get_expr_with_type env e t)), "void"
-	
+	| Ast.Call(func, el) ->
+		(* find_function is from the symbol table *)
+		let args = find_function func env in	(* return & arguments type list from definition *)
+		( match args with
+			[] -> raise (Failure ("undefined function " ^ func))
+			| hd::tl -> let new_list = try List.fold_left2 check_func_arg [] (List.map (check_expr env) el) tl
+						   with Invalid_argument "arg" -> raise(Failure("unmatched argument list"))
+				    in Sast.Call(func, List.rev new_list ), hd )
 	| Ast.NoExpr -> Sast.NoExpr, "void"
 
 

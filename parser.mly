@@ -101,3 +101,12 @@ expr:
     | expr EQ     expr             { Binop($1, Equal,    $3) }
     | expr NEQ    expr             { Binop($1, Neq,      $3) }
     | ID ASSIGN expr               { Assign($1, $3) }
+		| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
+
+actuals_opt:
+    /* nothing */   { [] }
+    | actuals_list  { List.rev $1 }
+
+actuals_list:
+    expr                      { [$1] }
+    | actuals_list COMMA expr { $3 :: $1 }

@@ -1,11 +1,11 @@
 open Sast
 
 let rec string_of_expr e = match e with
-    LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"Number\")\n"
-  | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"String\")\n"
-	| LitJson(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"Json\")\n"
-	| LitList(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"List\")\n"
-	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"Bool\")\n"
+    LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")\n"
+  | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")\n"
+	| LitJson(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"JSON\")\n"
+	| LitList(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"LIST\")\n"
+	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")\n"
   | Id(s) ->  s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^
@@ -36,9 +36,11 @@ let string_of_vdecl vdecl = if vdecl.vexpr = NoExpr then
 
 let string_of_formaldecl vdecl = string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname
 
-let string_of_fdecl fdecl =
-  string_of_vtype fdecl.return ^ " " ^ fdecl.fname ^ "(" ^
-    String.concat ", " (List.map string_of_formaldecl fdecl.formals) ^ ")\n{\n" ^
+let string_of_fdecl fdecl = (if fdecl.fname = "main" then 
+ "int " ^ fdecl.fname ^ "(" 
+else
+  string_of_vtype fdecl.return ^ " " ^ fdecl.fname ^ "(" )
+ ^   String.concat ", " (List.map string_of_formaldecl fdecl.formals) ^ ")\n{\n" ^
   String.concat "" (List.map string_of_vdecl fdecl.fnlocals) ^
   String.concat "" (List.map string_of_stmt fdecl.body) ^
   "}\n"
