@@ -27,7 +27,7 @@ class CustType {
 	
 	}
 	static CustType* parse (string data, string type) ; 
-	static void print(string data , string type) ;
+	static void print(CustType* data) ;
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class" ;
 	}
@@ -175,28 +175,8 @@ CustType* CustType :: parse (string data, string type)  {
 			return getNum (data,NUMBER) ;
 		}
 }
-void CustType :: print ( string data, string type) { 
-	if (type == "STRING"){
-			 
-			CustType* t =  getString ( data , STRING) ;
-			t -> print () ;
-		}
-		else if (type == "LIST"){
-			//CustType :: dt = LIST ; 
-			CustType* t = getList ( data , LIST ) ;
-			t -> print () ;
-		}
-		else if (type == "JSON"){
-			//CustType :: dt = JSON ; 
-			CustType* t = getJson (data, JSON) ;
-			t -> print () ;
-		}
-		else{
-			//CustType :: dt = NUMBER ; 
-			CustType* t = getNum (data,NUMBER) ;
-			t -> print () ;
-		}
-
+void CustType :: print ( CustType* data) { 
+		 data -> print () ;
 }
 /*
 int main() {
