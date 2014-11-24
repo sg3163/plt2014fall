@@ -11,7 +11,7 @@ int main() {
 	cout << c -> getType (
 		) ; 
 	cout <<endl ; 
-	CustType :: print ( b, "STRING") ;
+	CustType :: print (CustType :: parse(b , "STRING")) ;
 
 	cout << endl ;  
 	return 0;
