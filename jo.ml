@@ -20,7 +20,12 @@ let rec string_of_expr e = match e with
 let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr
     | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
-		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n" 
+		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n"
+    | Block(stmts) ->
+        "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
+    | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
+    | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
+        string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
 
 let string_of_vtype = function
    IntType -> "CustType*"

@@ -1,6 +1,4 @@
-func test () 
-return "fromtest";
-end
+decl a=5;
 
 func main () 
 return 0;

@@ -16,9 +16,11 @@ type expr =
   | NoExpr
   
 type stmt =
-    Expr of expr
+    Block of stmt list
+  | Expr of expr
   | Return of expr
 	| Print of expr
+  | If of expr * stmt * stmt
   
 type var_decl = {
   vtype : data_type;

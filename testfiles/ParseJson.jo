@@ -1,0 +1,11 @@
+decl a=5
+
+func main(x,y)
+  decl b=10
+  if(1==1)
+
+	decl c=4
+  else
+	decl d="abhinav"
+  end
+end

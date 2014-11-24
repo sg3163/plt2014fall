@@ -3,7 +3,7 @@
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA SEMI 
 %token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
-%token IF THEN ELSE ELIF
+%token IF THEN ELSE
 %token AND OR FOR IN
 %token FUNC END DECL MAINFUNC
 %token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING RETURN
@@ -14,6 +14,9 @@
 %token <string> BOOL_LIT
 %token <string> ID
 %token EOF
+
+%nonassoc NOELSE
+%nonassoc ELSE
 
 %right ASSIGN NOT
 
@@ -74,10 +77,10 @@ stmt_list:
 stmt:
     expr SEMI                                           { Expr($1) }
    | RETURN expr_opt SEMI                              { Return($2) } 
-	    | PRINT expr SEMI                                   { Print($2) }
-  /*    | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
-    | IF LPAREN expr RPAREN THEN stmt ELSE stmt         { If($3, $6, $8) }
-    | WHILE LPAREN expr RPAREN stmt                     { While($3, $5) } 
+	| PRINT expr SEMI                                   { Print($2) }
+    | IF LPAREN expr RPAREN stmt %prec NOELSE      { If($3, $5, Block([])) }
+    | IF LPAREN expr RPAREN stmt ELSE stmt         { If($3, $5, $7) }
+    /*| WHILE LPAREN expr RPAREN stmt                     { While($3, $5) } 
     | FOR LPAREN for_expr IN for_expr RPAREN stmt       { For($3, $5, $7 ) } 
     | IF list_expr IN list_expr THEN stmt %prec NOELSE  { Ifin($2, $4, $6, Block([])) }
     | IF list_expr IN list_expr THEN stmt ELSE stmt     { Ifin($2, $4, $6, $8) } 
