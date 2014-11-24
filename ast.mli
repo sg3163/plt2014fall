@@ -16,6 +16,7 @@ type expr =
 type stmt =
     Expr of expr
   | Return of expr
+	| Print of expr
   
 type var_decl = {
   vtype : data_type;

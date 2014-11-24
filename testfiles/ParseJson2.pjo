@@ -1,3 +1,0 @@
-decl a = 5;
-decl b = "abhinav";
-decl c = #{"attr":"value"}#; 

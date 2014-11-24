@@ -16,6 +16,7 @@ type expr_t =
 type stmt_t =
 	 Expr of expr_t
   | Return of expr_t
+	| Print of expr_t * string
 
 
 type var_decl_t = {
