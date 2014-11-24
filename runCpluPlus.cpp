@@ -4,10 +4,12 @@ int main() {
 	cout << endl ; 
 	cout << endl ; 
 	string b  = "\"arpit\""; 
-	CustType a = CustType(b) ; 
-	CustType* c = a.parse() ; 
+	CustType a ; 
+	CustType* c = CustType::parse(b , "STRING") ; 
 	c -> print() ;
 	cout << endl ; 
+	cout << c -> getType () ; 
+	cout <<endl ; 
 	return 0;
 }
 	

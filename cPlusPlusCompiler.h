@@ -10,11 +10,10 @@ enum dataType { NUMBER , STRING , JSON, LIST } ;
 
 class CustType {
 	
-	protected :
-	int dt ; 
-	string data ; 
 	
 	public :
+	 
+	static string data ; 
 	
 	CustType (string data) {
 	
@@ -23,12 +22,17 @@ class CustType {
 	
 		
 	}
+	
 	CustType () { 
 	
 	}
-	CustType* parse () ; 
+	static CustType* parse (string data, string type) ; 
 	virtual void print () {
-		cout << "Printing in CustType, Ooops!" ;
+		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class" ;
+	}
+
+	virtual int getType(){
+		cout << "getting Type from CustType, Ooops!\n Somebody needs to implement this in child class" ;	
 	}
 	
 };
@@ -36,23 +40,30 @@ class CustType {
 class NumType : public CustType { 
 	
 	double da; 
+	int type ; 
 	public : 
-	NumType (double da ) : CustType (  ) { 
+	NumType (double da , int type) : CustType (  ) { 
 		
 		this -> da = da ;
+		this -> type = type ; 
 		
 	}
-	
-	
+	void print () {
+		cout << da ; 
+	}
+	int getType () {
+		return NUMBER ;
+	}
 } ;
 class StringType : public CustType { 
 	
-	string da; 
+	string da;
+	int type ;  
 	public : 
-	StringType (string da ) : CustType (  ) { 
+	StringType (string da , int type ) : CustType (  ) { 
 		
 		this -> da = da ;
-		
+		this -> type = type ; 
 	}
 	StringType(){
 		
@@ -60,38 +71,47 @@ class StringType : public CustType {
 	void print () {
 		cout << da ; 
 	}
-	
+	int getType () {
+		return STRING ;
+	}
 } ;
 class ListType : public CustType { 
 	
 	vector <CustType> da; 
+	int type ; 
 	public : 
-	ListType (vector <CustType> da ) : CustType (  ) { 
+	ListType (vector <CustType> da , int type) : CustType (  ) { 
 		
 		this -> da = da ;
-		
+		this -> type = type ; 
 	}
 	ListType(){
 		
 	}
-	
+	int getType () {
+		return LIST ;
+	}
 	
 } ;
 class JsonType : public CustType { 
 	
 	map <string, CustType> da; 
+	int type ; 
 	public : 
-	JsonType (map <string, CustType > da ) : CustType (  ) { 
+	JsonType (map <string, CustType > da , int type) : CustType (  ) { 
 		
 		this -> da = da ;
-		
+		this -> type = type ; 
 	}
 	JsonType () { 
 		
 	}
+	int getType () {
+		return JSON ;
+	}
 } ;
 
-NumType* getNum (string data){
+NumType* getNum (string data, int type ){
 	double num  = 0 ; 
 	int decimal_bool = 0, decimal = 1 ; 
 	for ( unsigned int i = 0 ; i < data.length() ; i ++ ){
@@ -109,10 +129,10 @@ NumType* getNum (string data){
 		
 	}
 	num = num / decimal ; 
-	NumType* t  = new NumType(num) ;
+	NumType* t  = new NumType(num , NUMBER) ;
 	return t ;
 }
-StringType* getString (string data){
+StringType* getString (string data, int type){
 	if ( data.at(0) !='"' || data.at(data.length() - 1 ) != '"')  {
 
 		return NULL ;
@@ -121,36 +141,36 @@ StringType* getString (string data){
 	data.erase(0,1) ; 
 	data.erase(data.length() - 1, 1) ;
 	
-	StringType* t = new StringType (data) ; 
+	StringType* t = new StringType (data, STRING) ; 
 	return t ;
 }
-ListType* getList (string data){
+ListType* getList (string data, int type){
 	ListType* t; 
 	
 	return t ; 
 }
-JsonType* getJson (string data){
+JsonType* getJson (string data, int type){
 	JsonType* t ; 
 	return t ;
 }
-CustType* CustType :: parse ()  { 
+CustType* CustType :: parse (string data, string type)  { 
 	
-		if (data.at(0) == '"'){
-			dt = STRING ; 
-			return getString ( data ) ;
+		if (type == "STRING"){
+			 
+			return getString ( data , STRING) ;
 			
 		}
-		else if (data.at(0) == '['){
-			dt = LIST ; 
-			return getList ( data ) ;
+		else if (type == "LIST"){
+			//CustType :: dt = LIST ; 
+			return getList ( data , LIST ) ;
 		}
-		else if (data.at(0) == '{'){
-			dt = JSON ; 
-			return getJson (data) ;
+		else if (type == "JSON"){
+			//CustType :: dt = JSON ; 
+			return getJson (data, JSON) ;
 		}
 		else{
-			dt = NUMBER ; 
-			return getNum (data) ;
+			//CustType :: dt = NUMBER ; 
+			return getNum (data,NUMBER) ;
 		}
 	}
 /*
