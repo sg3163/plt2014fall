@@ -27,6 +27,7 @@ class CustType {
 	
 	}
 	static CustType* parse (string data, string type) ; 
+	static void print(string data , string type) ;
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class" ;
 	}
@@ -34,6 +35,7 @@ class CustType {
 	virtual int getType(){
 		cout << "getting Type from CustType, Ooops!\n Somebody needs to implement this in child class" ;	
 	}
+
 	
 };
 
@@ -172,7 +174,30 @@ CustType* CustType :: parse (string data, string type)  {
 			//CustType :: dt = NUMBER ; 
 			return getNum (data,NUMBER) ;
 		}
-	}
+}
+void CustType :: print ( string data, string type) { 
+	if (type == "STRING"){
+			 
+			CustType* t =  getString ( data , STRING) ;
+			t -> print () ;
+		}
+		else if (type == "LIST"){
+			//CustType :: dt = LIST ; 
+			CustType* t = getList ( data , LIST ) ;
+			t -> print () ;
+		}
+		else if (type == "JSON"){
+			//CustType :: dt = JSON ; 
+			CustType* t = getJson (data, JSON) ;
+			t -> print () ;
+		}
+		else{
+			//CustType :: dt = NUMBER ; 
+			CustType* t = getNum (data,NUMBER) ;
+			t -> print () ;
+		}
+
+}
 /*
 int main() {
 	// your code goes here

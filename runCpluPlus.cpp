@@ -5,11 +5,15 @@ int main() {
 	cout << endl ; 
 	string b  = "\"arpit\""; 
 	CustType a ; 
-	CustType* c = CustType::parse(b , "STRING") ; 
+	CustType* c = CustType :: parse(b , "STRING") ; 
 	c -> print() ;
 	cout << endl ; 
-	cout << c -> getType () ; 
+	cout << c -> getType (
+		) ; 
 	cout <<endl ; 
+	CustType :: print ( b, "STRING") ;
+
+	cout << endl ;  
 	return 0;
 }
 	
