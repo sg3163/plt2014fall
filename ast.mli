@@ -8,6 +8,7 @@ type expr =
   | LitJson of string
   | LitList of string
 	| LitBool of string
+	| MainRet of int
   | Id of string
   | Binop of expr * op * expr
   | Assign of string * expr

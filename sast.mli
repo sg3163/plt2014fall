@@ -12,6 +12,7 @@ type expr_t =
   | Binop of expr_t * op_t * expr_t
   | Assign of string * expr_t
   | Call of string * expr_t list
+	| MainRet of int
   | NoExpr
 
 type stmt_t =

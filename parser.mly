@@ -5,7 +5,7 @@
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
 %token IF THEN ELSE ELIF
 %token AND OR FOR IN
-%token FUNC END DECL
+%token FUNC END DECL MAINFUNC
 %token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING RETURN
 %token <int> NUM_LIT
 %token <string> STRING_LIT
@@ -102,6 +102,7 @@ expr:
     | expr NEQ    expr             { Binop($1, Neq,      $3) }
     | ID ASSIGN expr               { Assign($1, $3) }
 		| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
+		| MAINFUNC                     { MainRet(0) }
 
 actuals_opt:
     /* nothing */   { [] }

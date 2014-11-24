@@ -6,6 +6,7 @@ let rec string_of_expr e = match e with
 	| LitJson(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"JSON\")\n"
 	| LitList(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"LIST\")\n"
 	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")\n"
+	| MainRet(l) -> "0"
   | Id(s) ->  s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^
@@ -13,20 +14,20 @@ let rec string_of_expr e = match e with
           Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/" | Or -> "||"
           | And -> "&&" | Geq -> ">=" | Leq -> "<=" | Greater -> ">" | Less -> "<"
         | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
-  | Assign(v, e) -> "CustomType " ^ v ^ " = " ^ string_of_expr e
+  | Assign(v, e) -> "CustType " ^ v ^ " = " ^ string_of_expr e
   | NoExpr -> ""
 
 let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr
-    | Return(expr) -> "return " ^ string_of_expr expr ^ ";"
-		| Print(expr, expr_type) -> "print(" ^ string_of_expr expr ^ ");\n" 
+    | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
+		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n" 
 
 let string_of_vtype = function
-   IntType -> "CustType"
-  | StrType -> "CustType"
-  | BoolType ->"CustType"
-  | ListType -> "CustType"
-  | JsonType -> "CustType"
+   IntType -> "CustType*"
+  | StrType -> "CustType*"
+  | BoolType ->"CustType*"
+  | ListType -> "CustType*"
+  | JsonType -> "CustType*"
 
   
 let string_of_vdecl vdecl = if vdecl.vexpr = NoExpr then
@@ -42,8 +43,8 @@ else
   string_of_vtype fdecl.return ^ " " ^ fdecl.fname ^ "(" )
  ^   String.concat ", " (List.map string_of_formaldecl fdecl.formals) ^ ")\n{\n" ^
   String.concat "" (List.map string_of_vdecl fdecl.fnlocals) ^
-  String.concat "" (List.map string_of_stmt fdecl.body) ^
-  "}\n"
+  String.concat "" (List.map string_of_stmt fdecl.body ) ^
+	 "}\n"
  
 let string_of_program (vars, funcs) =
 	"\n#include <iostream>\n#include \"cPlusPlusCompiler.h\"\nusing namespace std;\n\n" ^

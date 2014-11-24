@@ -104,7 +104,8 @@ let rec check_expr env = function
 	| Ast.Id(id) ->
 	(*	let _ = print_string "in iD" in*)
 		Sast.Id(id), (get_vtype env id)
-
+	| Ast.MainRet(i) -> Sast.MainRet(i), "return"
+	
 	| Ast.Binop(e1, op, e2) ->
 	(*	let _ = print_string "in binop" in*)
 		match_oper (check_expr env e1) op (check_expr env e2)
