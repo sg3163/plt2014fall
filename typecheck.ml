@@ -82,35 +82,35 @@ let match_oper e1 op e2 =
 (* it returns the expr and its type *)
 let rec check_expr env = function
 	Ast.LitInt(i) -> 
-		let _ = print_string "in int" in
+	(*	let _ = print_string "in int" in *)
 		Sast.LitInt(i), "int"
 
 	| Ast.LitStr(s) -> 
-		let _ = print_string "in string " in
+	(*	let _ = print_string "in string " in*)
 		Sast.LitStr(s), "string"
 		
 	| Ast.LitJson(s) -> 
-		let _ = print_string "in json " in
+	(*	let _ = print_string "in json " in*)
 		Sast.LitJson(s), "json"
 		
 	| Ast.LitList(s) -> 
-		let _ = print_string "in list " in
+	(*	let _ = print_string "in list " in*)
 		Sast.LitList(s), "list"
 		
 	| Ast.LitBool(s) -> 
-		let _ = print_string "in bool " in
+	(*	let _ = print_string "in bool " in*)
 		Sast.LitBool(s), "bool"
 
 	| Ast.Id(id) ->
-		let _ = print_string "in iD" in
+	(*	let _ = print_string "in iD" in*)
 		Sast.Id(id), (get_vtype env id)
 
 	| Ast.Binop(e1, op, e2) ->
-		let _ = print_string "in binop" in
+	(*	let _ = print_string "in binop" in*)
 		match_oper (check_expr env e1) op (check_expr env e2)
 
 	| Ast.Assign(id, e) ->
-		let _ = print_string "in assign" in
+	(*	let _ = print_string "in assign" in*)
 		let t = get_vtype env id in
 		(* if t = "string" then 
 		     Ast.AssignStr(id, (conv_type (check_expr env e))), "void"
@@ -133,6 +133,8 @@ let rec check_stmt env func = function
 	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
 	| Ast.Return(expr) -> let e = check_expr env expr in
 			 (Sast.Return(fst e)), env 
+	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
+							(Sast.Print(expr , expr_type)), env
 
 and check_stmt_list env func = function 
 	  [] -> []
@@ -241,7 +243,7 @@ let rec check_functions env funcs =
 
 (* returns the global and its env *)
 let check_global env global =
- 	let _ = print_string "in iD" in
+ 	(*let _ = print_string "in iD" in*)
 	let ret = add_global global.vname global.vtype env in
 	if StringMap.is_empty ret then raise (Failure ("global variable " ^ global.vname ^ " is already defined"))
 	(* update the env with globals from ret *)

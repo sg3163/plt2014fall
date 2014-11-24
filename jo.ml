@@ -1,11 +1,11 @@
 open Sast
 
 let rec string_of_expr e = match e with
-    LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"INT\");\n"
-  | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STR\");\n"
-	| LitJson(l) -> "CustType::parse(\"" ^ l ^ "\",\"JSON\");\n"
-	| LitList(l) -> "CustType::parse(\"" ^ l ^ "\",\"LIST\");\n"
-	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\");\n"
+    LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"Number\")\n"
+  | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"String\")\n"
+	| LitJson(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"Json\")\n"
+	| LitList(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"List\")\n"
+	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"Bool\")\n"
   | Id(s) ->  s
   | Binop(e1, o, e2) ->
       string_of_expr e1 ^ " " ^
@@ -18,7 +18,8 @@ let rec string_of_expr e = match e with
 
 let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr
-    | Return(expr) -> "return " ^ string_of_expr expr 
+    | Return(expr) -> "return " ^ string_of_expr expr ^ ";"
+		| Print(expr, expr_type) -> "print(" ^ string_of_expr expr ^ ");\n" 
 
 let string_of_vtype = function
    IntType -> "CustType"
@@ -31,7 +32,7 @@ let string_of_vtype = function
 let string_of_vdecl vdecl = if vdecl.vexpr = NoExpr then
                               string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ "\n"
                             else
-                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ "\n"
+                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
 
 let string_of_formaldecl vdecl = string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname
 

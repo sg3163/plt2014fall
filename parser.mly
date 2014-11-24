@@ -35,13 +35,13 @@ program:
     | program fdecl { fst $1, ($2 :: snd $1) } 
 
 fdecl:
-    FUNC ID LPAREN formals_opt RPAREN vdecl_opt stmt_list END
+    FUNC ID LPAREN formals_opt RPAREN LBRACE vdecl_opt stmt_list RBRACE
        {{
         return = Ast.StrType;
         fname = $2;
         formals = $4;
-        fnlocals = List.rev $6;
-        body = List.rev $7 }}
+        fnlocals = List.rev $7;
+        body = List.rev $8 }}
 
 formals_opt:
     { [] }
@@ -74,9 +74,9 @@ stmt_list:
 stmt:
     expr SEMI                                           { Expr($1) }
    | RETURN expr_opt SEMI                              { Return($2) } 
-   /*   | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
+	    | PRINT expr SEMI                                   { Print($2) }
+  /*    | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
     | IF LPAREN expr RPAREN THEN stmt ELSE stmt         { If($3, $6, $8) }
-    | PRINT expr SEMI                                   { Print($2) }
     | WHILE LPAREN expr RPAREN stmt                     { While($3, $5) } 
     | FOR LPAREN for_expr IN for_expr RPAREN stmt       { For($3, $5, $7 ) } 
     | IF list_expr IN list_expr THEN stmt %prec NOELSE  { Ifin($2, $4, $6, Block([])) }
