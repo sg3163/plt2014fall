@@ -1,0 +1,25 @@
+CC=g++
+
+CFLAGS=-c -Wall
+LFLAGS=-lm
+
+SOURCES=testfiles/$(inputfile).cpp cpp/JSON.cpp cpp/JSONValue.cpp
+HEADERS=cpp/JSON.h cpp/JSONValue.h cpp/cPlusPlusCompiler.h
+
+OBJECTS=$(SOURCES:.cpp=.o)
+
+EXECUTABLE=testfiles/$(inputfile).out
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+#obj/%.o: %.cpp $(HEADERS)
+#	$(CC) $(CFLAGS) $(@:obj/%.o=%.cpp) -o $@
+
+clean:
+	rm -f $(OBJECTS) $(EXECUTABLE) *~

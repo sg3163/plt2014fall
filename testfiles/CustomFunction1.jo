@@ -1,0 +1,13 @@
+decl a = "Hello World"
+
+func test(b)
+print b
+return 0
+end
+
+func main () 
+print a
+/*test(a)*/
+return mainfunc
+end
+
