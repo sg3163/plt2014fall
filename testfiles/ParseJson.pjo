@@ -1,14 +1,4 @@
-func test () 
-return "fromtest";
-end
-
 func main () 
 return 0;
 end
 
-/*decl f = a;*/
-decl a = "apple";
-decl b = 1212;
-decl c = #{"class":["PLT","OS"]}#;
-decl d = [23,34,45];
-decl e = true;
