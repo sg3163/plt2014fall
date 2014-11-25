@@ -171,15 +171,16 @@ NumType* getNum (string data, int type ){
 }
 
 StringType* getString (string data, int type){
-	if ( data.at(0) !='"' || data.at(data.length() - 1 ) != '"')  {
+	/*if ( data.at(0) !='"' || data.at(data.length() - 1 ) != '"')  {
 
 		return NULL ;
 
-	}
-	data.erase(0,1) ; 
-	data.erase(data.length() - 1, 1) ;
+	}*/
+	//data.erase(0,1) ; 
+	//data.erase(data.length() - 1, 1) ;
 	
 	StringType* t = new StringType (data, STRING) ; 
+
 	return t ;
 }
 
