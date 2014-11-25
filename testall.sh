@@ -20,6 +20,7 @@ JO="./jo"
 
 # preprocessor executable
 PRE="./preprocessor"
+TEST_BASE="testfiles"
 
 # Error directory
 #ERR=/testfiles/errors
@@ -39,7 +40,7 @@ function compileAndRun() {
                             s/.jo//'`
     #echo $basename
 	reffile=`echo $1 | sed 's/.jo$//'`
-    prepfile=$basename'.pjo'
+    prepfile=$TEST_BASE/$basename'.pjo'
     #echo $prepfile
     basedir="`echo $1 | sed 's/\/[^\/]*$//'`/"
 
@@ -84,7 +85,7 @@ function compileAndRun() {
 
 }
 
-files=testfiles/*.jo
+files=$TEST_BASE/*.jo
 
 for file in $files
 do

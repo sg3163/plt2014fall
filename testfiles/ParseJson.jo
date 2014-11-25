@@ -8,4 +8,6 @@ func main(x,y)
   else
 	decl d="abhinav"
   end
+return mainfunc
 end
+
