@@ -3,16 +3,18 @@ int main() {
 	// your code goes here
 	cout << endl ; 
 	cout << endl ; 
-	string b  = "\"arpit\""; 
+	string b  = "arpit"; 
 	CustType a ; 
-	CustType* c = CustType :: parse(b , "STRING") ; 
+	CustType* c = CustType :: parse( "arpitdfkjvdk" , "STRING") ; 
 	c -> print() ;
 	cout << endl ; 
 	cout << c -> getType (
 		) ; 
 	cout <<endl ; 
 	CustType :: print (CustType :: parse(b , "STRING")) ;
-
+	cout << "\nfrom object\n"  ; 
+	CustType :: print (c) ;
+	
 	cout << endl ;  
 
 
