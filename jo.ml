@@ -47,7 +47,7 @@ else
 	 "}\n"
  
 let string_of_program (vars, funcs) =
-	"\n#include <iostream>\n#include \"cPlusPlusCompiler.h\"\nusing namespace std;\n\n" ^
+	"\n#include <iostream>\n#include \"../cpp/cPlusPlusCompiler.h\"\nusing namespace std;\n\n" ^
 	String.concat "\n" (List.map string_of_vdecl vars) ^ "\n" ^ 
   String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n" 
 

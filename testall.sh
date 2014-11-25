@@ -38,7 +38,7 @@ Compare() {
 function compileAndRun() {
 	basename=`echo $1 | sed 's/.*\\///
                             s/.jo//'`
-    #echo $basename
+    echo $basename
 	reffile=`echo $1 | sed 's/.jo$//'`
     prepfile=$TEST_BASE/$basename'.pjo'
     #echo $prepfile
@@ -63,7 +63,8 @@ function compileAndRun() {
     # compliling the C++ file
     if [ -f "${reffile}.cpp" ]; then
  #   	gcc -Ic/libraries -Lc/libraries -llist -lpath -w -o "${reffile}" "${reffile}.c" 2>> errors.txt
- 		g++ "${reffile}.cpp" -o "${reffile}.out" 2>> error.txt
+ #		g++ "${reffile}.cpp" -o "${reffile}.out" 2>> error.txt
+ 		make inputfile=$basename -f MakeFileCPP
     else
     	echo "Compiling $1 failed"
     	return
