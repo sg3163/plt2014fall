@@ -15,10 +15,18 @@ type expr =
 	| Call of string * expr list
   | NoExpr
   
+type for_expr = 
+    Forid of string
+
+type loop_var = 
+    LoopVar of string
+
 type stmt =
     Expr of expr
   | Return of expr
 	| Print of expr
+  | For of loop_var * for_expr * stmt
+
   
 type var_decl = {
   vtype : data_type;

@@ -135,7 +135,11 @@ and get_expr_with_type env expr t =
 	(* added special case for the path variable *)
 	fst e
 
+let check_forexpr env = function
+	Ast.Forid(id) -> Sast.Forid(id), get_vtype env id
 
+let check_loopvar env = function
+	Ast.LoopVar(id) -> let l, e = (check_local env id) in e, Sast.LoopVar(id)
 	
 let rec check_stmt env func = function
 	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
@@ -143,7 +147,10 @@ let rec check_stmt env func = function
 			 (Sast.Return(fst e)), env 
 	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
 							(Sast.Print(expr , expr_type)), env
-
+	| Ast.For(expr1, expr2, stmt) -> let e1,envNew = check_loopvar env expr1 in let e2 = check_forexpr envNew expr2 in
+						   if not ( snd e2 = "list" ) then raise (Failure("The type of the expression in a For statement must be path"))
+						   else (Sast.For(fst e1, fst e2, fst (check_stmt envNew func stmt))), envNew 
+	
 and check_stmt_list env func = function 
 	  [] -> []
 	| hd::tl -> let s,e = (check_stmt env func hd) in s::(check_stmt_list e func tl)

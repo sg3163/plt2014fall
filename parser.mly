@@ -73,15 +73,20 @@ stmt_list:
 /* using SEMI to separate stmts for now */
 stmt:
     expr SEMI                                           { Expr($1) }
-   | RETURN expr_opt SEMI                              { Return($2) } 
-	    | PRINT expr SEMI                                   { Print($2) }
+    | RETURN expr_opt SEMI                              { Return($2) } 
+    | PRINT expr SEMI                                   { Print($2) }
+    | FOR loop_var IN for_expr stmt       { For($3, $5, $7 ) } 
+    
   /*    | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
     | IF LPAREN expr RPAREN THEN stmt ELSE stmt         { If($3, $6, $8) }
     | WHILE LPAREN expr RPAREN stmt                     { While($3, $5) } 
-    | FOR LPAREN for_expr IN for_expr RPAREN stmt       { For($3, $5, $7 ) } 
     | IF list_expr IN list_expr THEN stmt %prec NOELSE  { Ifin($2, $4, $6, Block([])) }
     | IF list_expr IN list_expr THEN stmt ELSE stmt     { Ifin($2, $4, $6, $8) } 
     | LBRACE rev_stmt_list RBRACE                       { Block($2) } */
+for_expr:
+    ID                              { Forid($1) }
+loop_var:
+    ID                              { LoopVar($1) }
 
 expr_opt:
     /* nothing */ { NoExpr }
