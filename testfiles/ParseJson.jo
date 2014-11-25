@@ -1,0 +1,9 @@
+decl a = "Hello World"
+
+func main () 
+return mainfunc
+end
+
+func test()
+return 0
+end
