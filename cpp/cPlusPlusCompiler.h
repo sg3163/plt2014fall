@@ -2,9 +2,17 @@
 #include <string>
 #include <vector> 
 #include <map>
-#include <algorithm> 
+#include <algorithm>
+#include "./JSON.h"
 
 using namespace std;
+
+//SimpleJSON uses 
+void print_out(const wchar_t *output)
+{
+    wcout << output;
+    wcout.flush();
+}
 
 enum dataType { NUMBER , STRING , JSON, LIST } ; 
 
@@ -57,6 +65,7 @@ class NumType : public CustType {
 		return NUMBER ;
 	}
 } ;
+
 class StringType : public CustType { 
 	
 	string da;
@@ -77,6 +86,7 @@ class StringType : public CustType {
 		return STRING ;
 	}
 } ;
+
 class ListType : public CustType { 
 	
 	vector <CustType> da; 
@@ -95,6 +105,8 @@ class ListType : public CustType {
 	}
 	
 } ;
+
+/*
 class JsonType : public CustType { 
 	
 	map <string, CustType> da; 
@@ -112,6 +124,29 @@ class JsonType : public CustType {
 		return JSON ;
 	}
 } ;
+*/
+class JsonType : public CustType {
+
+    JSONObject da;
+    int type;
+
+    public :
+    JsonType(JSONObject da, int type) : CustType() {
+        this -> da = da;
+        this -> type = type;
+    }
+
+    JsonType() {}
+
+    void print() {
+      JSONValue *value = new JSONValue(da);
+      print_out(value->Stringify().c_str());
+    }
+
+    int getType() {
+        return JSON;
+    }
+};
 
 NumType* getNum (string data, int type ){
 	double num  = 0 ; 
@@ -134,6 +169,7 @@ NumType* getNum (string data, int type ){
 	NumType* t  = new NumType(num , NUMBER) ;
 	return t ;
 }
+
 StringType* getString (string data, int type){
 	if ( data.at(0) !='"' || data.at(data.length() - 1 ) != '"')  {
 
@@ -146,21 +182,43 @@ StringType* getString (string data, int type){
 	StringType* t = new StringType (data, STRING) ; 
 	return t ;
 }
+
 ListType* getList (string data, int type){
 	ListType* t; 
 	
 	return t ; 
 }
+
 JsonType* getJson (string data, int type){
-	JsonType* t ; 
-	return t ;
+
+    std::string str = data;
+    const char *cstr = str.c_str();
+
+    JSONValue *value = JSON::Parse(cstr);
+    JSONObject root;
+    
+    if (value == NULL) {
+        return NULL;
+    }
+    else {
+	if (value->IsObject() == false) {
+	    return NULL;
+	}
+	else {
+	    root = value->AsObject();
+	}
+    }
+
+    JsonType* t = new JsonType(root, JSON);
+    return t ;
 }
+
 CustType* CustType :: parse (string data, string type)  { 
 	
 		if (type == "STRING"){
 			 
 			return getString ( data , STRING) ;
-			
+	      	
 		}
 		else if (type == "LIST"){
 			//CustType :: dt = LIST ; 
@@ -175,9 +233,11 @@ CustType* CustType :: parse (string data, string type)  {
 			return getNum (data,NUMBER) ;
 		}
 }
+
 void CustType :: print ( CustType* data) { 
 		 data -> print () ;
 }
+
 /*
 int main() {
 	// your code goes here
