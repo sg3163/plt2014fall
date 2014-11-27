@@ -75,7 +75,7 @@ stmt:
     expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
     | PRINT expr SEMI                                   { Print($2) }
-    | FOR loop_var IN for_expr stmt       { For($3, $5, $7 ) } 
+    | FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     
   /*    | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
     | IF LPAREN expr RPAREN THEN stmt ELSE stmt         { If($3, $6, $8) }

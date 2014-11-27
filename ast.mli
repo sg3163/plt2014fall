@@ -14,7 +14,13 @@ type expr =
   | Assign of string * expr
 	| Call of string * expr list
   | NoExpr
-  
+
+type var_decl = {
+  vtype : data_type;
+  vname : string;
+  vexpr : expr;
+}
+ 
 type for_expr = 
     Forid of string
 
@@ -28,11 +34,6 @@ type stmt =
   | For of loop_var * for_expr * stmt
 
   
-type var_decl = {
-  vtype : data_type;
-  vname : string;
-  vexpr : expr;
-}
 
 type func_decl = {
     return : data_type;

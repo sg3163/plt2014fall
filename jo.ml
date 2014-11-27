@@ -1,5 +1,12 @@
 open Sast
 
+let get_for_id e = match e
+    with
+    Forid(id) -> id
+
+let string_of_loop_var_t = function
+  Loopvar(l) -> l
+
 let rec string_of_expr e = match e with
     LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")\n"
   | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")\n"
@@ -21,6 +28,10 @@ let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr
     | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
 		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n" 
+    | For(e1, e2, s1) ->  (*"while (" ^ (get_list_arg le2) ^")\n if(findNode(" ^ (get_list_arg le2) ^","^arg^") == 0)\n"^string_of_stmt s1*)
+      "for ( auto *" ^ string_of_loop_var_t e1 ^ "  = begin (" ^ get_for_id e2 ^ ") ; " ^ string_of_loop_var_t e1 ^ " != end ( " ^ get_for_id e2 ^ ") ; " ^ 
+        "++" ^ string_of_loop_var_t e1 ^ ") { \n" 
+      ^ string_of_stmt s1 ^ "\n}\n"
 
 let string_of_vtype = function
    IntType -> "CustType*"
