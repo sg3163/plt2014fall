@@ -31,7 +31,7 @@
 
 program:
     { [] , [] }
-    | program vdecl { ($2 :: fst $1) , snd $1 }
+    | program vdecl { $2 :: fst $1 , snd $1 }
     | program fdecl { fst $1, ($2 :: snd $1) } 
 
 fdecl:
@@ -57,7 +57,7 @@ formal:
 /* Var declarations can also be optional */
 vdecl_opt:
     { [] }
-    | vdecl_list    { List.rev $1 }
+    | vdecl_list    { $1 }
 
 vdecl_list:
     vdecl              { [$1] }
