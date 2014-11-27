@@ -10,8 +10,8 @@ let string_of_loop_var_t = function
 let rec string_of_expr e = match e with
     LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")\n"
   | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")\n"
-	| LitJson(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"JSON\")\n"
-	| LitList(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"LIST\")\n"
+	| LitJson(l) -> "CustType::parse(\"" ^  "\",\"JSON\")\n"
+	| LitList(l) -> "CustType::parse(\"" ^  "\",\"LIST\")\n"
 	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")\n"
 	| MainRet(l) -> "0"
   | Id(s) ->  s
