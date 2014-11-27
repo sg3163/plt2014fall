@@ -114,9 +114,9 @@ int main(int argc, char const *argv[])
         else if ((strstr(buffer, "if (") != NULL || strstr(buffer, "if(") != NULL) && (strstr(buffer, ")") == NULL)) {
             fprintf(output, "%s\n", buffer);
         }
-        else if (strstr(buffer, ")") != NULL) {
+        /*else if (strstr(buffer, ")") != NULL) {
             fprintf(output, "%s {\n", buffer);
-        }
+        }*/
         else if (strstr(buffer, "else") != NULL) {
             int i;
             int counter = 0;

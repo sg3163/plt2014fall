@@ -75,8 +75,9 @@ function compileAndRun() {
         eval ${reffile}.out >> ${reffile}.output
         Compare ${reffile}.output ${reffile}.exp ${reffile}.error
 
-#        rm -rf ${reffile}.fdlp
-#        rm -rf ${reffile}.cpp
+        rm -rf ${reffile}.fdlp
+        rm -rf ${reffile}.pjo
+        rm -rf ${reffile}.cpp
         rm -rf ${reffile}.out
         rm -rf ${reffile}.output
         echo "ran $1 successfully"

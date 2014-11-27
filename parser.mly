@@ -103,7 +103,8 @@ expr:
     | expr EQ     expr             { Binop($1, Equal,    $3) }
     | expr NEQ    expr             { Binop($1, Neq,      $3) }
     | ID ASSIGN expr               { Assign($1, $3) }
-	| MAINFUNC                     { MainRet(0) }
+		| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
+		| MAINFUNC                     { MainRet(0) }
 
 actuals_opt:
     /* nothing */   { [] }
