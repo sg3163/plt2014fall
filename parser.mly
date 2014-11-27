@@ -3,10 +3,10 @@
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA SEMI 
 %token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
-%token IF THEN ELSE
+%token RETURN IF THEN ELSE
 %token AND OR FOR IN
 %token FUNC END DECL MAINFUNC
-%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING RETURN
+%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING
 %token <int> NUM_LIT
 %token <string> STRING_LIT
 %token <string> JSON_LIT
@@ -73,18 +73,17 @@ stmt_list:
     { [] }
     | stmt_list stmt { $2 :: $1 }
 
+rev_stmt_list:
+    stmt_list          { List.rev $1 }
+
 /* using SEMI to separate stmts for now */
 stmt:
     expr SEMI                                           { Expr($1) }
-   | RETURN expr_opt SEMI                              { Return($2) } 
+    | RETURN expr_opt SEMI                              { Return($2) } 
 	| PRINT expr SEMI                                   { Print($2) }
-    | IF LPAREN expr RPAREN stmt %prec NOELSE      { If($3, $5, Block([])) }
-    | IF LPAREN expr RPAREN stmt ELSE stmt         { If($3, $5, $7) }
-    /*| WHILE LPAREN expr RPAREN stmt                     { While($3, $5) } 
-    | FOR LPAREN for_expr IN for_expr RPAREN stmt       { For($3, $5, $7 ) } 
-    | IF list_expr IN list_expr THEN stmt %prec NOELSE  { Ifin($2, $4, $6, Block([])) }
-    | IF list_expr IN list_expr THEN stmt ELSE stmt     { Ifin($2, $4, $6, $8) } 
-    | LBRACE rev_stmt_list RBRACE                       { Block($2) } */
+    | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
+    | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
+    | LBRACE rev_stmt_list RBRACE                       { Block($2) }
 
 expr_opt:
     /* nothing */ { NoExpr }
@@ -104,8 +103,7 @@ expr:
     | expr EQ     expr             { Binop($1, Equal,    $3) }
     | expr NEQ    expr             { Binop($1, Neq,      $3) }
     | ID ASSIGN expr               { Assign($1, $3) }
-		| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
-		| MAINFUNC                     { MainRet(0) }
+	| MAINFUNC                     { MainRet(0) }
 
 actuals_opt:
     /* nothing */   { [] }

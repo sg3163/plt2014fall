@@ -33,9 +33,9 @@ let get_expr_type t1 t2 =
 	if t1 = "string" || t2 = "string" then "string" else
 	if t1 = "int" && t2 = "int" then "int" else
 	if t1 = "bool" && t2 = "bool" then "bool" else
-	if t1 = "int" && t2 = "bool" then "int" else
-	if t1 = "bool" && t2 = "int" then "int" else
-	raise (Failure ("type error"))
+	if t1 = "int" && t2 = "bool" then raise (Failure ("cannot use int with bool type inside expression")) else
+	if t1 = "bool" && t2 = "int" then raise (Failure ("cannot use int with bool type inside expression")) else
+	raise (Failure ("type error in get_expr_type"))
 
 
 
@@ -62,11 +62,11 @@ let match_oper e1 op e2 =
 		  (* equal and not equal have special case for string comparison 
 		  		we may need to add SAST and Eqs and Neqs *)
 	 | Ast.Equal -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Equal, fst e2), "bool") else
-                  raise (Failure ("type error in == "))
+                  raise (Failure ("type error in == " ^ expr_t ^" "^(snd e1) ^" "^(snd e2)))
 	 | Ast.Neq -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Neq, fst e2), "bool") else
-                  raise (Failure ("type error"))
+                  raise (Failure ("type error in !="))
 	 | Ast.Less ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Less, fst e2), "bool") else
-                  raise (Failure ("type error")) 
+                  raise (Failure ("type error in < ")) 
 	 | Ast.Leq ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Leq, fst e2), "bool") else
                   raise (Failure ("type error"))
 	 | Ast.Greater ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Greater, fst e2), "bool") else
