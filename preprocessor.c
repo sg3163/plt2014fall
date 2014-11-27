@@ -65,7 +65,6 @@ int main(int argc, char const *argv[])
         die("fopen() failed");
     }
 
-    // char *outputFileName = "output.fdlp";
     FILE *output;
     if ((output = fopen(outputFileName, "w")) == NULL) {
         die("fopen() failed");
@@ -88,15 +87,15 @@ int main(int argc, char const *argv[])
         else if (strstr(buffer, "func ") != NULL) {
             fprintf(output, "%s {\n", buffer);
         }
-/*        else if (strstr(buffer, "int ") != NULL) {
+        else if (strstr(buffer, "int ") != NULL) {
             fprintf(output, "%s;\n", buffer);
         }
-        else if (strstr(buffer, "path ") != NULL) {
+/*        else if (strstr(buffer, "path ") != NULL) {
             fprintf(output, "%s;\n", buffer);
         }
         else if (strstr(buffer, "dict ") != NULL) {
             fprintf(output, "%s;\n", buffer);
-        }
+        } */
         else if (strstr(buffer, "list ") != NULL) {
             fprintf(output, "%s;\n", buffer);
         }
@@ -109,13 +108,13 @@ int main(int argc, char const *argv[])
         else if (strstr(buffer, "for ") != NULL) {
             fprintf(output, "%s {\n", buffer);
         }
-        else if ((strstr(buffer, "if (") != NULL || strstr(buffer, "if(") != NULL) && (strstr(buffer, "then") != NULL)) {
+        else if ((strstr(buffer, "if (") != NULL || strstr(buffer, "if(") != NULL) && (strstr(buffer, ")") != NULL)) {
             fprintf(output, "%s {\n", buffer);
         }
-        else if ((strstr(buffer, "if (") != NULL || strstr(buffer, "if(") != NULL) && (strstr(buffer, "then") == NULL)) {
+        else if ((strstr(buffer, "if (") != NULL || strstr(buffer, "if(") != NULL) && (strstr(buffer, ")") == NULL)) {
             fprintf(output, "%s\n", buffer);
         }
-        else if (strstr(buffer, "then") != NULL) {
+        else if (strstr(buffer, ")") != NULL) {
             fprintf(output, "%s {\n", buffer);
         }
         else if (strstr(buffer, "else") != NULL) {
@@ -129,7 +128,7 @@ int main(int argc, char const *argv[])
                 }
             }
             fprintf(output, "} %s {\n", buffer + counter);
-        }*/
+        }
         else if (strstr(buffer, "end") != NULL) {
             int i;
             for (i = 0; i < strlen(buffer); i++){

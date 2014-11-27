@@ -1,6 +1,6 @@
 
 func main () 
-decl a = 5 +3
+decl a = 5
 decl b = 6
 decl c = 1
 decl d = 6

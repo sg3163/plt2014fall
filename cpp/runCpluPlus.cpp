@@ -14,7 +14,14 @@ int main() {
 	CustType :: print (CustType :: parse(b , "STRING")) ;
 	cout << "\nfrom object\n"  ; 
 	CustType :: print (c) ;
-	
+    cout << "\n printing 5 below \n" ;
+    b = "5" ;
+    
+    c = CustType :: parse( b , "NUMBER") ;
+    
+    CustType :: print (c) ;
+    cout << "\n printing 5 above \n" ;
+    
 	cout << endl ;  
 
 
