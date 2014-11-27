@@ -152,11 +152,10 @@ NumType* getNum (string data, int type ){
 	double num  = 0 ; 
 	int decimal_bool = 0, decimal = 1 ; 
 	for ( unsigned int i = 0 ; i < data.length() ; i ++ ){
-		
 		if ( ( data.at(i) < '0' || data.at(i) > '9' ) && data.at(i) != '.' )
 			return NULL ; 
-		else if (data.at(i) < '0' || data.at(i) > '9') {
-			num *= 10 ; 
+		else if (data.at(i) > '0' || data.at(i) < '9') {
+			num *= 10 ;
 			num += (data.at(i) - '0' ) ; 
 		}
 		else 

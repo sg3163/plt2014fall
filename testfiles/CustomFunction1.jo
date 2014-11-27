@@ -1,3 +1,5 @@
+/* Testing Function call from Main and printing inside callee */
+
 decl a = "Hello World"
 
 func test(b)
@@ -7,7 +9,7 @@ end
 
 func main () 
 print a
-/*test(a)*/
+test(a)
 return mainfunc
 end
 

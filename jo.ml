@@ -15,6 +15,8 @@ let rec string_of_expr e = match e with
           | And -> "&&" | Geq -> ">=" | Leq -> "<=" | Greater -> ">" | Less -> "<"
         | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
   | Assign(v, e) -> "CustType " ^ v ^ " = " ^ string_of_expr e
+	| Call(f, el) ->
+      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ");"
   | NoExpr -> ""
 
 let rec string_of_stmt = function

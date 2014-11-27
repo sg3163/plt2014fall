@@ -1,3 +1,5 @@
+/* Declare a Global Variable and print in Main function */
+
 decl a = "Hello World"
 
 func main () 
