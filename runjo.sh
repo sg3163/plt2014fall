@@ -31,13 +31,15 @@ function compileAndRun() {
 #    basedir="`echo $1 | sed 's/\/[^\/]*$//'`/"
 
     echo "Preprocessing '$1'"
-	$PRE $1 $prepfile
 
 	echo "Compiling '$prepfile'"
+	$PRE $1 $prepfile
+
 	if [ ! -f $prepfile ]; then
 		echo "$prepfile does not exist"
-       return
+        return
 	fi
+
 	# converting from JO to C++
     $JO $prepfile > "${basename}.cpp" #&& echo "Ocaml to C++ of $1 succeeded"
 

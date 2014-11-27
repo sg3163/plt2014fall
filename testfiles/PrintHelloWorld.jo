@@ -1,8 +1,6 @@
-decl a = "Hello World"
+decl a=5
 
 func main () 
 print a
 return mainfunc
 end
-
-

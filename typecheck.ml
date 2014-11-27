@@ -33,9 +33,9 @@ let get_expr_type t1 t2 =
 	if t1 = "string" || t2 = "string" then "string" else
 	if t1 = "int" && t2 = "int" then "int" else
 	if t1 = "bool" && t2 = "bool" then "bool" else
-	if t1 = "int" && t2 = "bool" then "int" else
-	if t1 = "bool" && t2 = "int" then "int" else
-	raise (Failure ("type error"))
+	if t1 = "int" && t2 = "bool" then raise (Failure ("cannot use int with bool type inside expression")) else
+	if t1 = "bool" && t2 = "int" then raise (Failure ("cannot use int with bool type inside expression")) else
+	raise (Failure ("type error in get_expr_type"))
 
 
 
@@ -62,11 +62,11 @@ let match_oper e1 op e2 =
 		  (* equal and not equal have special case for string comparison 
 		  		we may need to add SAST and Eqs and Neqs *)
 	 | Ast.Equal -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Equal, fst e2), "bool") else
-                  raise (Failure ("type error in == "))
+                  raise (Failure ("type error in == " ^ expr_t ^" "^(snd e1) ^" "^(snd e2)))
 	 | Ast.Neq -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Neq, fst e2), "bool") else
-                  raise (Failure ("type error"))
+                  raise (Failure ("type error in !="))
 	 | Ast.Less ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Less, fst e2), "bool") else
-                  raise (Failure ("type error")) 
+                  raise (Failure ("type error in < ")) 
 	 | Ast.Leq ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Leq, fst e2), "bool") else
                   raise (Failure ("type error"))
 	 | Ast.Greater ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Greater, fst e2), "bool") else
@@ -131,9 +131,7 @@ let rec check_expr env = function
 (* get expr_t(sast type) by expr(ast type) with given type
  * raise error if the expression type does match requirement, snd e has the type and fst has the expr *)
 and get_expr_with_type env expr t = 
-	let e = check_expr env expr in
-	(* added special case for the path variable *)
-	fst e
+	let e = check_expr env expr in fst e
 
 
 	
@@ -143,6 +141,11 @@ let rec check_stmt env func = function
 			 (Sast.Return(fst e)), env 
 	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
 							(Sast.Print(expr , expr_type)), env
+	| Ast.Block(stmt_list) -> (Sast.Block(check_stmt_list env func stmt_list)), env
+	| Ast.If(expr, stmt1, stmt2) ->	let e = check_expr env expr in
+								if not(snd e = "bool") then raise (Failure ("The type of the condition in If statement must be boolean!"))
+								(* if() {} else{} *) 
+								else (Sast.If(fst e, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2))), env
 
 and check_stmt_list env func = function 
 	  [] -> []
@@ -278,3 +281,5 @@ let check_program (globals, funcs) =
 	 [] -> (globals, (check_functions env (List.rev funcs)))
 	(* get the envirnment from the last global *)
 	| _ -> let e = snd (List.hd (List.rev g)) in (globals, (check_functions e (List.rev funcs)))
+
+
