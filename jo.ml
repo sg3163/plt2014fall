@@ -21,17 +21,25 @@ let rec string_of_expr e = match e with
           Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/" | Or -> "||"
           | And -> "&&" | Geq -> ">=" | Leq -> "<=" | Greater -> ">" | Less -> "<"
         | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
-  | Assign(v, e) -> "CustType " ^ v ^ " = " ^ string_of_expr e
+  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
+	| Call(f, el) ->
+      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ");"
   | NoExpr -> ""
 
 let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr
     | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
-		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n" 
+
+		
     | For(e1, e2, s1) ->  (*"while (" ^ (get_list_arg le2) ^")\n if(findNode(" ^ (get_list_arg le2) ^","^arg^") == 0)\n"^string_of_stmt s1*)
       "for ( auto *" ^ string_of_loop_var_t e1 ^ "  = begin (" ^ get_for_id e2 ^ ") ; " ^ string_of_loop_var_t e1 ^ " != end ( " ^ get_for_id e2 ^ ") ; " ^ 
         "++" ^ string_of_loop_var_t e1 ^ ") { \n" 
       ^ string_of_stmt s1 ^ "\n}\n"
+    | Block(stmts) ->
+        "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
+    | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
+    | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
+        string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
 
 let string_of_vtype = function
    IntType -> "CustType*"
@@ -58,7 +66,7 @@ else
 	 "}\n"
  
 let string_of_program (vars, funcs) =
-	"\n#include <iostream>\n#include \"cPlusPlusCompiler.h\"\nusing namespace std;\n\n" ^
+	"\n#include <iostream>\n#include \"../cpp/cPlusPlusCompiler.h\"\nusing namespace std;\n\n" ^
 	String.concat "\n" (List.map string_of_vdecl vars) ^ "\n" ^ 
   String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n" 
 

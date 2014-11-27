@@ -14,6 +14,7 @@ type expr =
   | Assign of string * expr
 	| Call of string * expr list
   | NoExpr
+  
 
 type var_decl = {
   vtype : data_type;
@@ -26,14 +27,14 @@ type for_expr =
 
 type loop_var = 
     LoopVar of string
-
-type stmt =
-    Expr of expr
-  | Return of expr
-	| Print of expr
-  | For of loop_var * for_expr * stmt
-
   
+type stmt =
+    Block of stmt list
+  | Expr of expr
+  | Return of expr
+  | Print of expr
+  | If of expr * stmt * stmt
+  | For of loop_var * for_expr * stmt
 
 type func_decl = {
     return : data_type;

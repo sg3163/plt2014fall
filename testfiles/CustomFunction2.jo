@@ -1,0 +1,12 @@
+/* Testing Variable declaration inside function and printing */
+
+func createVarAndPrint()
+decl a = "This is a String"
+print a
+return 0
+end
+
+func main () 
+createVarAndPrint()
+return mainfunc
+end

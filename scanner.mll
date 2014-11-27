@@ -33,11 +33,10 @@ rule token = parse
 	| '-' 			{ COMMINUS }
 	| '+'     		{ COMPLUS } 
 	| "%%" 			{ MOD }
+  	| "func"		{ FUNC }			
   	| "if"			{ IF }
-  	| "func"		{ FUNC }
-  	| "elif"		{ ELIF }			
-  	| "else"		{ ELSE }
-	| "then"		{ THEN }		
+  	| "then"		{ THEN }		
+	| "else"		{ ELSE }
 	| "for"			{ FOR }			
 	| "in"			{ IN }
 	| "end"			{ END }			

@@ -20,6 +20,7 @@ JO="./jo"
 
 # preprocessor executable
 PRE="./preprocessor"
+TEST_BASE="testfiles"
 
 # Error directory
 #ERR=/testfiles/errors
@@ -37,9 +38,9 @@ Compare() {
 function compileAndRun() {
 	basename=`echo $1 | sed 's/.*\\///
                             s/.jo//'`
-    #echo $basename
+    echo $basename
 	reffile=`echo $1 | sed 's/.jo$//'`
-    prepfile=$basename'.pjo'
+    prepfile=$TEST_BASE/$basename'.pjo'
     #echo $prepfile
     basedir="`echo $1 | sed 's/\/[^\/]*$//'`/"
 
@@ -62,7 +63,8 @@ function compileAndRun() {
     # compliling the C++ file
     if [ -f "${reffile}.cpp" ]; then
  #   	gcc -Ic/libraries -Lc/libraries -llist -lpath -w -o "${reffile}" "${reffile}.c" 2>> errors.txt
- 		g++ "${reffile}.cpp" -o "${reffile}.out" 2>> error.txt
+ #		g++ "${reffile}.cpp" -o "${reffile}.out" 2>> error.txt
+ 		make inputfile=$basename -f MakeFileCPP
     else
     	echo "Compiling $1 failed"
     	return
@@ -73,8 +75,9 @@ function compileAndRun() {
         eval ${reffile}.out >> ${reffile}.output
         Compare ${reffile}.output ${reffile}.exp ${reffile}.error
 
-#        rm -rf ${reffile}.fdlp
-#        rm -rf ${reffile}.cpp
+        rm -rf ${reffile}.fdlp
+        rm -rf ${reffile}.pjo
+        rm -rf ${reffile}.cpp
         rm -rf ${reffile}.out
         rm -rf ${reffile}.output
         echo "ran $1 successfully"
@@ -84,7 +87,7 @@ function compileAndRun() {
 
 }
 
-files=testfiles/*.jo
+files=$TEST_BASE/*.jo
 
 for file in $files
 do

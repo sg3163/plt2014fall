@@ -3,10 +3,10 @@
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA SEMI 
 %token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
-%token IF THEN ELSE ELIF
+%token RETURN IF THEN ELSE
 %token AND OR FOR IN
 %token FUNC END DECL MAINFUNC
-%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING RETURN
+%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING
 %token <int> NUM_LIT
 %token <string> STRING_LIT
 %token <string> JSON_LIT
@@ -14,6 +14,9 @@
 %token <string> BOOL_LIT
 %token <string> ID
 %token EOF
+
+%nonassoc NOELSE
+%nonassoc ELSE
 
 %right ASSIGN NOT
 
@@ -57,7 +60,7 @@ formal:
 /* Var declarations can also be optional */
 vdecl_opt:
     { [] }
-    | vdecl_list    { List.rev $1 }
+    | vdecl_list    { $1 }
 
 vdecl_list:
     vdecl              { [$1] }
@@ -70,13 +73,20 @@ stmt_list:
     { [] }
     | stmt_list stmt { $2 :: $1 }
 
+rev_stmt_list:
+    stmt_list          { List.rev $1 }
+
 /* using SEMI to separate stmts for now */
 stmt:
     expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
     | PRINT expr SEMI                                   { Print($2) }
     | FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
-    
+    | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
+    | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
+    | LBRACE rev_stmt_list RBRACE                       { Block($2) }
+
+
   /*    | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
     | IF LPAREN expr RPAREN THEN stmt ELSE stmt         { If($3, $6, $8) }
     | WHILE LPAREN expr RPAREN stmt                     { While($3, $5) } 
@@ -87,7 +97,7 @@ for_expr:
     ID                              { Forid($1) }
 loop_var:
     ID                              { LoopVar($1) }
-
+	
 expr_opt:
     /* nothing */ { NoExpr }
   | expr          { $1 }
