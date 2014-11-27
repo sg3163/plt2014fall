@@ -14,7 +14,7 @@ let rec string_of_expr e = match e with
           Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/" | Or -> "||"
           | And -> "&&" | Geq -> ">=" | Leq -> "<=" | Greater -> ">" | Less -> "<"
         | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
-  | Assign(v, e) -> "CustType " ^ v ^ " = " ^ string_of_expr e
+  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | NoExpr -> ""
 
 let rec string_of_stmt = function
@@ -52,7 +52,7 @@ else
 	 "}\n"
  
 let string_of_program (vars, funcs) =
-	"\n#include <iostream>\n#include \"cPlusPlusCompiler.h\"\nusing namespace std;\n\n" ^
+	"\n#include <iostream>\n#include \"../cpp/cPlusPlusCompiler.h\"\nusing namespace std;\n\n" ^
 	String.concat "\n" (List.map string_of_vdecl vars) ^ "\n" ^ 
   String.concat "\n" (List.map string_of_fdecl funcs) ^ "\n" 
 
