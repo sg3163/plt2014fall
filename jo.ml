@@ -17,6 +17,12 @@ let rec string_of_expr e = match e with
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
 	| Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ");"
+	| ElemAccess(id, e) -> let arg = (match e with
+                          ListItemInt(l) -> string_of_int l
+                        | ListItemStr(l) -> l
+                        
+                      ) in
+                        id ^ "[" ^ arg ^ "];\n"
   | NoExpr -> ""
 
 let rec string_of_stmt = function

@@ -38,7 +38,9 @@ let get_expr_type t1 t2 =
 	raise (Failure ("type error in get_expr_type"))
 
 
-
+let check_listexpr env = function
+ 	Ast.ListItemInt(i) -> Sast.ListItemInt(i), "int"
+	| Ast.ListItemStr(s) -> Sast.ListItemStr(s), "string"
 
 (* check the expression type can be used for
  * the corresponding argument according to definition
@@ -125,6 +127,13 @@ let rec check_expr env = function
 			| hd::tl -> let new_list = try List.fold_left2 check_func_arg [] (List.map (check_expr env) el) tl
 						   with Invalid_argument "arg" -> raise(Failure("unmatched argument list"))
 				    in Sast.Call(func, List.rev new_list ), hd )
+	| Ast.ElemAccess(id, e) -> let t1 = get_vtype env id in
+														let t2 = check_listexpr env e in
+														if not (t1 = "json" || t1 = "list") 
+															then raise (Failure("Elements of only List and Json can be accessed"))
+														else
+															Sast.ElemAccess (id, (fst t2)), (snd t2)
+
 	| Ast.NoExpr -> Sast.NoExpr, "void"
 
 
@@ -164,9 +173,17 @@ let convert_to_sast_type x env =
 		Sast.vname = x.vname;
 		Sast.vexpr = s_expr;
 	}
+	
+let find_vtype = function
+	LitInt(d) -> IntType
+  | LitStr(d) -> StrType
+  | LitJson(d) -> JsonType
+  | LitList(d) -> ListType
+  | LitBool(d) -> BoolType
+	| _ -> StrType
 
 let check_formal env formal = 
-	let ret = add_local formal.vname formal.vtype env in
+	let ret = add_local formal.vname (find_vtype formal.vexpr) env in
 	if (string_of_vtype formal.vtype) = "void" then raise (Failure("cannot use void as variable type")) else
 	if StringMap.is_empty ret then raise (Failure ("local variable " ^ formal.vname ^ " is already defined"))
 	(* update the env with locals from ret *)
@@ -178,9 +195,8 @@ let rec check_formals env formals =
 	  [] -> []
 	| hd::tl -> let f, e = (check_formal env hd) in (f, e)::(check_formals e tl) 
 
-
 let check_local env local =
-	let ret = add_local local.vname local.vtype env in
+	let ret = add_local local.vname (find_vtype local.vexpr) env in
 	if (string_of_vtype local.vtype) = "void" then raise (Failure("cannot use void as variable type")) else
 	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local.vname ^ " is already defined"))
 	(* update the env with globals from ret *)
@@ -255,7 +271,7 @@ let rec check_functions env funcs =
 (* returns the global and its env *)
 let check_global env global =
  	(*let _ = print_string "in iD" in*)
-	let ret = add_global global.vname global.vtype env in
+	let ret = add_global global.vname (find_vtype global.vexpr) env in
 	if StringMap.is_empty ret then raise (Failure ("global variable " ^ global.vname ^ " is already defined"))
 	(* update the env with globals from ret *)
 	else let env = {locals = env.locals; globals = ret; functions = env.functions } in

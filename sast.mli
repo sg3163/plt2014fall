@@ -2,6 +2,10 @@ type op_t = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | 
 
 type data_type_t = StrType | IntType | BoolType | JsonType | ListType
 
+type list_expr_t = 
+     ListItemInt of int
+  | ListItemStr of string
+
 type expr_t =
     LitInt of int
   | LitStr of string
@@ -12,6 +16,7 @@ type expr_t =
   | Binop of expr_t * op_t * expr_t
   | Assign of string * expr_t
   | Call of string * expr_t list
+	| ElemAccess of string * list_expr_t
 	| MainRet of int
   | NoExpr
 

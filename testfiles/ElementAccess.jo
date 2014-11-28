@@ -1,0 +1,11 @@
+/* try Element Access */
+
+/* Failing example
+decl a = [1,2,3]
+decl b = a[1]*/
+
+func main () 
+decl a = #[1,2,3]#
+decl b = a[1]
+return mainfunc
+end

@@ -89,6 +89,10 @@ expr_opt:
     /* nothing */ { NoExpr }
   | expr          { $1 }
 
+list_expr:
+ 		NUM_LIT                      { ListItemInt($1) }
+    | STRING_LIT                      { ListItemStr($1) }
+
 expr:
     | NUM_LIT                      { LitInt($1) }
     | STRING_LIT                   { LitStr($1) }
@@ -105,6 +109,7 @@ expr:
     | ID ASSIGN expr               { Assign($1, $3) }
 		| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
 		| MAINFUNC                     { MainRet(0) }
+		| ID LBRACK list_expr RBRACK        { ElemAccess($1, $3) }
 
 actuals_opt:
     /* nothing */   { [] }

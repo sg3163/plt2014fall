@@ -54,7 +54,7 @@ rule token = parse
 	| digit+ as lit					{ NUM_LIT(int_of_string lit) }
 	| quote [^'"']* quote as lit	{ STRING_LIT(lit) } 
 	| "#{" _* "}#" as lit { JSON_LIT(lit) }
-	| "[" _* "]" as lit { LIST_LIT	(lit) }
+	| "#[" _* "]#" as lit { LIST_LIT	(lit) }
 	| "true" | "false" as lit { BOOL_LIT (lit) }
 	| letter | (letter | digit | '_')* as id		{ ID(id) }
 	| _ as char 		{ raise (Failure("illegal character " ^ Char.escaped char)) }
