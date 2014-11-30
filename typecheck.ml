@@ -80,6 +80,52 @@ let match_oper e1 op e2 =
      | Ast.Or ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Or, fst e2), "bool") else
       			  raise (Failure ("type error in or")) 
 	)
+	
+let rec check_list_items env = function
+	  Ast.Item(e) -> Sast.Item(fst (check_list_element env e))
+	| Ast.Seq(e1, sep, e2) -> Sast.Seq(fst (check_list_element env e1), Sast.Comma, (check_list_items env e2))
+	| Ast.Noitem -> Sast.Noitem
+and check_list_element env = function 
+	Ast.LitIntElem(i) -> 
+	(*	let _ = print_string "in int" in *)
+		Sast.LitIntElem(i), "int"
+	| Ast.LitStrElem(s) -> 
+	(*	let _ = print_string "in string " in*)
+		Sast.LitStrElem(s), "string"
+	| Ast.LitList(items) -> 
+	(*	let _ = print_string "in list " in*)
+		Sast.LitList(check_list_items env items), "list"
+	| Ast.LitJson(items) -> 
+	(*	let _ = print_string "in json " in*)
+		Sast.LitJson(check_json_items env items), "json"
+
+and check_json_items env = function
+	  Ast.JsonItem(e) -> Sast.JsonItem(check_json_keyValue env e)
+	| Ast.JsonSeq(e1, sep, e2) -> Sast.JsonSeq((check_json_keyValue env e1), Sast.Comma, (check_json_items env e2))
+	| Ast.NoItem -> Sast.Noitem
+	
+and check_json_keyValue env = function
+	Ast.JsonValPair(e1, colon, e2) -> Sast.JsonValPair(fst (check_json_key env e1) , Sast.Colon, fst (check_json_value env e2))
+	
+and check_json_value env = function 
+	Ast.LitIntJsonVal(i) -> 
+	(*	let _ = print_string "in int" in *)
+		Sast.LitIntJsonVal(i), "int"
+	| Ast.LitStrJsonVal(s) -> 
+	(*	let _ = print_string "in string " in*)
+		Sast.LitStrJsonVal(s), "string"
+	| Ast.LitJson(items) -> 
+	(*	let _ = print_string "in json " in*)
+		Sast.LitJson(check_json_items env items), "json"
+	| Ast.LitList(items) -> 
+	(*	let _ = print_string "in list " in*)
+		Sast.LitList(check_list_items env items), "list"
+		
+		
+and check_json_key env = function 
+	Ast.LitStrJsonKey(i) -> 
+	(*	let _ = print_string "in int" in *)
+		Sast.LitStrJsonKey(i), "string"
 
 (* it returns the expr and its type *)
 let rec check_expr env = function
@@ -91,13 +137,13 @@ let rec check_expr env = function
 	(*	let _ = print_string "in string " in*)
 		Sast.LitStr(s), "string"
 		
-	| Ast.LitJson(s) -> 
+	| Ast.LitJson(items) -> 
 	(*	let _ = print_string "in json " in*)
-		Sast.LitJson(s), "json"
+		Sast.LitJson(check_json_items env items), "json"
 		
-	| Ast.LitList(s) -> 
+	| Ast.LitList(items) -> 
 	(*	let _ = print_string "in list " in*)
-		Sast.LitList(s), "list"
+		Sast.LitList(check_list_items env items), "list"
 		
 	| Ast.LitBool(s) -> 
 	(*	let _ = print_string "in bool " in*)

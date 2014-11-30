@@ -1,10 +1,37 @@
 open Sast
 
+let rec string_of_items = function
+    Item(e) ->  string_of_elements e 
+
+  | Seq(e, sep, i2) ->  string_of_elements e ^ ","
+                    ^ (string_of_items i2)
+  | Noitem -> ""
+and string_of_elements = function
+	LitIntElem(l) ->  string_of_int l 
+  | LitStrElem(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
+	| LitList(l) -> "[" ^ string_of_items l ^ "]"
+	| LitJson(l) -> "{" ^ json_items l ^ "}"
+
+and json_items = function
+    JsonItem(e) ->  json_key_value e 
+  | JsonSeq(e, sep, i2) ->  json_key_value e ^ ","
+                    ^ (json_items i2)
+  | Noitem -> ""
+and json_key_value = function
+	JsonValPair(e1, colon, e2) ->  json_key e1 ^ ":" ^ json_value e2
+and json_key = function 
+	LitStrJsonKey(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
+and json_value = function
+	LitIntJsonVal(l) -> string_of_int l
+	| LitStrJsonVal(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
+	| LitJson(l) -> "{" ^ json_items l ^ "}"
+	| LitList(l) -> "[" ^ string_of_items l ^ "]"
+
 let rec string_of_expr e = match e with
     LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")\n"
   | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")\n"
-	| LitJson(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"JSON\")\n"
-	| LitList(l) -> "CustType::parse(\"" ^ Str.global_replace (Str.regexp "\"") "\\\"" l ^ "\",\"LIST\")\n"
+	| LitJson(l) -> "CustType::parse(\"{" ^ json_items l ^ "}\",\"JSON\")\n"
+	| LitList(l) -> "CustType::parse(\"[" ^ string_of_items l ^ "]\",\"LIST\")\n"
 	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")\n"
 	| MainRet(l) -> "0"
   | Id(s) ->  s

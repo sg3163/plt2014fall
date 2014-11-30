@@ -2,15 +2,42 @@ type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | An
 
 type data_type =  StrType | IntType | BoolType | JsonType | ListType 
 
+type sep = Comma
+
+type colon = Colon
+
 type list_expr = 
   ListItemInt of int
   | ListItemStr of string
 
+type list_element = 
+  LitIntElem of int
+  | LitStrElem of string
+	| LitList of items
+	| LitJson of json_items
+and items = 
+    Item of list_element
+  | Seq of list_element * sep * items
+  | Noitem
+and json_key_type =
+	LitStrJsonKey of string
+and json_item_value = 
+  LitIntJsonVal of int
+  | LitStrJsonVal of string
+	| LitJson of json_items
+	| LitList of items
+and json_item =
+	JsonValPair of json_key_type * colon * json_item_value
+and json_items = 
+    JsonItem of json_item
+  | JsonSeq of json_item * sep * json_items
+  | NoItem
+
 type expr =
     LitInt of int
   | LitStr of string
-  | LitJson of string
-  | LitList of string
+  | LitJson of json_items
+  | LitList of items
 	| LitBool of string
 	| MainRet of int
   | Id of string

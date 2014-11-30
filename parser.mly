@@ -1,9 +1,9 @@
 %{ open Ast %}
 
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA SEMI 
-%token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS
+%token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS COLON
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
-%token RETURN IF THEN ELSE
+%token RETURN IF THEN ELSE HASH
 %token AND OR FOR IN
 %token FUNC END DECL MAINFUNC
 %token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING
@@ -96,9 +96,9 @@ list_expr:
 expr:
     | NUM_LIT                      { LitInt($1) }
     | STRING_LIT                   { LitStr($1) }
-	| JSON_LIT                     { LitJson($1) }
-	| LIST_LIT                     { LitList($1) } 
-	| BOOL_LIT                     { LitBool($1) }
+	 | HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
+	 | LBRACK list_items RBRACK         { LitList($2) } 
+	 | BOOL_LIT                     { LitBool($1) }
     | ID                           { Id($1) }
     | expr PLUS   expr             { Binop($1, Add,      $3) }
     | expr MINUS  expr             { Binop($1, Sub,      $3) }
@@ -110,6 +110,34 @@ expr:
 		| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
 		| MAINFUNC                     { MainRet(0) }
 		| ID LBRACK list_expr RBRACK        { ElemAccess($1, $3) }
+
+list_items:
+    { Noitem }
+    |  list_element                         { Item($1) }
+    | list_element COMMA list_items        { Seq($1, Comma, $3) }  
+
+list_element:
+	NUM_LIT                      { LitIntElem($1) }
+  | STRING_LIT                 { LitStrElem($1) }
+	| LBRACK list_items RBRACK   { LitList($2) }
+	| LBRACE json_items RBRACE   { LitJson($2) }
+
+json_items:
+{ NoItem }
+| json_item										{ JsonItem($1)}
+| json_item COMMA json_items   { JsonSeq($1, Comma, $3) }  
+
+json_item:
+	json_item_key COLON json_item_value { JsonValPair($1,Colon,$3) }
+
+json_item_value:
+	NUM_LIT                      { LitIntJsonVal($1) }
+  | STRING_LIT                 { LitStrJsonVal($1) }
+	| LBRACE json_items RBRACE   { LitJson($2) }
+	| LBRACK list_items RBRACK   { LitList($2) }
+
+json_item_key:
+ STRING_LIT                 { LitStrJsonKey($1) }
 
 actuals_opt:
     /* nothing */   { [] }
