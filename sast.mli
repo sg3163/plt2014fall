@@ -44,6 +44,7 @@ type expr_t =
   | Assign of string * expr_t
   | Call of string * expr_t list
 	| ElemAccess of string * list_expr_t
+	| TypeStruct of string
 	| MainRet of int
   | NoExpr
 

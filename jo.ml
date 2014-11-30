@@ -55,7 +55,8 @@ let rec string_of_expr e = match e with
                         | ListItemStr(l) -> l
                         
                       ) in
-                        id ^ "[" ^ arg ^ "];\n"
+                        id ^ "[" ^ arg ^ "];"
+	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
   | NoExpr -> ""
 
 let rec string_of_stmt = function
