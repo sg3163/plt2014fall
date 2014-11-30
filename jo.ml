@@ -1,5 +1,34 @@
 open Sast
 
+<<<<<<< HEAD
+=======
+let rec string_of_items = function
+    Item(e) ->  string_of_elements e 
+
+  | Seq(e, sep, i2) ->  string_of_elements e ^ ","
+                    ^ (string_of_items i2)
+  | Noitem -> ""
+and string_of_elements = function
+	LitIntElem(l) ->  string_of_int l 
+  | LitStrElem(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
+	| LitList(l) -> "[" ^ string_of_items l ^ "]"
+	| LitJson(l) -> "{" ^ json_items l ^ "}"
+
+and json_items = function
+    JsonItem(e) ->  json_key_value e 
+  | JsonSeq(e, sep, i2) ->  json_key_value e ^ ","
+                    ^ (json_items i2)
+  | Noitem -> ""
+and json_key_value = function
+	JsonValPair(e1, colon, e2) ->  json_key e1 ^ ":" ^ json_value e2
+and json_key = function 
+	LitStrJsonKey(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
+and json_value = function
+	LitIntJsonVal(l) -> string_of_int l
+	| LitStrJsonVal(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
+	| LitJson(l) -> "{" ^ json_items l ^ "}"
+	| LitList(l) -> "[" ^ string_of_items l ^ "]"
+>>>>>>> f70b3854176b233639890816ce97b471d808082a
 let get_for_id e = match e
     with
     Forid(id) -> id
@@ -10,8 +39,13 @@ let string_of_loop_var_t = function
 let rec string_of_expr e = match e with
     LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")\n"
   | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")\n"
+<<<<<<< HEAD
 	| LitJson(l) -> "CustType::parse(\"" ^  "\",\"JSON\")\n"
 	| LitList(l) -> "CustType::parse(\"" ^  "\",\"LIST\")\n"
+=======
+	| LitJson(l) -> "CustType::parse(\"{" ^ json_items l ^ "}\",\"JSON\")\n"
+	| LitList(l) -> "CustType::parse(\"[" ^ string_of_items l ^ "]\",\"LIST\")\n"
+>>>>>>> f70b3854176b233639890816ce97b471d808082a
 	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")\n"
 	| MainRet(l) -> "0"
   | Id(s) ->  s
@@ -24,6 +58,12 @@ let rec string_of_expr e = match e with
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
 	| Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ");"
+	| ElemAccess(id, e) -> let arg = (match e with
+                          ListItemInt(l) -> string_of_int l
+                        | ListItemStr(l) -> l
+                        
+                      ) in
+                        id ^ "[" ^ arg ^ "];\n"
   | NoExpr -> ""
 
 let rec string_of_stmt = function
@@ -37,6 +77,10 @@ let rec string_of_stmt = function
       ^ string_of_stmt s1 ^ "\n}\n"
     | Block(stmts) ->
         "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
+    | For(e1, e2, s1) ->  (*"while (" ^ (get_list_arg le2) ^")\n if(findNode(" ^ (get_list_arg le2) ^","^arg^") == 0)\n"^string_of_stmt s1*)
+      "for ( auto *" ^ string_of_loop_var_t e1 ^ "  = begin (" ^ get_for_id e2 ^ ") ; " ^ string_of_loop_var_t e1 ^ " != end ( " ^ get_for_id e2 ^ ") ; " ^ 
+        "++" ^ string_of_loop_var_t e1 ^ ") { \n" 
+      ^ string_of_stmt s1 ^ "\n}\n"
     | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
     | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
         string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2

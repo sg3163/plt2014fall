@@ -1,9 +1,9 @@
 %{ open Ast %}
 
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA SEMI 
-%token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS
+%token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS COLON
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
-%token RETURN IF THEN ELSE
+%token RETURN IF THEN ELSE HASH
 %token AND OR FOR IN
 %token FUNC END DECL MAINFUNC
 %token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING
@@ -80,12 +80,17 @@ rev_stmt_list:
 stmt:
     expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
+<<<<<<< HEAD
     | PRINT expr SEMI                                   { Print($2) }
+=======
+	| PRINT expr SEMI                                   { Print($2) }
+>>>>>>> f70b3854176b233639890816ce97b471d808082a
     | FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
     | LBRACE rev_stmt_list RBRACE                       { Block($2) }
 
+<<<<<<< HEAD
 
   /*    | IF LPAREN expr RPAREN THEN stmt %prec NOELSE      { If($3, $6, Block([])) }
     | IF LPAREN expr RPAREN THEN stmt ELSE stmt         { If($3, $6, $8) }
@@ -93,21 +98,31 @@ stmt:
     | IF list_expr IN list_expr THEN stmt %prec NOELSE  { Ifin($2, $4, $6, Block([])) }
     | IF list_expr IN list_expr THEN stmt ELSE stmt     { Ifin($2, $4, $6, $8) } 
     | LBRACE rev_stmt_list RBRACE                       { Block($2) } */
+=======
+>>>>>>> f70b3854176b233639890816ce97b471d808082a
 for_expr:
     ID                              { Forid($1) }
 loop_var:
     ID                              { LoopVar($1) }
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> f70b3854176b233639890816ce97b471d808082a
 expr_opt:
     /* nothing */ { NoExpr }
   | expr          { $1 }
 
+list_expr:
+ 		NUM_LIT                      { ListItemInt($1) }
+    | STRING_LIT                      { ListItemStr($1) }
+
 expr:
     | NUM_LIT                      { LitInt($1) }
     | STRING_LIT                   { LitStr($1) }
-	| JSON_LIT                     { LitJson($1) }
-	| LIST_LIT                     { LitList($1) } 
-	| BOOL_LIT                     { LitBool($1) }
+	 | HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
+	 | LBRACK list_items RBRACK         { LitList($2) } 
+	 | BOOL_LIT                     { LitBool($1) }
     | ID                           { Id($1) }
     | expr PLUS   expr             { Binop($1, Add,      $3) }
     | expr MINUS  expr             { Binop($1, Sub,      $3) }
@@ -118,6 +133,35 @@ expr:
     | ID ASSIGN expr               { Assign($1, $3) }
 		| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
 		| MAINFUNC                     { MainRet(0) }
+		| ID LBRACK list_expr RBRACK        { ElemAccess($1, $3) }
+
+list_items:
+    { Noitem }
+    |  list_element                         { Item($1) }
+    | list_element COMMA list_items        { Seq($1, Comma, $3) }  
+
+list_element:
+	NUM_LIT                      { LitIntElem($1) }
+  | STRING_LIT                 { LitStrElem($1) }
+	| LBRACK list_items RBRACK   { LitList($2) }
+	| LBRACE json_items RBRACE   { LitJson($2) }
+
+json_items:
+{ NoItem }
+| json_item										{ JsonItem($1)}
+| json_item COMMA json_items   { JsonSeq($1, Comma, $3) }  
+
+json_item:
+	json_item_key COLON json_item_value { JsonValPair($1,Colon,$3) }
+
+json_item_value:
+	NUM_LIT                      { LitIntJsonVal($1) }
+  | STRING_LIT                 { LitStrJsonVal($1) }
+	| LBRACE json_items RBRACE   { LitJson($2) }
+	| LBRACK list_items RBRACK   { LitList($2) }
+
+json_item_key:
+ STRING_LIT                 { LitStrJsonKey($1) }
 
 actuals_opt:
     /* nothing */   { [] }

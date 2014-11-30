@@ -38,7 +38,9 @@ let get_expr_type t1 t2 =
 	raise (Failure ("type error in get_expr_type"))
 
 
-
+let check_listexpr env = function
+ 	Ast.ListItemInt(i) -> Sast.ListItemInt(i), "int"
+	| Ast.ListItemStr(s) -> Sast.ListItemStr(s), "string"
 
 (* check the expression type can be used for
  * the corresponding argument according to definition
@@ -78,6 +80,52 @@ let match_oper e1 op e2 =
      | Ast.Or ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Or, fst e2), "bool") else
       			  raise (Failure ("type error in or")) 
 	)
+	
+let rec check_list_items env = function
+	  Ast.Item(e) -> Sast.Item(fst (check_list_element env e))
+	| Ast.Seq(e1, sep, e2) -> Sast.Seq(fst (check_list_element env e1), Sast.Comma, (check_list_items env e2))
+	| Ast.Noitem -> Sast.Noitem
+and check_list_element env = function 
+	Ast.LitIntElem(i) -> 
+	(*	let _ = print_string "in int" in *)
+		Sast.LitIntElem(i), "int"
+	| Ast.LitStrElem(s) -> 
+	(*	let _ = print_string "in string " in*)
+		Sast.LitStrElem(s), "string"
+	| Ast.LitList(items) -> 
+	(*	let _ = print_string "in list " in*)
+		Sast.LitList(check_list_items env items), "list"
+	| Ast.LitJson(items) -> 
+	(*	let _ = print_string "in json " in*)
+		Sast.LitJson(check_json_items env items), "json"
+
+and check_json_items env = function
+	  Ast.JsonItem(e) -> Sast.JsonItem(check_json_keyValue env e)
+	| Ast.JsonSeq(e1, sep, e2) -> Sast.JsonSeq((check_json_keyValue env e1), Sast.Comma, (check_json_items env e2))
+	| Ast.NoItem -> Sast.Noitem
+	
+and check_json_keyValue env = function
+	Ast.JsonValPair(e1, colon, e2) -> Sast.JsonValPair(fst (check_json_key env e1) , Sast.Colon, fst (check_json_value env e2))
+	
+and check_json_value env = function 
+	Ast.LitIntJsonVal(i) -> 
+	(*	let _ = print_string "in int" in *)
+		Sast.LitIntJsonVal(i), "int"
+	| Ast.LitStrJsonVal(s) -> 
+	(*	let _ = print_string "in string " in*)
+		Sast.LitStrJsonVal(s), "string"
+	| Ast.LitJson(items) -> 
+	(*	let _ = print_string "in json " in*)
+		Sast.LitJson(check_json_items env items), "json"
+	| Ast.LitList(items) -> 
+	(*	let _ = print_string "in list " in*)
+		Sast.LitList(check_list_items env items), "list"
+		
+		
+and check_json_key env = function 
+	Ast.LitStrJsonKey(i) -> 
+	(*	let _ = print_string "in int" in *)
+		Sast.LitStrJsonKey(i), "string"
 
 (* it returns the expr and its type *)
 let rec check_expr env = function
@@ -89,13 +137,13 @@ let rec check_expr env = function
 	(*	let _ = print_string "in string " in*)
 		Sast.LitStr(s), "string"
 		
-	| Ast.LitJson(s) -> 
+	| Ast.LitJson(items) -> 
 	(*	let _ = print_string "in json " in*)
-		Sast.LitJson(s), "json"
+		Sast.LitJson(check_json_items env items), "json"
 		
-	| Ast.LitList(s) -> 
+	| Ast.LitList(items) -> 
 	(*	let _ = print_string "in list " in*)
-		Sast.LitList(s), "list"
+		Sast.LitList(check_list_items env items), "list"
 		
 	| Ast.LitBool(s) -> 
 	(*	let _ = print_string "in bool " in*)
@@ -125,6 +173,13 @@ let rec check_expr env = function
 			| hd::tl -> let new_list = try List.fold_left2 check_func_arg [] (List.map (check_expr env) el) tl
 						   with Invalid_argument "arg" -> raise(Failure("unmatched argument list"))
 				    in Sast.Call(func, List.rev new_list ), hd )
+	| Ast.ElemAccess(id, e) -> let t1 = get_vtype env id in
+														let t2 = check_listexpr env e in
+														if not (t1 = "json" || t1 = "list") 
+															then raise (Failure("Elements of only List and Json can be accessed"))
+														else
+															Sast.ElemAccess (id, (fst t2)), (snd t2)
+
 	| Ast.NoExpr -> Sast.NoExpr, "void"
 
 
@@ -133,6 +188,7 @@ let rec check_expr env = function
 and get_expr_with_type env expr t = 
 	let e = check_expr env expr in fst e
 
+<<<<<<< HEAD
 	
 let rec check_stmt env func = function
 	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
@@ -150,6 +206,8 @@ and check_stmt_list env func = function
 	  [] -> []
 	| hd::tl -> let s,e = (check_stmt env func hd) in s::(check_stmt_list e func tl)
 
+=======
+>>>>>>> f70b3854176b233639890816ce97b471d808082a
 (* convert a variable to its SAST type *)
 let convert_to_sast_type x env = 
 	let t = get_vtype env x.vname in
@@ -170,9 +228,20 @@ let convert_to_vdecl_type x  =
 		vname = x;
 		vexpr = Ast.LitStr ("") ;
 	}
+<<<<<<< HEAD
+=======
+	
+let find_vtype = function
+	LitInt(d) -> IntType
+  | LitStr(d) -> StrType
+  | LitJson(d) -> JsonType
+  | LitList(d) -> ListType
+  | LitBool(d) -> BoolType
+  | _ -> StrType
+>>>>>>> f70b3854176b233639890816ce97b471d808082a
 
 let check_formal env formal = 
-	let ret = add_local formal.vname formal.vtype env in
+	let ret = add_local formal.vname (find_vtype formal.vexpr) env in
 	if (string_of_vtype formal.vtype) = "void" then raise (Failure("cannot use void as variable type")) else
 	if StringMap.is_empty ret then raise (Failure ("local variable " ^ formal.vname ^ " is already defined"))
 	(* update the env with locals from ret *)
@@ -184,9 +253,8 @@ let rec check_formals env formals =
 	  [] -> []
 	| hd::tl -> let f, e = (check_formal env hd) in (f, e)::(check_formals e tl) 
 
-
 let check_local env local =
-	let ret = add_local local.vname local.vtype env in
+	let ret = add_local local.vname (find_vtype local.vexpr) env in
 	if (string_of_vtype local.vtype) = "void" then raise (Failure("cannot use void as variable type")) else
 	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local.vname ^ " is already defined"))
 	(* update the env with globals from ret *)
@@ -225,6 +293,35 @@ let rec check_stmt env func = function
 and check_stmt_list env func = function 
 	  [] -> []
 	| hd::tl -> let s,e = (check_stmt env func hd) in s::(check_stmt_list e func tl)
+
+let check_forexpr env = function
+	Ast.Forid(id) -> Sast.Forid(id), get_vtype env id
+
+let check_loopvar env = function
+	Ast.LoopVar(id) -> let loopId = convert_to_vdecl_type id in 
+        let l, e = (check_local env loopId) in e, Sast.Loopvar(id)
+
+let rec check_stmt env func = function
+	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
+	| Ast.Return(expr) -> let e = check_expr env expr in
+			 (Sast.Return(fst e)), env 
+	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
+							(Sast.Print(expr , expr_type)), env
+	| Ast.Block(stmt_list) -> (Sast.Block(check_stmt_list env func stmt_list)), env
+	| Ast.If(expr, stmt1, stmt2) ->	let e = check_expr env expr in
+								if not(snd e = "bool") then raise (Failure ("The type of the condition in If statement must be boolean!"))
+								(* if() {} else{} *) 
+								else (Sast.If(fst e, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2))), env
+	| Ast.For(expr1, expr2, stmt) -> let envNew, e1 = check_loopvar env expr1 in let e2 = check_forexpr envNew expr2 in
+						   if not ( snd e2 = "list" ) then raise (Failure("The type of the expression in a For statement must be path"))
+						   else (Sast.For( e1, fst e2, fst (check_stmt envNew func stmt))), envNew 
+	
+
+and check_stmt_list env func = function 
+	  [] -> []
+	| hd::tl -> let s,e = (check_stmt env func hd) in s::(check_stmt_list e func tl)
+
+
 
 (* this function will return the updated formals and body as per the abstract syntax tree, the return type, name and locals *)
 let check_function env func = 
@@ -289,7 +386,7 @@ let rec check_functions env funcs =
 (* returns the global and its env *)
 let check_global env global =
  	(*let _ = print_string "in iD" in*)
-	let ret = add_global global.vname global.vtype env in
+	let ret = add_global global.vname (find_vtype global.vexpr) env in
 	if StringMap.is_empty ret then raise (Failure ("global variable " ^ global.vname ^ " is already defined"))
 	(* update the env with globals from ret *)
 	else let env = {locals = env.locals; globals = ret; functions = env.functions } in
