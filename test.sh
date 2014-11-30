@@ -78,6 +78,7 @@ Compare ${reffile}.output ${reffile}.exp ${reffile}.error
 #        rm -rf ${reffile}.fdlp
 #        rm -rf ${reffile}.cpp
 rm -rf ${reffile}.out
+rm -rf ${reffile}.o
 rm -rf ${reffile}.output
 echo "ran $1 successfully"
 else

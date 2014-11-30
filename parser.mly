@@ -115,7 +115,8 @@ expr:
     | ID ASSIGN expr               { Assign($1, $3) }
 		| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
 		| MAINFUNC                     { MainRet(0) }
-		| ID LBRACK list_expr RBRACK        { ElemAccess($1, $3) }
+		| ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
+		| ID ACCESS TYPESTRUCT LPAREN	RPAREN	 { TypeStruct($1) }
 
 list_items:
     { Noitem }

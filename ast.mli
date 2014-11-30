@@ -45,6 +45,7 @@ type expr =
   | Assign of string * expr
 	| Call of string * expr list
 	| ElemAccess of string * list_expr
+	| TypeStruct of string
   | NoExpr
     
 type var_decl = {

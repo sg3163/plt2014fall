@@ -42,12 +42,8 @@ let check_listexpr env = function
  	Ast.ListItemInt(i) -> Sast.ListItemInt(i), "int"
 	| Ast.ListItemStr(s) -> Sast.ListItemStr(s), "string"
 
-(* check the expression type can be used for
- * the corresponding argument according to definition
- * return the new expression list in expr_t for sast *)
-let check_func_arg lst expr arg_t =
-	if (snd expr) = arg_t then (fst expr)::lst else
-	raise (Failure("function arguments do not match"))
+(* Might have to do type checking *)
+let check_func_arg lst expr arg_t = (fst expr)::lst 
 
 let match_oper e1 op e2 =
 	(* snd of expr is type *)
@@ -179,7 +175,11 @@ let rec check_expr env = function
 															then raise (Failure("Elements of only List and Json can be accessed"))
 														else
 															Sast.ElemAccess (id, (fst t2)), (snd t2)
-
+  | Ast.TypeStruct(id) -> let t1 = get_vtype env id in
+												(*	if not (t1 = "json" ) 
+															then raise (Failure("Typestruct is applicable only to Json"))
+														else*)
+															Sast.TypeStruct (id), id
 	| Ast.NoExpr -> Sast.NoExpr, "void"
 
 
