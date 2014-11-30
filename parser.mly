@@ -81,9 +81,15 @@ stmt:
     expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
 	| PRINT expr SEMI                                   { Print($2) }
+    | FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
     | LBRACE rev_stmt_list RBRACE                       { Block($2) }
+
+for_expr:
+    ID                              { Forid($1) }
+loop_var:
+    ID                              { LoopVar($1) }
 
 expr_opt:
     /* nothing */ { NoExpr }

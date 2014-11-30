@@ -26,6 +26,12 @@ and json_value = function
 	| LitStrJsonVal(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
 	| LitJson(l) -> "{" ^ json_items l ^ "}"
 	| LitList(l) -> "[" ^ string_of_items l ^ "]"
+let get_for_id e = match e
+    with
+    Forid(id) -> id
+
+let string_of_loop_var_t = function
+  Loopvar(l) -> l
 
 let rec string_of_expr e = match e with
     LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")\n"
@@ -58,6 +64,10 @@ let rec string_of_stmt = function
 		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n"
     | Block(stmts) ->
         "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
+    | For(e1, e2, s1) ->  (*"while (" ^ (get_list_arg le2) ^")\n if(findNode(" ^ (get_list_arg le2) ^","^arg^") == 0)\n"^string_of_stmt s1*)
+      "for ( auto *" ^ string_of_loop_var_t e1 ^ "  = begin (" ^ get_for_id e2 ^ ") ; " ^ string_of_loop_var_t e1 ^ " != end ( " ^ get_for_id e2 ^ ") ; " ^ 
+        "++" ^ string_of_loop_var_t e1 ^ ") { \n" 
+      ^ string_of_stmt s1 ^ "\n}\n"
     | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
     | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
         string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2

@@ -46,19 +46,25 @@ type expr =
 	| Call of string * expr list
 	| ElemAccess of string * list_expr
   | NoExpr
-  
-type stmt =
-    Block of stmt list
-  | Expr of expr
-  | Return of expr
-	| Print of expr
-  | If of expr * stmt * stmt
-  
+    
 type var_decl = {
   vtype : data_type;
   vname : string;
   vexpr : expr;
 }
+
+type for_expr = 
+    Forid of string
+
+type loop_var = 
+    LoopVar of string
+type stmt =
+    Block of stmt list
+  | Expr of expr
+  | Return of expr
+  | Print of expr
+  | If of expr * stmt * stmt
+  | For of loop_var * for_expr * stmt  
 
 type func_decl = {
     return : data_type;

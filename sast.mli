@@ -47,11 +47,18 @@ type expr_t =
 	| MainRet of int
   | NoExpr
 
+type for_expr_t = 
+    Forid of string
+
+type loop_var_t = 
+    Loopvar of string
+
 type stmt_t =
 	 Expr of expr_t
   | Block of stmt_t list
   | Return of expr_t
 	| Print of expr_t * string
+  | For of loop_var_t * for_expr_t * stmt_t
   | If of expr_t * stmt_t * stmt_t
 
 

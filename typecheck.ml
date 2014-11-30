@@ -188,24 +188,6 @@ let rec check_expr env = function
 and get_expr_with_type env expr t = 
 	let e = check_expr env expr in fst e
 
-
-	
-let rec check_stmt env func = function
-	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
-	| Ast.Return(expr) -> let e = check_expr env expr in
-			 (Sast.Return(fst e)), env 
-	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
-							(Sast.Print(expr , expr_type)), env
-	| Ast.Block(stmt_list) -> (Sast.Block(check_stmt_list env func stmt_list)), env
-	| Ast.If(expr, stmt1, stmt2) ->	let e = check_expr env expr in
-								if not(snd e = "bool") then raise (Failure ("The type of the condition in If statement must be boolean!"))
-								(* if() {} else{} *) 
-								else (Sast.If(fst e, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2))), env
-
-and check_stmt_list env func = function 
-	  [] -> []
-	| hd::tl -> let s,e = (check_stmt env func hd) in s::(check_stmt_list e func tl)
-
 (* convert a variable to its SAST type *)
 let convert_to_sast_type x env = 
 	let t = get_vtype env x.vname in
@@ -219,6 +201,13 @@ let convert_to_sast_type x env =
 		Sast.vname = x.vname;
 		Sast.vexpr = s_expr;
 	}
+let convert_to_vdecl_type x  = 
+	
+	{
+		vtype = StrType;
+		vname = x;
+		vexpr = Ast.LitStr ("") ;
+	}
 	
 let find_vtype = function
 	LitInt(d) -> IntType
@@ -226,7 +215,7 @@ let find_vtype = function
   | LitJson(d) -> JsonType
   | LitList(d) -> ListType
   | LitBool(d) -> BoolType
-	| _ -> StrType
+  | _ -> StrType
 
 let check_formal env formal = 
 	let ret = add_local formal.vname (find_vtype formal.vexpr) env in
@@ -249,10 +238,47 @@ let check_local env local =
 	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
 	convert_to_sast_type local env, env
 
+let check_local_for_loop_var env local =
+	let ret = add_local local StrType env in
+	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local ^ " is already defined"))
+	(* update the env with globals from ret *)
+	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
+	let loop_var_dec = convert_to_vdecl_type local in 
+	convert_to_sast_type  loop_var_dec env, env
+
 let rec check_locals env locals = 
 	match locals with
 	  [] -> []
 	| hd::tl -> let l, e = (check_local env hd) in (l, e)::(check_locals e tl)
+
+let check_forexpr env = function
+	Ast.Forid(id) -> Sast.Forid(id), get_vtype env id
+
+let check_loopvar env = function
+	Ast.LoopVar(id) -> let loopId = convert_to_vdecl_type id in 
+        let l, e = (check_local env loopId) in e, Sast.Loopvar(id)
+
+let rec check_stmt env func = function
+	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
+	| Ast.Return(expr) -> let e = check_expr env expr in
+			 (Sast.Return(fst e)), env 
+	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
+							(Sast.Print(expr , expr_type)), env
+	| Ast.Block(stmt_list) -> (Sast.Block(check_stmt_list env func stmt_list)), env
+	| Ast.If(expr, stmt1, stmt2) ->	let e = check_expr env expr in
+								if not(snd e = "bool") then raise (Failure ("The type of the condition in If statement must be boolean!"))
+								(* if() {} else{} *) 
+								else (Sast.If(fst e, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2))), env
+	| Ast.For(expr1, expr2, stmt) -> let envNew, e1 = check_loopvar env expr1 in let e2 = check_forexpr envNew expr2 in
+						   if not ( snd e2 = "list" ) then raise (Failure("The type of the expression in a For statement must be path"))
+						   else (Sast.For( e1, fst e2, fst (check_stmt envNew func stmt))), envNew 
+	
+
+and check_stmt_list env func = function 
+	  [] -> []
+	| hd::tl -> let s,e = (check_stmt env func hd) in s::(check_stmt_list e func tl)
+
+
 
 (* this function will return the updated formals and body as per the abstract syntax tree, the return type, name and locals *)
 let check_function env func = 
