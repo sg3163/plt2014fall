@@ -6,7 +6,7 @@ func main ()
 decl a = "Hello World all variable types created"
 decl b = 10
 decl c = #{"name":"harsha"}#
-decl d = #[4,6,7]#
+decl d = [4,6,7]
 decl e = "true"
 print a
 return mainfunc
