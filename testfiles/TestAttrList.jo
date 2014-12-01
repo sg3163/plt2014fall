@@ -1,0 +1,9 @@
+/* Test How AttrList function work */
+
+func main () 
+
+decl a = #{"name":"harsha"}#
+decl b = a.attrList()
+print b
+return mainfunc
+end
