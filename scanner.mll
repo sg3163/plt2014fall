@@ -47,6 +47,7 @@ rule token = parse
 	| "print"    	{PRINT}
 	| "type"    	{ TYPE } 
 	| "typeStruct" { TYPESTRUCT }
+	| "attrList"	{ ATTRLIST }
 	| "join"    	{ JOIN } 
 	| "makeString" 	{ MAKESTRING }
 	| "return"		{ RETURN }
