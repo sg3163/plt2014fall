@@ -98,7 +98,7 @@ and check_list_element env = function
 and check_json_items env = function
 	  Ast.JsonItem(e) -> Sast.JsonItem(check_json_keyValue env e)
 	| Ast.JsonSeq(e1, sep, e2) -> Sast.JsonSeq((check_json_keyValue env e1), Sast.Comma, (check_json_items env e2))
-	| Ast.NoItem -> Sast.Noitem
+	| Ast.NoJsonItem -> Sast.NoJsonItem
 	
 and check_json_keyValue env = function
 	Ast.JsonValPair(e1, colon, e2) -> Sast.JsonValPair(fst (check_json_key env e1) , Sast.Colon, fst (check_json_value env e2))
@@ -175,11 +175,8 @@ let rec check_expr env = function
 															then raise (Failure("Elements of only List and Json can be accessed"))
 														else
 															Sast.ElemAccess (id, (fst t2)), (snd t2)
-  | Ast.TypeStruct(id) -> let t1 = get_vtype env id in
-												(*	if not (t1 = "json" ) 
-															then raise (Failure("Typestruct is applicable only to Json"))
-														else*)
-															Sast.TypeStruct (id), id
+  | Ast.TypeStruct(id) ->	Sast.TypeStruct (id), id
+	| Ast.AttrList(id) -> Sast.AttrList (id), id
 	| Ast.NoExpr -> Sast.NoExpr, "void"
 
 

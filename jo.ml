@@ -16,7 +16,7 @@ and json_items = function
     JsonItem(e) ->  json_key_value e 
   | JsonSeq(e, sep, i2) ->  json_key_value e ^ ","
                     ^ (json_items i2)
-  | Noitem -> ""
+  | NoJsonItem -> ""
 and json_key_value = function
 	JsonValPair(e1, colon, e2) ->  json_key e1 ^ ":" ^ json_value e2
 and json_key = function 
@@ -57,6 +57,7 @@ let rec string_of_expr e = match e with
                       ) in
                         id ^ "[" ^ arg ^ "];"
 	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
+	| AttrList(id) -> "CustType::attrList(" ^ id ^ ")"
   | NoExpr -> ""
 
 let rec string_of_stmt = function
