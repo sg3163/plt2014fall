@@ -35,6 +35,7 @@ class CustType {
 	
 	}
 	static CustType* parse (string data, string type) ; 
+	static string typeString ( CustType* t) ;
 	static void print(CustType* data) ;
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class" ;
@@ -43,7 +44,16 @@ class CustType {
 	virtual int getType(){
 		cout << "getting Type from CustType, Ooops!\n Somebody needs to implement this in child class" ;	
 	}
-
+	virtual JSONObject::iterator getBeginIterator (){
+		JSONObject::iterator it ;
+		cout << "Accesing outside of Json Object "  ; 
+		return it ;
+	}
+	virtual JSONObject::iterator getEndIterator (){
+		JSONObject::iterator it ;
+		cout << "Accesing outside of Json Object "  ; 
+		return it ;	
+	}
 	
 };
 
@@ -127,10 +137,11 @@ class JsonType : public CustType {
 */
 class JsonType : public CustType {
 
-    JSONObject da;
+    //JSONObject da;
     int type;
 
     public :
+    JSONObject da ;
     JsonType(JSONObject da, int type) : CustType() {
         this -> da = da;
         this -> type = type;
@@ -146,6 +157,15 @@ class JsonType : public CustType {
     int getType() {
         return JSON;
     }
+    JSONObject::iterator getBeginIterator (){
+		JSONObject::iterator it  = da.begin();
+		
+		return it ;
+	}
+	JSONObject::iterator getEndIterator (){
+		JSONObject::iterator it = da.end ();
+		return it ;	
+	}
 };
 
 NumType* getNum (string data, int type ){
@@ -235,7 +255,24 @@ CustType* CustType :: parse (string data, string type)  {
 }
 
 void CustType :: print ( CustType* data) { 
-		 data -> print () ;
+	data -> print () ;
+}
+
+string CustType :: typeString ( CustType* t) {
+
+	int typeVal = t -> getType () ;
+	string type = "" ;
+	switch (typeVal) {
+		case NUMBER : 	type = "NUMBER" ;
+					  	break ;
+		case STRING : 	type = "STRING" ;
+					  	break ; 
+		case JSON : 	type = "JSON" ;
+						break ; 
+		case LIST : 	type = "LIST" ;
+						break ;	
+	}
+	return type ; 
 }
 
 /*

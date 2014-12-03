@@ -39,13 +39,20 @@ int main() {
             \"bar\" : \"123\" \
             } \
         } ";
-
+	
+    //string testString = "arpit" ;
 	CustType *testJsonType = CustType :: parse(testString, "JSON");
 	testJsonType -> print();
 	cout << endl;
 	cout << testJsonType -> getType();
 	cout << endl;
-
+	
+	for ( auto iter  = testJsonType ->  getBeginIterator() ; iter != testJsonType -> getEndIterator () ; iter ++ ) {
+		
+		print_out ( (iter -> first).c_str() ) ; 
+		print_out ( (iter-> second) -> Stringify ().c_str()) ; 
+		cout   << endl ; 
+	}
 
 
 	return 0;
