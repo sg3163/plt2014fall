@@ -31,7 +31,7 @@ and json_item =
 and json_items = 
     JsonItem of json_item
   | JsonSeq of json_item * sep * json_items
-  | NoItem
+  | NoJsonItem
 
 type expr =
     LitInt of int
@@ -46,6 +46,7 @@ type expr =
 	| Call of string * expr list
 	| ElemAccess of string * list_expr
 	| TypeStruct of string
+	| AttrList of string
   | NoExpr
     
 type var_decl = {

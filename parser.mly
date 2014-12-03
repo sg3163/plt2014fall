@@ -6,7 +6,7 @@
 %token RETURN IF THEN ELSE HASH
 %token AND OR FOR IN
 %token FUNC END DECL MAINFUNC
-%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING
+%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST
 %token <int> NUM_LIT
 %token <string> STRING_LIT
 %token <string> JSON_LIT
@@ -117,6 +117,7 @@ expr:
 		| MAINFUNC                     { MainRet(0) }
 		| ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
 		| ID ACCESS TYPESTRUCT LPAREN	RPAREN	 { TypeStruct($1) }
+		| ID ACCESS ATTRLIST LPAREN	RPAREN	 { AttrList($1) }
 
 list_items:
     { Noitem }
@@ -130,7 +131,7 @@ list_element:
 	| LBRACE json_items RBRACE   { LitJson($2) }
 
 json_items:
-{ NoItem }
+{ NoJsonItem }
 | json_item										{ JsonItem($1)}
 | json_item COMMA json_items   { JsonSeq($1, Comma, $3) }  
 
