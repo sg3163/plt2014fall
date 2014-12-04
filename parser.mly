@@ -114,11 +114,11 @@ expr:
     | expr NEQ    expr             { Binop($1, Neq,      $3) }
     | expr COMPLUS    expr        { Binop($1, Concat,  $3) }
     | expr COMMINUS    expr        { Binop($1, Minus,   $3) }
-    | expr LT    expr        { Binop($1, Less,   $3) }
-    | expr GT    expr        { Binop($1, Greater,   $3) }
-    | expr LEQ    expr        { Binop($1, Leq,   $3) }
-    | expr GEQ    expr        { Binop($1, Geq,   $3) }
-    | expr MOD    expr        { Binop($1, Mod,   $3) }
+    | expr LT    expr            { Binop($1, Less,   $3) }
+    | expr GT    expr            { Binop($1, Greater,   $3) }
+    | expr LEQ    expr            { Binop($1, Leq,   $3) }
+    | expr GEQ    expr             { Binop($1, Geq,   $3) }
+    | expr MOD    expr             { Binop($1, Mod,   $3) }
     | ID ASSIGN expr               { Assign($1, $3) }
 	| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
 	| MAINFUNC                     { MainRet(0) }

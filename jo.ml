@@ -62,13 +62,12 @@ let rec string_of_expr e = match e with
         ) 
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";"
 	| Call(f, el) ->
-      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ");"
-	| ElemAccess(id, e) -> let arg = (match e with
-                          ListItemInt(l) -> string_of_int l
-                        | ListItemStr(l) -> l
+      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+	| ElemAccess(id, e) -> match e with
+                          ListItemInt(l) -> id ^ "-> access("^string_of_int l ^ ")"
+                        | ListItemStr(l) -> id ^ "-> access("^ l ^ ")"
                         
-                      ) in
-                        id ^ "[" ^ arg ^ "];"
+                        
 	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
 	| AttrList(id) -> "CustType::attrList(" ^ id ^ ")"
   | NoExpr -> ""
