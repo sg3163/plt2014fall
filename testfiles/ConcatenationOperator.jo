@@ -1,8 +1,8 @@
-/* Simple Addition */
+/* Concatenation */
 
 func main () 
 decl a = 5
 decl b = 6
-print a ++ b
+print a + b
 return mainfunc
 end
