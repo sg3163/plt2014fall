@@ -126,13 +126,6 @@ expr:
     | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
     | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }
 
-elem_accesses:
-    { Noitem }
-    | elem_access elem_accesses        { Seq($1, Comma, $3) }
-
-elem_access:
-    | LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
-
 list_items:
     { Noitem }
     |  list_element                         { Item($1) }
