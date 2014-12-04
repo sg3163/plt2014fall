@@ -16,7 +16,7 @@ and json_items = function
     JsonItem(e) ->  json_key_value e 
   | JsonSeq(e, sep, i2) ->  json_key_value e ^ ","
                     ^ (json_items i2)
-  | Noitem -> ""
+  | NoJsonItem -> ""
 and json_key_value = function
 	JsonValPair(e1, colon, e2) ->  json_key e1 ^ ":" ^ json_value e2
 and json_key = function 
@@ -34,28 +34,41 @@ let string_of_loop_var_t = function
   Loopvar(l) -> l
 
 let rec string_of_expr e = match e with
-    LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")\n"
-  | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")\n"
-	| LitJson(l) -> "CustType::parse(\"{" ^ json_items l ^ "}\",\"JSON\")\n"
-	| LitList(l) -> "CustType::parse(\"[" ^ string_of_items l ^ "]\",\"LIST\")\n"
-	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")\n"
+    LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")"
+  | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")"
+	| LitJson(l) -> "CustType::parse(\"{" ^ json_items l ^ "}\",\"JSON\")"
+	| LitList(l) -> "CustType::parse(\"[" ^ string_of_items l ^ "]\",\"LIST\")"
+	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")"
 	| MainRet(l) -> "0"
   | Id(s) ->  s
   | Binop(e1, o, e2) ->
-      string_of_expr e1 ^ " " ^
+      
       ( match o with
-          Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/" | Or -> "||"
-          | And -> "&&" | Geq -> ">=" | Leq -> "<=" | Greater -> ">" | Less -> "<"
-        | Equal -> "==" | Neq -> "!=") ^ " " ^ string_of_expr e2
-  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
+          Add -> string_of_expr e1 ^ " " ^ "+" ^ " " ^ string_of_expr e2
+          | Sub -> string_of_expr e1 ^ " " ^ "-" ^ " " ^ string_of_expr e2
+          | Mult -> string_of_expr e1 ^ " " ^ "*" ^ " " ^ string_of_expr e2              
+          | Div -> string_of_expr e1 ^ " " ^ "/" ^ " " ^ string_of_expr e2
+          | Mod -> string_of_expr e1 ^ " " ^ "%" ^ " " ^ string_of_expr e2 
+          | Or -> string_of_expr e1 ^ " " ^ "||" ^ " " ^ string_of_expr e2               
+          | And -> string_of_expr e1 ^ " " ^ "&&" ^ " " ^ string_of_expr e2
+          | Geq -> string_of_expr e1 ^ " " ^ ">=" ^ " " ^ string_of_expr e2             
+          | Leq -> string_of_expr e1 ^ " " ^ "<=" ^ " " ^ string_of_expr e2
+          | Greater -> string_of_expr e1 ^ " " ^ ">" ^ " " ^ string_of_expr e2           
+          | Less -> string_of_expr e1 ^ " " ^ "<" ^ " " ^ string_of_expr e2
+          | Equal -> string_of_expr e1 ^ " " ^ "==" ^ " " ^ string_of_expr e2      
+          | Neq -> string_of_expr e1 ^ " " ^ "!=" ^ " " ^ string_of_expr e2 
+          | Concat -> "CustType::concat(" ^ string_of_expr e1 ^ "," ^ string_of_expr e2 ^ ")"
+          | Minus -> "CustType::minus(" ^ string_of_expr e1 ^ "," ^ string_of_expr e2 ^ ")"
+        ) 
+  | Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";"
 	| Call(f, el) ->
-      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ");"
-	| ElemAccess(id, e) -> let arg = (match e with
-                          ListItemInt(l) -> string_of_int l
-                        | ListItemStr(l) -> l
-                        
-                      ) in
-                        id ^ "[" ^ arg ^ "];\n"
+      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+	| ElemAccess(id, e) -> ( match e with
+                          ListItemInt(l) -> id ^ "-> access("^string_of_int l ^ ")"
+                        | ListItemStr(l) -> id ^ "-> access("^ l ^ ")"   
+                        )                  
+	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
+	| AttrList(id) -> "CustType::attrList(" ^ id ^ ")"
   | NoExpr -> ""
 
 let rec string_of_stmt = function
@@ -64,7 +77,7 @@ let rec string_of_stmt = function
 		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n"
     | Block(stmts) ->
         "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
-    | For(e1, e2, s1) ->  (*"while (" ^ (get_list_arg le2) ^")\n if(findNode(" ^ (get_list_arg le2) ^","^arg^") == 0)\n"^string_of_stmt s1*)
+    | For(e1, e2, s1) ->
       "for ( auto *" ^ string_of_loop_var_t e1 ^ "  = begin (" ^ get_for_id e2 ^ ") ; " ^ string_of_loop_var_t e1 ^ " != end ( " ^ get_for_id e2 ^ ") ; " ^ 
         "++" ^ string_of_loop_var_t e1 ^ ") { \n" 
       ^ string_of_stmt s1 ^ "\n}\n"
@@ -80,9 +93,9 @@ let string_of_vtype = function
   | JsonType -> "CustType*"
 
   
-let string_of_vdecl vdecl = if vdecl.vexpr = NoExpr then
+let string_of_vdecl vdecl = (*if vdecl.vexpr = NoExpr then
                               string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ "\n"
-                            else
+                            else*)
                               string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
 
 let string_of_formaldecl vdecl = string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname

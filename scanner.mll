@@ -32,8 +32,8 @@ rule token = parse
 	| '!'			{ NOT }			
 	| '-' 			{ COMMINUS }
 	| '+'     		{ COMPLUS } 
-	| ':'					{ COLON }
-	| '#'				{ HASH }
+	| ':'			{ COLON }
+	| '#'			{ HASH }
 	| "%%" 			{ MOD }
   	| "func"		{ FUNC }			
   	| "if"			{ IF }
@@ -47,6 +47,7 @@ rule token = parse
 	| "print"    	{PRINT}
 	| "type"    	{ TYPE } 
 	| "typeStruct" { TYPESTRUCT }
+	| "attrList"	{ ATTRLIST }
 	| "join"    	{ JOIN } 
 	| "makeString" 	{ MAKESTRING }
 	| "return"		{ RETURN }

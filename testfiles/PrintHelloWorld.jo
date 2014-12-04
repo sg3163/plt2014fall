@@ -3,6 +3,10 @@
 decl a = "Hello World"
 
 func main () 
-print a
+decl a = #{"name" : "abhinav"}#
+decl b = "name"
+decl c = a + b
+c = a - b
+
 return mainfunc
 end

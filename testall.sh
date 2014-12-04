@@ -79,6 +79,7 @@ function compileAndRun() {
         rm -rf ${reffile}.pjo
         rm -rf ${reffile}.cpp
         rm -rf ${reffile}.out
+        rm -rf ${reffile}.o
         rm -rf ${reffile}.output
         echo "ran $1 successfully"
     else

@@ -1,0 +1,14 @@
+/* Comparison equal and not equal */
+
+func main () 
+decl a = 5
+decl b = 6
+if(a==b)
+  print "hi"
+end
+
+if (a!=b)
+  print "hello"
+end 
+return mainfunc
+end

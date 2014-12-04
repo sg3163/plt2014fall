@@ -2,8 +2,20 @@
 
 
 func merge(A,B)
-print A
-print B
+
+decl c = A.typeStruct()
+
+/*if ( 2 != 3 )
+	print A
+else
+    print B
+end*/
+
+decl ab = [1,2,3,4]
+
+/*for x in ab
+ print x
+end*/
 
 return 0
 end
@@ -12,7 +24,7 @@ func main ()
 decl a = #{"Name":{"First":"Arpit","Last":"Gupta"},"School":"Columbia","Age":22,"Courses":["PLT","ML"]}#
 decl b = #{"Name":{"First":"Abhinav","Last":"Bajaj"},"School":"Columbia","Age":18,"Courses":["CV",{"Audit":"Algorithms"}]}#
 
-/*merge(a,b)*/
+merge(a,b)
 
 return mainfunc
 end
