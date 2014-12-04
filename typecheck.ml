@@ -30,6 +30,8 @@ let get_vtype env id =
  *  -> int/boolean if both of the operands having the same type *)
 let get_oper_type t1 t2 =
 	(*if t1 = "void" || t2 = "void" then raise (Failure ("cannot use void type inside expression")) else*)
+	if t1 = "json" then "json" else
+	if t1 = "list" then "list" else
 	if t1 = "string" || t2 = "string" then "string" else
 	if t1 = "int" && t2 = "int" then "int" else
 	if t1 = "bool" && t2 = "bool" then "bool" else

@@ -3,9 +3,12 @@
 func main () 
 decl a = 5
 decl b = 6
-decl c = a==b
-decl d = a!=b 
-print c
-print d
+if(a==b)
+  print "hi"
+end
+
+if (a!=b)
+  print "hello"
+end 
 return mainfunc
 end
