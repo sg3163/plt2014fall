@@ -23,7 +23,7 @@
 %left AND OR
 %left EQ NEQ
 %left LT GT LEQ GEQ
-%left PLUS MINUS 
+%left PLUS MINUS
 %left TIMES DIVIDE
 %left COMPLUS COMMINUS
 
@@ -102,9 +102,9 @@ list_expr:
 expr:
     | NUM_LIT                      { LitInt($1) }
     | STRING_LIT                   { LitStr($1) }
-	 | HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
-	 | LBRACK list_items RBRACK         { LitList($2) } 
-	 | BOOL_LIT                     { LitBool($1) }
+	| HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
+	| LBRACK list_items RBRACK         { LitList($2) } 
+	| BOOL_LIT                     { LitBool($1) }
     | ID                           { Id($1) }
     | expr PLUS   expr             { Binop($1, Add,      $3) }
     | expr MINUS  expr             { Binop($1, Sub,      $3) }
@@ -112,12 +112,19 @@ expr:
     | expr DIVIDE expr             { Binop($1, Div,      $3) }
     | expr EQ     expr             { Binop($1, Equal,    $3) }
     | expr NEQ    expr             { Binop($1, Neq,      $3) }
+    | expr COMPLUS    expr        { Binop($1, Concat,  $3) }
+    | expr COMMINUS    expr        { Binop($1, Minus,   $3) }
+    | expr LT    expr        { Binop($1, Less,   $3) }
+    | expr GT    expr        { Binop($1, Greater,   $3) }
+    | expr LEQ    expr        { Binop($1, Leq,   $3) }
+    | expr GEQ    expr        { Binop($1, Geq,   $3) }
+    | expr MOD    expr        { Binop($1, Geq,   $3) }
     | ID ASSIGN expr               { Assign($1, $3) }
-		| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
-		| MAINFUNC                     { MainRet(0) }
-		| ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
-		| ID ACCESS TYPESTRUCT LPAREN	RPAREN	 { TypeStruct($1) }
-		| ID ACCESS ATTRLIST LPAREN	RPAREN	 { AttrList($1) }
+	| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
+	| MAINFUNC                     { MainRet(0) }
+	| ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
+	| ID ACCESS TYPESTRUCT LPAREN	RPAREN	 { TypeStruct($1) }
+	| ID ACCESS ATTRLIST LPAREN	RPAREN	 { AttrList($1) }
 
 list_items:
     { Noitem }

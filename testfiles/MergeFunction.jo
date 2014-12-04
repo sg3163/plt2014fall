@@ -5,10 +5,16 @@ func merge(A,B)
 
 decl c = A.typeStruct()
 
-/*if ( A.typeStruct() != B.typeStruct() )
+/*if ( 2 != 3 )
 	print A
 else
     print B
+end*/
+
+decl ab = [1,2,3,4]
+
+/*for x in ab
+ print x
 end*/
 
 return 0

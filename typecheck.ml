@@ -4,7 +4,7 @@ open Symboltable
 module StringMap = Map.Make(String)
 
 let string_of_vtype = function
-	 IntType -> "int"
+   IntType -> "int"
   | StrType -> "string"
   | BoolType -> "bool"
   | JsonType -> "json"
@@ -28,14 +28,14 @@ let get_vtype env id =
 (* get the type of expression:
  *  -> string if one of the two operands having string type
  *  -> int/boolean if both of the operands having the same type *)
-let get_expr_type t1 t2 =
-	if t1 = "void" || t2 = "void" then raise (Failure ("cannot use void type inside expression")) else
+let get_oper_type t1 t2 =
+	(*if t1 = "void" || t2 = "void" then raise (Failure ("cannot use void type inside expression")) else*)
 	if t1 = "string" || t2 = "string" then "string" else
 	if t1 = "int" && t2 = "int" then "int" else
 	if t1 = "bool" && t2 = "bool" then "bool" else
 	if t1 = "int" && t2 = "bool" then raise (Failure ("cannot use int with bool type inside expression")) else
 	if t1 = "bool" && t2 = "int" then raise (Failure ("cannot use int with bool type inside expression")) else
-	raise (Failure ("type error in get_expr_type"))
+	raise (Failure ("type error in get_oper_type"))
 
 
 let check_listexpr env = function
@@ -47,7 +47,7 @@ let check_func_arg lst expr arg_t = (fst expr)::lst
 
 let match_oper e1 op e2 =
 	(* snd of expr is type *)
-	let expr_t = get_expr_type (snd e1) (snd e2) in
+	let expr_t = get_oper_type (snd e1) (snd e2) in
 	(match op with
 	   Ast.Add -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Add, fst e2), "int") else
 		  		raise (Failure ("type error"))
@@ -56,6 +56,8 @@ let match_oper e1 op e2 =
 	 | Ast.Mult -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Mult, fst e2), "int") else
 	 	   raise (Failure ("type error"))
 	 | Ast.Div -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Div, fst e2), "int") else
+		  raise (Failure ("type error"))
+	 | Ast.Mod -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Mod, fst e2), "int") else
 		  raise (Failure ("type error"))
 		  (* equal and not equal have special case for string comparison 
 		  		we may need to add SAST and Eqs and Neqs *)
@@ -74,7 +76,11 @@ let match_oper e1 op e2 =
      | Ast.And ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.And, fst e2), "bool") else
       			  raise (Failure ("type error in and")) 
      | Ast.Or ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Or, fst e2), "bool") else
-      			  raise (Failure ("type error in or")) 
+      			  raise (Failure ("type error in or"))
+     | Ast.Concat -> (Sast.Binop(fst e1, Sast.Concat, fst e2), "list")
+     | Ast.Minus -> if (snd e1) = "list" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "list") else
+					if (snd e1) = "json" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "json") else
+					raise (Failure ("type error in Minus"))
 	)
 	
 let rec check_list_items env = function
@@ -229,7 +235,7 @@ let rec check_formals env formals =
 
 let check_local env local =
 	let ret = add_local local.vname (find_vtype local.vexpr) env in
-	if (string_of_vtype local.vtype) = "void" then raise (Failure("cannot use void as variable type")) else
+	(*if (string_of_vtype local.vtype) = "void" then raise (Failure("cannot use void as variable type")) else*)
 	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local.vname ^ " is already defined"))
 	(* update the env with globals from ret *)
 	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
