@@ -12,9 +12,18 @@ void print_out(const wchar_t *output)
 {
     wcout << output;
     wcout.flush();
-}
 
-enum dataType { NUMBER , STRING , JSON, LIST } ; 
+}
+string wstringToString (wstring w){
+	string result = "" ;
+	char x ; 
+    for ( int i = 0  ; w[i] != '\0' ; i ++ ){
+    	x = w[i] ; 
+    	result += x ; 
+    }
+    return result ;
+}
+enum dataType { NUMBER , STRING , JSON, LIST , BOOL } ; 
 
 class CustType {
 	
@@ -56,7 +65,17 @@ class CustType {
 	}
 	
 };
+class BoolType : public CustType { 
+	bool da ; 
+	int type ; 
+	public :
+	BoolType (bool da , int type ) : CustType (  ) { 
+		
+		this -> da = da ;
+		this -> type = type ; 
+	}
 
+};
 class NumType : public CustType { 
 	
 	double da; 
@@ -86,6 +105,7 @@ class StringType : public CustType {
 		this -> da = da ;
 		this -> type = type ; 
 	}
+	
 	StringType(){
 		
 	}
@@ -135,22 +155,27 @@ class JsonType : public CustType {
 	}
 } ;
 */
+
 class JsonType : public CustType {
 
     //JSONObject da;
     int type;
 
     public :
-    JSONObject da ;
-    JsonType(JSONObject da, int type) : CustType() {
-        this -> da = da;
+    JSONObject data ;
+    map <string , CustType* > da ;
+    void convToJsonType () ;  
+    JsonType(JSONObject data, int type) : CustType() {
+        this -> data= data;
         this -> type = type;
+        //this -> da = new map <string , CustType* >  ; 
+        convToJsonType() ;
     }
 
     JsonType() {}
 
     void print() {
-      JSONValue *value = new JSONValue(da);
+      JSONValue *value = new JSONValue(data);
       print_out(value->Stringify().c_str());
     }
 
@@ -158,16 +183,54 @@ class JsonType : public CustType {
         return JSON;
     }
     JSONObject::iterator getBeginIterator (){
-		JSONObject::iterator it  = da.begin();
+		JSONObject::iterator it  = data.begin();
 		
 		return it ;
 	}
 	JSONObject::iterator getEndIterator (){
-		JSONObject::iterator it = da.end ();
+		JSONObject::iterator it = data.end ();
 		return it ;	
 	}
-};
 
+
+};
+void JsonType :: convToJsonType (){
+
+	map <string , CustType* > a ; 
+	
+	for ( JSONObject::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
+		
+		string key = wstringToString ( iter -> first ) ; 
+		if ( (iter -> second)-> IsString () ) {
+			string val = wstringToString ((iter-> second)-> AsString () ) ; 
+			StringType* t = new StringType (val, STRING) ; 
+			cout << val ;
+			a[key] = t ;  
+		}
+		if ( (iter -> second)-> IsBool () ) {
+			bool val = (iter-> second)-> AsBool ()  ; 
+			BoolType* t = new BoolType (val, BOOL) ; 
+			cout << val ;
+			a[key] = t ;  
+		}
+		if ( (iter -> second)-> IsNumber () ) {
+			double val = (iter-> second)-> AsNumber ()  ; 
+			NumType* t = new NumType (val, NUMBER) ; 
+			cout << val ;
+			a[key] = t ;  
+		}
+		if ( (iter -> second)-> IsObject() ){
+			JSONObject val = (iter-> second)-> AsObject () ; 
+			JsonType* t = new JsonType ( val , JSON) ;
+			a[key] =  t ; 
+		}
+		cout << endl ; 
+		
+	}
+
+	da.insert ( a.begin() , a.end () ) ; 
+	//return a ; 
+}
 NumType* getNum (string data, int type ){
 	double num  = 0 ; 
 	int decimal_bool = 0, decimal = 1 ; 

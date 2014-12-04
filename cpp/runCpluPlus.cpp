@@ -32,27 +32,28 @@ int main() {
 	string testString = "\
         { \
           \"name\" : \"name1\", \
-          \"age\" : \"25\", \
+          \"age\" : 25123, \
+          \"BoolVal\" : True, \
           \"scores\" : \"[1, 2, 3]\", \
           \"sub_object\" : { \
-            \"foo\" : \"abc\", \
+            \"foo\" : \"True\", \
             \"bar\" : \"123\" \
             } \
         } ";
 	
     //string testString = "arpit" ;
 	CustType *testJsonType = CustType :: parse(testString, "JSON");
-	testJsonType -> print();
+	//testJsonType -> print();
 	cout << endl;
-	cout << testJsonType -> getType();
+	//cout << testJsonType -> getType();
 	cout << endl;
-	
-	for ( auto iter  = testJsonType ->  getBeginIterator() ; iter != testJsonType -> getEndIterator () ; iter ++ ) {
+	/*
+	for ( JSONObject::iterator iter  = testJsonType ->  getBeginIterator() ; iter != testJsonType -> getEndIterator () ; iter ++ ) {
 		
 		print_out ( (iter -> first).c_str() ) ; 
 		print_out ( (iter-> second) -> Stringify ().c_str()) ; 
 		cout   << endl ; 
-	}
+	}*/
 
 
 	return 0;
