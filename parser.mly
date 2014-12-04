@@ -22,7 +22,7 @@
 
 %left AND OR
 %left EQ NEQ
-%left LT GT LEQ GEQ
+%left LT GT LEQ GEQ MOD
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left COMPLUS COMMINUS
@@ -80,7 +80,7 @@ rev_stmt_list:
 stmt:
     expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
-	| PRINT expr SEMI                                   { Print($2) }
+    | PRINT expr SEMI                                   { Print($2) }
     | FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
@@ -96,35 +96,42 @@ expr_opt:
   | expr          { $1 }
 
 list_expr:
- 		NUM_LIT                      { ListItemInt($1) }
+        NUM_LIT                      { ListItemInt($1) }
     | STRING_LIT                      { ListItemStr($1) }
 
 expr:
     | NUM_LIT                      { LitInt($1) }
     | STRING_LIT                   { LitStr($1) }
-	| HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
-	| LBRACK list_items RBRACK         { LitList($2) } 
-	| BOOL_LIT                     { LitBool($1) }
+    | HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
+    | LBRACK list_items RBRACK         { LitList($2) } 
+    | BOOL_LIT                     { LitBool($1) }
     | ID                           { Id($1) }
+    | expr COMPLUS    expr        { Binop($1, Concat,  $3) }
+    | expr COMMINUS    expr        { Binop($1, Minus,   $3) }
     | expr PLUS   expr             { Binop($1, Add,      $3) }
     | expr MINUS  expr             { Binop($1, Sub,      $3) }
     | expr TIMES  expr             { Binop($1, Mult,     $3) }
     | expr DIVIDE expr             { Binop($1, Div,      $3) }
     | expr EQ     expr             { Binop($1, Equal,    $3) }
     | expr NEQ    expr             { Binop($1, Neq,      $3) }
-    | expr COMPLUS    expr        { Binop($1, Concat,  $3) }
-    | expr COMMINUS    expr        { Binop($1, Minus,   $3) }
-    | expr LT    expr            { Binop($1, Less,   $3) }
-    | expr GT    expr            { Binop($1, Greater,   $3) }
-    | expr LEQ    expr            { Binop($1, Leq,   $3) }
+    | expr LT     expr             { Binop($1, Less,   $3) }
+    | expr LEQ    expr             { Binop($1, Leq,   $3) }
+    | expr GT     expr             { Binop($1, Greater,   $3) }
     | expr GEQ    expr             { Binop($1, Geq,   $3) }
     | expr MOD    expr             { Binop($1, Mod,   $3) }
-    | ID ASSIGN expr               { Assign($1, $3) }
-	| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
-	| MAINFUNC                     { MainRet(0) }
-	| ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
-	| ID ACCESS TYPESTRUCT LPAREN	RPAREN	 { TypeStruct($1) }
-	| ID ACCESS ATTRLIST LPAREN	RPAREN	 { AttrList($1) }
+    | ID ASSIGN   expr             { Assign($1, $3) }
+    | ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
+    | MAINFUNC                     { MainRet(0) }
+    | ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
+    | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
+    | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }
+
+elem_accesses:
+    { Noitem }
+    | elem_access elem_accesses        { Seq($1, Comma, $3) }
+
+elem_access:
+    | LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
 
 list_items:
     { Noitem }
@@ -132,24 +139,24 @@ list_items:
     | list_element COMMA list_items        { Seq($1, Comma, $3) }  
 
 list_element:
-	NUM_LIT                      { LitIntElem($1) }
+    NUM_LIT                      { LitIntElem($1) }
   | STRING_LIT                 { LitStrElem($1) }
-	| LBRACK list_items RBRACK   { LitList($2) }
-	| LBRACE json_items RBRACE   { LitJson($2) }
+    | LBRACK list_items RBRACK   { LitList($2) }
+    | LBRACE json_items RBRACE   { LitJson($2) }
 
 json_items:
 { NoJsonItem }
-| json_item										{ JsonItem($1)}
+| json_item                                     { JsonItem($1)}
 | json_item COMMA json_items   { JsonSeq($1, Comma, $3) }  
 
 json_item:
-	json_item_key COLON json_item_value { JsonValPair($1,Colon,$3) }
+    json_item_key COLON json_item_value { JsonValPair($1,Colon,$3) }
 
 json_item_value:
-	NUM_LIT                      { LitIntJsonVal($1) }
+    NUM_LIT                      { LitIntJsonVal($1) }
   | STRING_LIT                 { LitStrJsonVal($1) }
-	| LBRACE json_items RBRACE   { LitJson($2) }
-	| LBRACK list_items RBRACK   { LitList($2) }
+    | LBRACE json_items RBRACE   { LitJson($2) }
+    | LBRACK list_items RBRACK   { LitList($2) }
 
 json_item_key:
  STRING_LIT                 { LitStrJsonKey($1) }
