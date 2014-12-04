@@ -118,7 +118,7 @@ expr:
     | expr GT    expr        { Binop($1, Greater,   $3) }
     | expr LEQ    expr        { Binop($1, Leq,   $3) }
     | expr GEQ    expr        { Binop($1, Geq,   $3) }
-    | expr MOD    expr        { Binop($1, Geq,   $3) }
+    | expr MOD    expr        { Binop($1, Mod,   $3) }
     | ID ASSIGN expr               { Assign($1, $3) }
 	| ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
 	| MAINFUNC                     { MainRet(0) }
