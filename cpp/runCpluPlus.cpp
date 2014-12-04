@@ -34,7 +34,10 @@ int main() {
           \"name\" : \"name1\", \
           \"age\" : 25123, \
           \"BoolVal\" : True, \
-          \"scores\" : \"[1, 2, 3]\", \
+          \"scores\" : [1, 2, 3 , { \
+            \"foo\" : \"False\", \
+            \"bar\" : \"123\" \
+            } ], \
           \"sub_object\" : { \
             \"foo\" : \"True\", \
             \"bar\" : \"123\" \

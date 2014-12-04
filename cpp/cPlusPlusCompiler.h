@@ -119,16 +119,23 @@ class StringType : public CustType {
 
 class ListType : public CustType { 
 	
-	vector <CustType> da; 
-	int type ; 
+	vector <CustType*> da; 
+	int type ;
+	JSONArray data ;
 	public : 
-	ListType (vector <CustType> da , int type) : CustType (  ) { 
+	void convToJsonType() ;
+	/*(ListType (vector <CustType> da , int type) : CustType (  ) { 
 		
 		this -> da = da ;
 		this -> type = type ; 
-	}
+	}*/
 	ListType(){
 		
+	}
+	ListType(JSONArray data, int type) : CustType()  { 
+		this -> data = data ;
+		this -> type = type ; 
+		convToJsonType() ;
 	}
 	int getType () {
 		return LIST ;
@@ -207,22 +214,30 @@ void JsonType :: convToJsonType (){
 			cout << val ;
 			a[key] = t ;  
 		}
-		if ( (iter -> second)-> IsBool () ) {
+		else if ( (iter -> second)-> IsBool () ) {
 			bool val = (iter-> second)-> AsBool ()  ; 
 			BoolType* t = new BoolType (val, BOOL) ; 
 			cout << val ;
 			a[key] = t ;  
 		}
-		if ( (iter -> second)-> IsNumber () ) {
+		else if ( (iter -> second)-> IsNumber () ) {
 			double val = (iter-> second)-> AsNumber ()  ; 
 			NumType* t = new NumType (val, NUMBER) ; 
 			cout << val ;
 			a[key] = t ;  
 		}
-		if ( (iter -> second)-> IsObject() ){
+		else if ( (iter -> second)-> IsObject() ){
 			JSONObject val = (iter-> second)-> AsObject () ; 
 			JsonType* t = new JsonType ( val , JSON) ;
 			a[key] =  t ; 
+		}
+		else if ( (iter) -> second -> IsArray () ){
+			JSONArray val = (iter -> second )-> AsArray () ; 
+			ListType* t = new ListType ( val , LIST ) ; 
+			a[key] = t ; 
+		}
+		else { 
+			cout << "Here I am, stuck in JsonType :: convToJsonType, I think the JSON library is screwing up, and throwing random types. " ; 
 		}
 		cout << endl ; 
 		
@@ -230,6 +245,48 @@ void JsonType :: convToJsonType (){
 
 	da.insert ( a.begin() , a.end () ) ; 
 	//return a ; 
+}
+void ListType :: convToJsonType () {
+
+	for ( vector<JSONValue*>  :: iterator iter  = data.begin () ; iter !=  data.end () ; iter ++ ) {
+		
+		
+		if ( (*iter) -> IsString () ) {
+			string val = wstringToString ((*iter) -> AsString () ) ; 
+			StringType* t = new StringType (val, STRING) ; 
+			cout << val ;
+			da.push_back(t) ;  
+		}
+		else if ( (*iter) -> IsBool () ) {
+			bool val = (*iter) -> AsBool ()  ; 
+			BoolType* t = new BoolType (val, BOOL) ; 
+			cout << val ;
+			da.push_back(t) ; 
+		}
+		else if ( (*iter) -> IsNumber () ) {
+			double val = (*iter) -> AsNumber ()  ; 
+			NumType* t = new NumType (val, NUMBER) ; 
+			cout << val ;
+			da.push_back(t) ; 
+		}
+		else if ( (*iter) -> IsObject() ){
+			JSONObject val = (*iter) -> AsObject () ; 
+			JsonType* t = new JsonType ( val , JSON) ;
+			da.push_back(t) ; 
+		}
+		else if ( (*iter) -> IsArray () ){
+			JSONArray val = (*iter) -> AsArray () ; 
+			ListType* t = new ListType ( val , LIST ) ; 
+			da.push_back(t) ; 
+		}
+		else { 
+			cout << "Here I am, stuck in ListType :: convToJsonType, I think the JSON library is screwing up, and throwing random types. " ; 
+		}
+		cout << endl ; 
+		
+	}
+
+
 }
 NumType* getNum (string data, int type ){
 	double num  = 0 ; 
