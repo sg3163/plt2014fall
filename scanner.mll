@@ -32,8 +32,8 @@ rule token = parse
 	| '!'			{ NOT }			
 	| '-' 			{ COMMINUS }
 	| '+'     		{ COMPLUS } 
-	| ':'					{ COLON }
-	| '#'				{ HASH }
+	| ':'			{ COLON }
+	| '#'			{ HASH }
 	| "%%" 			{ MOD }
   	| "func"		{ FUNC }			
   	| "if"			{ IF }
