@@ -63,12 +63,28 @@ class CustType {
 		cout << "Accesing outside of Json Object "  ; 
 		return it ;	
 	}
-	
+	virtual CustType* getElement ( string key ) {
+		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
+		return  NULL ; 
+	}
+	virtual CustType* getElement ( int index ) {
+		cout << "In CustType, apparently not in LIST. Calling from some other type\n" ; 
+		return  NULL ; 
+	}
+	virtual void add (CustType* el) { 
+		cout << "In CustType, apparently not in LIST. Calling from some other type\n" ; 
+		
+	}
+	virtual void add (string  key, CustType* el) { 
+		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
+
+	}
 };
 class BoolType : public CustType { 
+	public :
+	
 	bool da ; 
 	int type ; 
-	public :
 	BoolType (bool da , int type ) : CustType (  ) { 
 		
 		this -> da = da ;
@@ -78,9 +94,11 @@ class BoolType : public CustType {
 };
 class NumType : public CustType { 
 	
+	
+	public : 
+	
 	double da; 
 	int type ; 
-	public : 
 	NumType (double da , int type) : CustType (  ) { 
 		
 		this -> da = da ;
@@ -97,9 +115,9 @@ class NumType : public CustType {
 
 class StringType : public CustType { 
 	
+	public : 
 	string da;
 	int type ;  
-	public : 
 	StringType (string da , int type ) : CustType (  ) { 
 		
 		this -> da = da ;
@@ -115,6 +133,7 @@ class StringType : public CustType {
 	int getType () {
 		return STRING ;
 	}
+	
 } ;
 
 class ListType : public CustType { 
@@ -123,7 +142,7 @@ class ListType : public CustType {
 	int type ;
 	JSONArray data ;
 	public : 
-	void convToJsonType() ;
+	void convToListType() ;
 	/*(ListType (vector <CustType> da , int type) : CustType (  ) { 
 		
 		this -> da = da ;
@@ -135,33 +154,27 @@ class ListType : public CustType {
 	ListType(JSONArray data, int type) : CustType()  { 
 		this -> data = data ;
 		this -> type = type ; 
-		convToJsonType() ;
+		convToListType() ;
+	}
+	ListType(vector <string> v) : CustType () { 
+		for (vector<string> :: iterator it = v.begin ( ); it != v.end () ; it ++ ){
+			StringType* s = new StringType ( *it, STRING ) ; 
+			this -> da.push_back (s) ; 	
+		}
 	}
 	int getType () {
 		return LIST ;
 	}
-	
+	virtual CustType* getElement (int index) {
+		if ( index > da.size())
+			return NULL ; 
+		return da[index] ; 
+	}
+	void add (string  key, CustType* el) { 
+		da.push_back (el) ;
+	}
 } ;
 
-/*
-class JsonType : public CustType { 
-	
-	map <string, CustType> da; 
-	int type ; 
-	public : 
-	JsonType (map <string, CustType > da , int type) : CustType (  ) { 
-		
-		this -> da = da ;
-		this -> type = type ; 
-	}
-	JsonType () { 
-		
-	}
-	int getType () {
-		return JSON ;
-	}
-} ;
-*/
 
 class JsonType : public CustType {
 
@@ -189,6 +202,7 @@ class JsonType : public CustType {
     int getType() {
         return JSON;
     }
+    ListType* getAttrList () ;
     JSONObject::iterator getBeginIterator (){
 		JSONObject::iterator it  = data.begin();
 		
@@ -198,9 +212,20 @@ class JsonType : public CustType {
 		JSONObject::iterator it = data.end ();
 		return it ;	
 	}
-
+	CustType * getElement (string key) {
+		if ( da.find(key) == da.end())
+			return NULL ;
+		else
+			return da[key] ;  
+	}
+	void add (string  key, CustType* el) { 
+		da [key] = el ; 
+	}
 
 };
+/******************************************************
+		CLASS DEFINITIONS END HERE 
+******************************************************/
 
 NumType* getNum (string data, int type ){
 	double num  = 0 ; 
@@ -319,7 +344,7 @@ void JsonType :: convToJsonType (){
 			string val = wstringToString ((iter-> second)-> AsString () ) ; 
 			StringType* t = new StringType (val, STRING) ; 
 			cout << val ;
-			a[key] = t ;  
+			a[key] = t  ;  
 		}
 		else if ( (iter -> second)-> IsBool () ) {
 			bool val = (iter-> second)-> AsBool ()  ; 
@@ -353,7 +378,7 @@ void JsonType :: convToJsonType (){
 	da.insert ( a.begin() , a.end () ) ; 
 	//return a ; 
 }
-void ListType :: convToJsonType () {
+void ListType :: convToListType () {
 
 	for ( vector<JSONValue*>  :: iterator iter  = data.begin () ; iter !=  data.end () ; iter ++ ) {
 		
@@ -387,13 +412,24 @@ void ListType :: convToJsonType () {
 			da.push_back(t) ; 
 		}
 		else { 
-			cout << "Here I am, stuck in ListType :: convToJsonType, I think the JSON library is screwing up, and throwing random types. " ; 
+			cout << "Here I am, stuck in ListType :: convToListType, I think the JSON library is screwing up, and throwing random types. " ; 
 		}
 		cout << endl ; 
 		
 	}
 
 
+}
+ListType* JsonType :: getAttrList () { 
+
+	vector <string> atrrListStr;
+	for ( JSONObject::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
+		
+		string keyString = wstringToString ( iter -> first ) ; 
+		atrrListStr.push_back(keyString) ;
+	}
+	ListType* attrList = new ListType (atrrListStr) ; 
+	return attrList ; 	
 }
 /*
 int main() {
