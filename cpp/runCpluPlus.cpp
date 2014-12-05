@@ -1,5 +1,5 @@
 #include "cPlusPlusCompiler.h"
-int main() {
+int main() {		
 	// your code goes here
 	cout << endl ; 
 	cout << endl ; 
@@ -46,6 +46,11 @@ int main() {
 	
     //string testString = "arpit" ;
 	CustType *testJsonType = CustType :: parse(testString, "JSON");
+	//CustType *testJsonAcc = testJsonType -> getElement("sub_object")->getElement("foo");
+	testJsonType -> add ("class" , c) ; 
+	CustType *testJsonAcc = testJsonType -> getElement("class");
+	
+	testJsonAcc -> print () ; 
 	//testJsonType -> print();
 	cout << endl;
 	//cout << testJsonType -> getType();
