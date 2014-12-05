@@ -48,9 +48,16 @@ int main() {
 	CustType *testJsonType = CustType :: parse(testString, "JSON");
 	//CustType *testJsonAcc = testJsonType -> getElement("sub_object")->getElement("foo");
 	testJsonType -> add ("class" , c) ; 
-	CustType *testJsonAcc = testJsonType -> getElement("class");
-	
-	testJsonAcc -> print () ; 
+	CustType *testJsonAcc = testJsonType -> getElement("scores");
+	//cout << testJsonAcc -> getType () ; 
+	//testJsonAcc -> print () ;
+	int ctr = 0 ; 
+	while ( CustType *t = testJsonType -> getAttrList() -> getElement(ctr++) ) {
+		//CustType *t = testJsonAcc -> getElement(ctr++) ; 
+		//if ( ctr < 3 )
+			t -> print () ;
+			cout << " " ; 
+	}
 	//testJsonType -> print();
 	cout << endl;
 	//cout << testJsonType -> getType();

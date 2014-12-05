@@ -63,6 +63,11 @@ class CustType {
 		cout << "Accesing outside of Json Object "  ; 
 		return it ;	
 	}
+	virtual CustType* getAttrList () {
+		JSONObject::iterator it ;
+		cout << "Accesing outside of Json Object "  ; 
+		return NULL ;	
+	}
 	virtual CustType* getElement ( string key ) {
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 		return  NULL ; 
@@ -165,7 +170,7 @@ class ListType : public CustType {
 	int getType () {
 		return LIST ;
 	}
-	virtual CustType* getElement (int index) {
+	CustType* getElement (int index) {
 		if ( index > da.size())
 			return NULL ; 
 		return da[index] ; 
@@ -202,7 +207,7 @@ class JsonType : public CustType {
     int getType() {
         return JSON;
     }
-    ListType* getAttrList () ;
+    CustType* getAttrList () ;
     JSONObject::iterator getBeginIterator (){
 		JSONObject::iterator it  = data.begin();
 		
@@ -420,7 +425,7 @@ void ListType :: convToListType () {
 
 
 }
-ListType* JsonType :: getAttrList () { 
+CustType* JsonType :: getAttrList () { 
 
 	vector <string> atrrListStr;
 	for ( JSONObject::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
