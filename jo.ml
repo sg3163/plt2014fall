@@ -78,8 +78,8 @@ let rec string_of_stmt = function
     | Block(stmts) ->
         "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
     | For(e1, e2, s1) ->
-      "for ( auto *" ^ string_of_loop_var_t e1 ^ "  = begin (" ^ get_for_id e2 ^ ") ; " ^ string_of_loop_var_t e1 ^ " != end ( " ^ get_for_id e2 ^ ") ; " ^ 
-        "++" ^ string_of_loop_var_t e1 ^ ") { \n" 
+      "for (vector<CustType*> :: iterator  " ^ string_of_loop_var_t e1 ^ "  = " ^ get_for_id e2 ^ " -> getListBegin () ; " ^ string_of_loop_var_t e1 ^ " != " ^ get_for_id e2 ^ 
+        " -> getListEnd () ;  " ^ "++" ^ string_of_loop_var_t e1 ^ ") { \n" 
       ^ string_of_stmt s1 ^ "\n}\n"
     | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
     | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^

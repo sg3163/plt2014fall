@@ -57,6 +57,11 @@ int main() {
 	//cout << testJsonAcc -> getType () ; 
 	//testJsonAcc -> print () ;
 	int ctr = 0 ; 
+	cout << "that was through new method \n" ; 
+	for (vector<CustType*> :: iterator it = testJsonType -> getListBegin () ; it != testJsonType -> getListEnd () ; ++ it) {
+		(*it) -> print ()  ; 
+	}
+	cout << "that was through new method \n" ; 
 	while ( CustType *t = testJsonType  -> getElement(ctr++) ) {
 		//CustType *t = testJsonAcc -> getElement(ctr++) ; 
 		//if ( ctr < 3 )
