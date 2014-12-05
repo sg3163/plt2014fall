@@ -43,20 +43,25 @@ int main() {
             \"bar\" : \"123\" \
             } \
         } ";
-	
+	string listString = "[1, 2, 3 , { \
+            \"foo\" : \"False\", \
+            \"bar\" : \"123\" \
+            } ]" ;
+	CustType *testJsonType = CustType :: parse(listString, "LIST");
+
     //string testString = "arpit" ;
-	CustType *testJsonType = CustType :: parse(testString, "JSON");
+	//CustType *testJsonType = CustType :: parse(testString, "JSON");
 	//CustType *testJsonAcc = testJsonType -> getElement("sub_object")->getElement("foo");
-	testJsonType -> add ("class" , c) ; 
-	CustType *testJsonAcc = testJsonType -> getElement("scores");
+	//testJsonType -> add ("class" , c) ; 
+	//CustType *testJsonAcc = testJsonType -> getElement("scores");
 	//cout << testJsonAcc -> getType () ; 
 	//testJsonAcc -> print () ;
 	int ctr = 0 ; 
-	while ( CustType *t = testJsonType -> getAttrList() -> getElement(ctr++) ) {
+	while ( CustType *t = testJsonType  -> getElement(ctr++) ) {
 		//CustType *t = testJsonAcc -> getElement(ctr++) ; 
 		//if ( ctr < 3 )
 			t -> print () ;
-			cout << " " ; 
+			cout << " \n" ; 
 	}
 	//testJsonType -> print();
 	cout << endl;

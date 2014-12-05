@@ -171,7 +171,8 @@ class ListType : public CustType {
 		return LIST ;
 	}
 	CustType* getElement (int index) {
-		if ( index > da.size())
+		
+		if ( index >= da.size())
 			return NULL ; 
 		return da[index] ; 
 	}
@@ -268,11 +269,33 @@ StringType* getString (string data, int type){
 }
 
 ListType* getList (string data, int type){
-	ListType* t; 
 	
+	std::string str = data;
+    const char *cstr = str.c_str();
+
+    JSONValue *value = JSON::Parse(cstr);
+    JSONObject root;
+    
+    if (value == NULL) {
+        return NULL;
+    }
+    else {
+	if (value->IsObject() == false) {
+	    return NULL;
+	}
+	else {
+	    root = value->AsObject();
+	}
+    }
+
+    JsonType* t = new JsonType(root, JSON);
+
+	return (ListType *) t -> getElement ("List"); 
+}
+BoolType* getBool (string data , int type) {
+	BoolType * t = new BoolType ( data == "True" ? 1 : 0 , BOOL ) ; 
 	return t ; 
 }
-
 JsonType* getJson (string data, int type){
 
     std::string str = data;
@@ -305,12 +328,17 @@ CustType* CustType :: parse (string data, string type)  {
 	      	
 		}
 		else if (type == "LIST"){
+
+			data = "{ \"List\" : " + data + " }" ;
 			//CustType :: dt = LIST ; 
 			return getList ( data , LIST ) ;
 		}
 		else if (type == "JSON"){
 			//CustType :: dt = JSON ; 
 			return getJson (data, JSON) ;
+		}
+		else if (type == "BOOL"){
+			return getBool (data, JSON) ;
 		}
 		else{
 			//CustType :: dt = NUMBER ; 
