@@ -46,6 +46,7 @@ class CustType {
 	static CustType* parse (string data, string type) ; 
 	static string typeString ( CustType* t) ;
 	static void print(CustType* data) ;
+	static void print (vector<CustType*>  :: iterator it ) ;
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class" ;
 	}
@@ -365,7 +366,9 @@ CustType* CustType :: parse (string data, string type)  {
 void CustType :: print ( CustType* data) { 
 	data -> print () ;
 }
-
+void CustType :: print (vector<CustType*>  :: iterator it ) {
+	(*it) -> print () ; 
+}
 string CustType :: typeString ( CustType* t) {
 
 	int typeVal = t -> getType () ;
