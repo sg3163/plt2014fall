@@ -1,6 +1,6 @@
 CC=g++
 
-CFLAGS=-c -Wall
+CFLAGS=-c -w
 LFLAGS=-lm
 
 SOURCES=testfiles/$(inputfile).cpp cpp/JSON.cpp cpp/JSONValue.cpp
