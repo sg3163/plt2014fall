@@ -1,0 +1,10 @@
+/* Declare a Global Variable and print in Main function */
+
+decl a = [1, 2 ,3 ]
+
+func main () 
+for b in a
+	print b
+end
+return mainfunc
+end
