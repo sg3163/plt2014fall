@@ -134,8 +134,8 @@ list_items:
 list_element:
     NUM_LIT                      { LitIntElem($1) }
   | STRING_LIT                 { LitStrElem($1) }
-    | LBRACK list_items RBRACK   { LitList($2) }
-    | LBRACE json_items RBRACE   { LitJson($2) }
+    | LBRACK list_items RBRACK   { LitListOfList($2) }
+    | LBRACE json_items RBRACE   { LitJsonOfList($2) }
 
 json_items:
 { NoJsonItem }
@@ -148,8 +148,8 @@ json_item:
 json_item_value:
     NUM_LIT                      { LitIntJsonVal($1) }
   | STRING_LIT                 { LitStrJsonVal($1) }
-    | LBRACE json_items RBRACE   { LitJson($2) }
-    | LBRACK list_items RBRACK   { LitList($2) }
+    | LBRACE json_items RBRACE   { LitJsonOfJson($2) }
+    | LBRACK list_items RBRACK   { LitListOfJson($2) }
 
 json_item_key:
  STRING_LIT                 { LitStrJsonKey($1) }

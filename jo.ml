@@ -9,8 +9,8 @@ let rec string_of_items = function
 and string_of_elements = function
 	LitIntElem(l) ->  string_of_int l 
   | LitStrElem(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
-	| LitList(l) -> "[" ^ string_of_items l ^ "]"
-	| LitJson(l) -> "{" ^ json_items l ^ "}"
+	| LitListOfList(l) -> "[" ^ string_of_items l ^ "]"
+	| LitJsonOfList(l) -> "{" ^ json_items l ^ "}"
 
 and json_items = function
     JsonItem(e) ->  json_key_value e 
@@ -24,8 +24,8 @@ and json_key = function
 and json_value = function
 	LitIntJsonVal(l) -> string_of_int l
 	| LitStrJsonVal(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
-	| LitJson(l) -> "{" ^ json_items l ^ "}"
-	| LitList(l) -> "[" ^ string_of_items l ^ "]"
+	| LitJsonOfJson(l) -> "{" ^ json_items l ^ "}"
+	| LitListOfJson(l) -> "[" ^ string_of_items l ^ "]"
 let get_for_id e = match e
     with
     Forid(id) -> id

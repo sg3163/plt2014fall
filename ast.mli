@@ -13,8 +13,8 @@ type list_expr =
 type list_element = 
   LitIntElem of int
   | LitStrElem of string
-	| LitList of items
-	| LitJson of json_items
+	| LitListOfList of items
+	| LitJsonOfList of json_items
 and items = 
     Item of list_element
   | Seq of list_element * sep * items
@@ -24,8 +24,8 @@ and json_key_type =
 and json_item_value = 
   LitIntJsonVal of int
   | LitStrJsonVal of string
-	| LitJson of json_items
-	| LitList of items
+	| LitJsonOfJson of json_items
+	| LitListOfJson of items
 and json_item =
 	JsonValPair of json_key_type * colon * json_item_value
 and json_items = 

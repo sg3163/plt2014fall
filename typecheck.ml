@@ -96,12 +96,12 @@ and check_list_element env = function
 	| Ast.LitStrElem(s) -> 
 	(*	let _ = print_string "in string " in*)
 		Sast.LitStrElem(s), "string"
-	| Ast.LitList(items) -> 
+	| Ast.LitListOfList(items) -> 
 	(*	let _ = print_string "in list " in*)
-		Sast.LitList(check_list_items env items), "list"
-	| Ast.LitJson(items) -> 
+		Sast.LitListOfList(check_list_items env items), "list"
+	| Ast.LitJsonOfList(items) -> 
 	(*	let _ = print_string "in json " in*)
-		Sast.LitJson(check_json_items env items), "json"
+		Sast.LitJsonOfList(check_json_items env items), "json"
 
 and check_json_items env = function
 	  Ast.JsonItem(e) -> Sast.JsonItem(check_json_keyValue env e)
@@ -118,12 +118,12 @@ and check_json_value env = function
 	| Ast.LitStrJsonVal(s) -> 
 	(*	let _ = print_string "in string " in*)
 		Sast.LitStrJsonVal(s), "string"
-	| Ast.LitJson(items) -> 
+	| Ast.LitJsonOfJson(items) -> 
 	(*	let _ = print_string "in json " in*)
-		Sast.LitJson(check_json_items env items), "json"
-	| Ast.LitList(items) -> 
+		Sast.LitJsonOfJson(check_json_items env items), "json"
+	| Ast.LitListOfJson(items) -> 
 	(*	let _ = print_string "in list " in*)
-		Sast.LitList(check_list_items env items), "list"
+		Sast.LitListOfJson(check_list_items env items), "list"
 		
 		
 and check_json_key env = function 
