@@ -1,0 +1,7 @@
+If IN
+Add bracket to Print
+Read
+Type
+MakeString
+String Concatenation
+SAST checking
