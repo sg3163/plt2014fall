@@ -95,6 +95,8 @@ class CustType {
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 
 	}
+	static CustType* concat (CustType* t1, CustType* t2) ; 
+	
 };
 class BoolType : public CustType { 
 	public :
@@ -106,7 +108,9 @@ class BoolType : public CustType {
 		this -> da = da ;
 		this -> type = type ; 
 	}
-
+	int getType () {
+		return BOOL ;
+	}
 };
 class NumType : public CustType { 
 	
@@ -181,6 +185,11 @@ class ListType : public CustType {
 	int getType () {
 		return LIST ;
 	}
+	void print () {
+		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
+			(*it) -> print () ; 
+		} 
+	}
 	CustType* getElement (int index) {
 		
 		if ( index >= da.size())
@@ -193,7 +202,7 @@ class ListType : public CustType {
 	vector<CustType*> :: iterator getListEnd (){
 		return da.end() ; 
 	}
-	void add (string  key, CustType* el) { 
+	void add ( CustType* el ) { 
 		da.push_back (el) ;
 	}
 } ;
@@ -483,6 +492,16 @@ CustType* JsonType :: getAttrList () {
 	ListType* attrList = new ListType (atrrListStr) ; 
 	return attrList ; 	
 }
+CustType* CustType :: concat (CustType* t1, CustType* t2){
+		if ( t1 -> getType () == LIST) {
+			t1 -> add ( t2 ) ; 
+			return t1;
+		}
+		CustType* t = new ListType ;
+		t -> add (t1) ;
+		t -> add (t2) ; 
+		return t ; 
+	}
 /*
 int main() {
 	// your code goes here

@@ -1,8 +1,8 @@
 /* Concatenation */
 
 func main () 
-decl a = 5
-decl b = 6
-print a + b
+decl a = 59
+decl b = 600
+print [13,89] + a
 return mainfunc
 end

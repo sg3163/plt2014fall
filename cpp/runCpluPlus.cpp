@@ -79,7 +79,9 @@ int main() {
 		print_out ( (iter-> second) -> Stringify ().c_str()) ; 
 		cout   << endl ; 
 	}*/
-
+	cout << "testing concat below \n" ; 
+	 (CustType::parse("[1,99]","LIST") ) -> print () ; 
+	 
 
 	return 0;
 }
