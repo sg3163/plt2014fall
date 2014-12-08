@@ -1,11 +1,69 @@
-If IN
-Add bracket to Print
-Read
-Type
-MakeString
-String Concatenation
-SAST checking
+Ocaml ---> 
+	Null (HArsha)
+	If IN (abhi)
+	Add bracket to Print (HArsha)
+	String Concatenation (Abhi ) 
+	conv exr to Bool Type when inside If ( Abhi) 
+	Type (harsha)
+	Typestruct (harsha)
+	MakeString (harsha)
+	Type checking (Abhi + harsha)
+	
+	
+	File handling  (Harsha )  
+	
+	! operator (Abhi )
 
 C++ --->
 
+	Null (arpit)	
+	Mathematical Operators (arpit)
+	String Operators (arpit)
+	Logical Operator (arpit)
 
+	conv exr to Bool Type when inside If (chase)
+	subtract from a list and json (arpit)
+	File handling (chase)
+
+	makeString (chase)
+	typeStruct (chase )
+	prettyPrint (chase)
+
+	Typechecking ( Arpit + chase )
+
+NOT SUPPORTING : 
+	JSON - JSON 
+
+
+Documentation : 
+	4.1.1.
+		json-json
+		list access []
+	File handling
+
+
+DOCUMENTS:
+	Final Report:
+		Intro
+		Tutorial
+		Reference Manual (ie. updated LRM)
+		Project Plan -- Manager
+		Language Evolution -- Language Guru
+		Translator Architecture -- System Architect
+		Test Plan and Scripts -- Tester
+		Conclusions
+		Full Code Listing
+
+	Final Presentation
+
+
+Test:
+	GCD Algorithm
+	JSON Join Algorithm
+
+
+TIMELINE:
+	FRIDAY - Finish individual compiler parts (everybody)
+	Weekend - TypeChecking (all)
+	Weekend - Documentation
+	

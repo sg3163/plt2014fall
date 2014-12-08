@@ -87,14 +87,20 @@ class CustType {
 		cout << "In CustType, apparently not in LIST. Calling from some other type\n" ; 
 		return  NULL ; 
 	}
+
+	//append to a list
 	virtual void add (CustType* el) { 
 		cout << "In CustType, apparently not in LIST. Calling from some other type\n" ; 
 		
 	}
+
+	//add item to map
 	virtual void add (string  key, CustType* el) { 
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 
 	}
+
+	//concat items and form a list
 	static CustType* concat (CustType* t1, CustType* t2) ; 
 	
 };
@@ -492,6 +498,7 @@ CustType* JsonType :: getAttrList () {
 	ListType* attrList = new ListType (atrrListStr) ; 
 	return attrList ; 	
 }
+
 CustType* CustType :: concat (CustType* t1, CustType* t2){
 		if ( t1 -> getType () == LIST) {
 			t1 -> add ( t2 ) ; 
