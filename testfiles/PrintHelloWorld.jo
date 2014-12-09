@@ -3,7 +3,7 @@
 decl a = "Hello World"
 
 func main () 
-print a
+print (a)
 
 return mainfunc
 end

@@ -4,6 +4,6 @@ func main ()
 decl a = [2,3]
 decl b = 3
 decl c = a - b
-print c
+print (c)
 return mainfunc
 end

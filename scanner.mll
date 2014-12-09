@@ -53,6 +53,7 @@ rule token = parse
 	| "return"		{ RETURN }
 	| "decl"    { DECL }
 	| "mainfunc" { MAINFUNC }
+	| "null" { NULL }
 	| eof			{ EOF }			(* do as microC *)
 	| digit+ as lit					{ NUM_LIT(int_of_string lit) }
 	| quote [^'"']* quote as lit	{ STRING_LIT(lit) } 

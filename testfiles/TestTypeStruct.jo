@@ -4,6 +4,6 @@ func main ()
 
 decl a = #{"name":"harsha"}#
 decl b = a.typeStruct()
-print b
+print (b)
 return mainfunc
 end

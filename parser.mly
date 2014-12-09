@@ -3,7 +3,7 @@
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA SEMI 
 %token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS COLON
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
-%token RETURN IF THEN ELSE HASH
+%token RETURN IF THEN ELSE HASH NULL
 %token AND OR FOR IN
 %token FUNC END DECL MAINFUNC
 %token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST
@@ -80,7 +80,7 @@ rev_stmt_list:
 stmt:
     expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
-    | PRINT expr SEMI                                   { Print($2) }
+    | PRINT LPAREN expr RPAREN SEMI                     { Print($3) }
     | FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
@@ -105,6 +105,7 @@ expr:
     | HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
     | LBRACK list_items RBRACK         { LitList($2) } 
     | BOOL_LIT                     { LitBool($1) }
+		| NULL												 { LitNull("null") }
     | ID                           { Id($1) }
     | expr COMPLUS    expr        { Binop($1, Concat,  $3) }
     | expr COMMINUS    expr        { Binop($1, Minus,   $3) }
@@ -136,6 +137,8 @@ list_element:
   | STRING_LIT                 { LitStrElem($1) }
     | LBRACK list_items RBRACK   { LitListOfList($2) }
     | LBRACE json_items RBRACE   { LitJsonOfList($2) }
+		| BOOL_LIT                     { LitBoolElem($1) }
+		| NULL												 { LitNullElem("null") }
 
 json_items:
 { NoJsonItem }
@@ -150,6 +153,8 @@ json_item_value:
   | STRING_LIT                 { LitStrJsonVal($1) }
     | LBRACE json_items RBRACE   { LitJsonOfJson($2) }
     | LBRACK list_items RBRACK   { LitListOfJson($2) }
+		| BOOL_LIT                     { LitBoolJsonVal($1) }
+		| NULL												 { LitNullJsonVal("null") }
 
 json_item_key:
  STRING_LIT                 { LitStrJsonKey($1) }

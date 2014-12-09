@@ -4,11 +4,11 @@ func main ()
 decl a = 5
 decl b = 6
 if(a==b)
-  print "hi"
+  print ("hi")
 end
 
 if (a!=b)
-  print "hello"
+  print ("hello")
 end 
 return mainfunc
 end

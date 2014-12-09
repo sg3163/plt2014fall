@@ -2,7 +2,7 @@
 
 func createVarAndPrint()
 decl a = "This is a String"
-print a
+print (a)
 return 0
 end
 

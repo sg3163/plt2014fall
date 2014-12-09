@@ -6,9 +6,9 @@ func merge(A,B)
 decl c = A.typeStruct()
 
 /*if ( 2 != 3 )
-	print A
+	print (A)
 else
-    print B
+    print (B)
 end*/
 
 decl ab = [1,2,3,4]

@@ -3,6 +3,6 @@
 func main () 
 decl a = 59
 decl b = 600
-print [13,89] + a
+print ([13,89] + a)
 return mainfunc
 end
