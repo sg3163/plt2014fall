@@ -102,6 +102,12 @@ and check_list_element env = function
 	| Ast.LitJsonOfList(items) -> 
 	(*	let _ = print_string "in json " in*)
 		Sast.LitJsonOfList(check_json_items env items), "json"
+	| Ast.LitBoolElem(i) -> 
+	(*	let _ = print_string "in int" in *)
+		Sast.LitBoolElem(i), "bool"
+	| Ast.LitNullElem(s) -> 
+	(*	let _ = print_string "in string " in*)
+		Sast.LitNullElem(s), "null"
 
 and check_json_items env = function
 	  Ast.JsonItem(e) -> Sast.JsonItem(check_json_keyValue env e)
@@ -124,7 +130,12 @@ and check_json_value env = function
 	| Ast.LitListOfJson(items) -> 
 	(*	let _ = print_string "in list " in*)
 		Sast.LitListOfJson(check_list_items env items), "list"
-		
+	| Ast.LitBoolJsonVal(i) -> 
+	(*	let _ = print_string "in int" in *)
+		Sast.LitBoolJsonVal(i), "bool"
+	| Ast.LitNullJsonVal(s) -> 
+	(*	let _ = print_string "in string " in*)
+		Sast.LitNullJsonVal(s), "null"
 		
 and check_json_key env = function 
 	Ast.LitStrJsonKey(i) -> 
@@ -152,6 +163,9 @@ let rec check_expr env = function
 	| Ast.LitBool(s) -> 
 	(*	let _ = print_string "in bool " in*)
 		Sast.LitBool(s), "bool"
+		
+	| Ast.LitNull(s) -> 
+		Sast.LitNull(s), "null" 
 
 	| Ast.Id(id) ->
 	(*	let _ = print_string "in iD" in*)

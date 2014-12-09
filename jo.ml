@@ -11,6 +11,8 @@ and string_of_elements = function
   | LitStrElem(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
 	| LitListOfList(l) -> "[" ^ string_of_items l ^ "]"
 	| LitJsonOfList(l) -> "{" ^ json_items l ^ "}"
+	| LitBoolElem(l) ->  l 
+  | LitNullElem(l) -> l 
 
 and json_items = function
     JsonItem(e) ->  json_key_value e 
@@ -26,6 +28,8 @@ and json_value = function
 	| LitStrJsonVal(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
 	| LitJsonOfJson(l) -> "{" ^ json_items l ^ "}"
 	| LitListOfJson(l) -> "[" ^ string_of_items l ^ "]"
+	| LitBoolJsonVal(l) -> l
+	| LitNullJsonVal(l) -> l 
 let get_for_id e = match e
     with
     Forid(id) -> id
@@ -38,7 +42,8 @@ let rec string_of_expr e = match e with
   | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")"
 	| LitJson(l) -> "CustType::parse(\"{" ^ json_items l ^ "}\",\"JSON\")"
 	| LitList(l) -> "CustType::parse(\"[" ^ string_of_items l ^ "]\",\"LIST\")"
-	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")"
+	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")" 
+	| LitNull(l) -> "CustType::parse(\"" ^ l ^ "\",\"NULL\")" 
 	| MainRet(l) -> "0"
   | Id(s) ->  s
   | Binop(e1, o, e2) ->

@@ -15,6 +15,8 @@ type list_element =
   | LitStrElem of string
 	| LitListOfList of items
 	| LitJsonOfList of json_items
+	| LitBoolElem of string
+	| LitNullElem of string
 and items = 
     Item of list_element
   | Seq of list_element * sep * items
@@ -26,6 +28,8 @@ and json_item_value =
   | LitStrJsonVal of string
 	| LitJsonOfJson of json_items
 	| LitListOfJson of items
+	| LitBoolJsonVal of string
+	| LitNullJsonVal of string
 and json_item =
 	JsonValPair of json_key_type * colon * json_item_value
 and json_items = 
@@ -39,6 +43,7 @@ type expr =
   | LitJson of json_items
   | LitList of items
 	| LitBool of string
+	| LitNull of string 
 	| MainRet of int
   | Id of string
   | Binop of expr * op * expr
