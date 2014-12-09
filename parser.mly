@@ -80,7 +80,7 @@ rev_stmt_list:
 stmt:
     expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
-    | PRINT expr SEMI                                   { Print($2) }
+    | PRINT LPAREN expr RPAREN SEMI                     { Print($3) }
     | FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }

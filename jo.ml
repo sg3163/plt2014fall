@@ -77,7 +77,7 @@ let rec string_of_expr e = match e with
   | NoExpr -> ""
 
 let rec string_of_stmt = function
-    Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr
+    Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";"
     | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
 		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n"
     | Block(stmts) ->

@@ -3,9 +3,9 @@
 func main () 
 
 if ( 5 == 5 )
-	print "true"
+	print ("true")
 else
-    print "false"
+    print ("false")
 end
 return mainfunc
 end

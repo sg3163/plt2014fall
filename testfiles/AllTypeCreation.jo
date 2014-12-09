@@ -9,6 +9,6 @@ decl c = #{"name":"harsha"}#
 decl d = [4,6,7]
 decl e = "true"
 decl f = null
-print a
+print (a)
 return mainfunc
 end
