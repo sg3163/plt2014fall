@@ -86,8 +86,8 @@ let rec string_of_stmt = function
       "for (vector<CustType*> :: iterator  " ^ string_of_loop_var_t e1 ^ "  = " ^ get_for_id e2 ^ " -> getListBegin () ; " ^ string_of_loop_var_t e1 ^ " != " ^ get_for_id e2 ^ 
         " -> getListEnd () ;  " ^ "++" ^ string_of_loop_var_t e1 ^ ") { \n" 
       ^ string_of_stmt s1 ^ "\n}\n"
-    | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
-    | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
+    | If(e, s, Block([])) -> "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^ string_of_stmt s
+    | If(e, s1, s2) ->  "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^
         string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
 
 let string_of_vtype = function

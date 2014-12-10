@@ -3,7 +3,7 @@ Ocaml --->
 	If IN (abhi)
 	Add bracket to Print (HArsha)
 	String Concatenation (Abhi ) 
-	conv exr to Bool Type when inside If ( Abhi) 
+	conv exr to Bool Type when inside If ( Abhi) - Done, added corresponding tasks in CPP
 	Type (harsha)
 	Typestruct (harsha)
 	MakeString (harsha)
@@ -21,7 +21,8 @@ C++ --->
 	String Operators (arpit)
 	Logical Operator (arpit)
 
-	conv exr to Bool Type when inside If (chase)
+	conv exr to Bool Type when inside If (chase), All boolean operators should return a BoolType object and BoolType will have a method called getBoolValue()
+	
 	subtract from a list and json (arpit)
 	File handling (chase)
 

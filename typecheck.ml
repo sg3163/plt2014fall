@@ -33,7 +33,7 @@ let get_oper_type t1 t2 =
 	if t1 = "json" then "json" else
 	if t1 = "list" then "list" else
 	if t1 = "string" || t2 = "string" then "string" else
-	if t1 = "int" && t2 = "int" then "int" else
+	if t1 = "int" && t2 = "int" then "bool" else
 	if t1 = "bool" && t2 = "bool" then "bool" else
 	if t1 = "int" && t2 = "bool" then raise (Failure ("cannot use int with bool type inside expression")) else
 	if t1 = "bool" && t2 = "int" then raise (Failure ("cannot use int with bool type inside expression")) else
@@ -63,17 +63,17 @@ let match_oper e1 op e2 =
 		  raise (Failure ("type error"))
 		  (* equal and not equal have special case for string comparison 
 		  		we may need to add SAST and Eqs and Neqs *)
-	 | Ast.Equal -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Equal, fst e2), "bool") else
+	 | Ast.Equal -> if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Equal, fst e2), "bool") else
                   raise (Failure ("type error in == " ^ expr_t ^" "^(snd e1) ^" "^(snd e2)))
-	 | Ast.Neq -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Neq, fst e2), "bool") else
+	 | Ast.Neq -> if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Neq, fst e2), "bool") else
                   raise (Failure ("type error in !="))
-	 | Ast.Less ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Less, fst e2), "bool") else
+	 | Ast.Less ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Less, fst e2), "bool") else
                   raise (Failure ("type error in < ")) 
-	 | Ast.Leq ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Leq, fst e2), "bool") else
+	 | Ast.Leq ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Leq, fst e2), "bool") else
                   raise (Failure ("type error"))
-	 | Ast.Greater ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Greater, fst e2), "bool") else
+	 | Ast.Greater ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Greater, fst e2), "bool") else
                   raise (Failure ("type error"))
-	 | Ast.Geq ->if expr_t = "int" then (Sast.Binop(fst e1, Sast.Geq, fst e2), "bool") else
+	 | Ast.Geq ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Geq, fst e2), "bool") else
                   raise (Failure ("type error")) 
      | Ast.And ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.And, fst e2), "bool") else
       			  raise (Failure ("type error in and")) 
