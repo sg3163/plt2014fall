@@ -19,19 +19,19 @@ C++ --->
 	! --  testfile - TestNotOperator.jo
 	+ -- This operator is mathematical for CPP but when overloading, it should alsp work for StringType + StringType and concat the string, testfile - TestStringConcat.jo
 
-	Null (chase)	
-	Mathematical Operators (chase)
+	Null (arpit)	--- Run testfiles\AllTypeCreation.jo for Null declaration
+	Mathematical Operators (arpit)
 	String Operators (arpit)
-	Logical Operator (chase)
+	Logical Operator (arpit)
 
 	conv exr to Bool Type when inside If (chase), All boolean operators should return a BoolType object and BoolType will have a method called getBoolValue(), testfile - TestIfCondition.jo
 
 	subtract from a list and json (arpit)
 	File handling (chase)
 
-	makeString (arpit)
-	typeStruct (chase )
-	prettyPrint (arpit)
+	makeString (arpit) --- Run testfiles\MakeStringFunction.jo (ocaml prints CustType::makeString)
+	typeStruct (chase ) --- Run testfiles\TestTypeStruct.jo (ocaml prints CustType::typeStruct)
+	prettyPrint (arpit) --- Run testfiles\PrettyPrintJson.jo to test
 
 	Typechecking ( Arpit + chase )
 
