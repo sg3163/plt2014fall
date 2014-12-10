@@ -1,0 +1,9 @@
+/* Test MakeString Function */
+
+func main () 
+
+decl a = 2243
+makeString (a)
+
+return mainfunc
+end
