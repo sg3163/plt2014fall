@@ -18,7 +18,7 @@
 %nonassoc NOELSE
 %nonassoc ELSE
 
-%right ASSIGN NOT
+%right ASSIGN
 
 %left AND OR
 %left EQ NEQ
@@ -26,6 +26,7 @@
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left COMPLUS COMMINUS
+%right NOT
 
 %start program
 %type <Ast.program> program
@@ -109,6 +110,8 @@ expr:
     | BOOL_LIT                     { LitBool($1) }
 		| NULL												 { LitNull("null") }
     | ID                           { Id($1) }
+    | NOT LPAREN expr  RPAREN             {Not($3)}
+    | NOT expr                      {Not($2)}
     | expr COMPLUS    expr        { Binop($1, Concat,  $3) }
     | expr COMMINUS    expr        { Binop($1, Minus,   $3) }
     | expr PLUS   expr             { Binop($1, Add,      $3) }

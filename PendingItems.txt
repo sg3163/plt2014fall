@@ -12,23 +12,25 @@ Ocaml --->
 	
 	File handling  (Harsha )  
 	
-	! operator (Abhi )
+	! operator (Abhi ) - Done, added corresponding tasks in CPP
 
 C++ --->
+	NOTE : All operators like && || ! need to be overloaded
+	! --  testfile - TestNotOperator.jo
 
 	Null (arpit)	--- Run testfiles\AllTypeCreation.jo for Null declaration
 	Mathematical Operators (arpit)
 	String Operators (arpit)
 	Logical Operator (arpit)
 
-	conv exr to Bool Type when inside If (chase), All boolean operators should return a BoolType object and BoolType will have a method called getBoolValue()
-	
+	conv exr to Bool Type when inside If (chase), All boolean operators should return a BoolType object and BoolType will have a method called getBoolValue(), testfile - TestIfCondition.jo
+
 	subtract from a list and json (arpit)
 	File handling (chase)
 
-	makeString (chase) --- Run testfiles\MakeStringFunction.jo (ocaml prints CustType::makeString)
+	makeString (arpit) --- Run testfiles\MakeStringFunction.jo (ocaml prints CustType::makeString)
 	typeStruct (chase ) --- Run testfiles\TestTypeStruct.jo (ocaml prints CustType::typeStruct)
-	prettyPrint (chase) --- Run testfiles\PrettyPrintJson.jo to test
+	prettyPrint (arpit) --- Run testfiles\PrettyPrintJson.jo to test
 
 	Typechecking ( Arpit + chase )
 

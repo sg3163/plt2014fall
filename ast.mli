@@ -46,6 +46,7 @@ type expr =
 	| LitNull of string 
 	| MainRet of int
   | Id of string
+  | Not of expr
   | Binop of expr * op * expr
   | Assign of string * expr
 	| Call of string * expr list
