@@ -46,6 +46,7 @@ let rec string_of_expr e = match e with
 	| LitNull(l) -> "CustType::parse(\"" ^ l ^ "\",\"NULL\")" 
 	| MainRet(l) -> "0"
   | Id(s) ->  s
+  | Not(e1) -> "!(" ^ string_of_expr e1 ^ ")"
   | Binop(e1, o, e2) ->
       
       ( match o with

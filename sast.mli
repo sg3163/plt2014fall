@@ -45,6 +45,7 @@ type expr_t =
 	| LitBool of string
 	| LitNull of string 
   | Id of string
+  | Not of expr_t
   | Binop of expr_t * op_t * expr_t
   | Assign of string * expr_t
   | Call of string * expr_t list

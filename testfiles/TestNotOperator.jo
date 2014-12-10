@@ -1,0 +1,11 @@
+func main () 
+decl a = true
+decl b = false
+if( !(a==b))
+end
+if(!a)
+end
+if(!a ==b)
+end
+return mainfunc
+end

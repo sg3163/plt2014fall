@@ -32,7 +32,7 @@ let get_oper_type t1 t2 =
 	(*if t1 = "void" || t2 = "void" then raise (Failure ("cannot use void type inside expression")) else*)
 	if t1 = "json" then "json" else
 	if t1 = "list" then "list" else
-	if t1 = "string" || t2 = "string" then "string" else
+	if t1 = "string" || t2 = "string" then "bool" else
 	if t1 = "int" && t2 = "int" then "bool" else
 	if t1 = "bool" && t2 = "bool" then "bool" else
 	if t1 = "int" && t2 = "bool" then raise (Failure ("cannot use int with bool type inside expression")) else
@@ -163,7 +163,7 @@ let rec check_expr env = function
 	| Ast.LitBool(s) -> 
 	(*	let _ = print_string "in bool " in*)
 		Sast.LitBool(s), "bool"
-		
+	
 	| Ast.LitNull(s) -> 
 		Sast.LitNull(s), "null" 
 
@@ -172,6 +172,12 @@ let rec check_expr env = function
 		Sast.Id(id), (get_vtype env id)
 	| Ast.MainRet(i) -> Sast.MainRet(i), "return"
 	
+	| Ast.Not(e1) -> 
+	(*	let _ = print_string "in Not " in*)
+		let ret = check_expr env e1 in
+		if (snd ret) = "bool" then Sast.Not(fst ret), "bool"
+		else raise (Failure("! is applicable to bool expressions only"))
+		
 	| Ast.Binop(e1, op, e2) ->
 	(*	let _ = print_string "in binop" in*)
 		match_oper (check_expr env e1) op (check_expr env e2)

@@ -12,17 +12,20 @@ Ocaml --->
 	
 	File handling  (Harsha )  
 	
-	! operator (Abhi )
+	! operator (Abhi ) - Done, added corresponding tasks in CPP
 
 C++ --->
+
+	NOTE : All operators like && || ! need to be overloaded
+	! --  testfile - TestNotOperator.jo
 
 	Null (arpit)	
 	Mathematical Operators (arpit)
 	String Operators (arpit)
 	Logical Operator (arpit)
 
-	conv exr to Bool Type when inside If (chase), All boolean operators should return a BoolType object and BoolType will have a method called getBoolValue()
-	
+	conv exr to Bool Type when inside If (chase), All boolean operators should return a BoolType object and BoolType will have a method called getBoolValue(), testfile - TestIfCondition.jo
+
 	subtract from a list and json (arpit)
 	File handling (chase)
 
