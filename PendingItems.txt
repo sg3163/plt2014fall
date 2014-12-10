@@ -1,12 +1,12 @@
 Ocaml ---> 
-	Null (HArsha)
+	Null (HArsha) - Done
 	If IN (abhi)
-	Add bracket to Print (HArsha)
+	Add bracket to Print (HArsha) - Done
 	String Concatenation (Abhi ) 
 	conv exr to Bool Type when inside If ( Abhi) - Done, added corresponding tasks in CPP
-	Type (harsha)
-	Typestruct (harsha)
-	MakeString (harsha)
+	Type (harsha) - Done
+	Typestruct (harsha)  - Done
+	MakeString (harsha) - Done
 	Type checking (Abhi + harsha)
 	
 	
