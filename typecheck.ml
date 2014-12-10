@@ -32,7 +32,23 @@ let get_oper_type t1 t2 =
 	(*if t1 = "void" || t2 = "void" then raise (Failure ("cannot use void type inside expression")) else*)
 	if t1 = "json" then "json" else
 	if t1 = "list" then "list" else
-	if t1 = "string" || t2 = "string" then "bool" else
+	if t1 = "string" || t2 = "string" then "string" else
+	if t1 = "int" && t2 = "int" then "bool" else
+	if t1 = "bool" && t2 = "bool" then "bool" else
+	if t1 = "int" && t2 = "bool" then raise (Failure ("cannot use int with bool type inside expression")) else
+	if t1 = "bool" && t2 = "int" then raise (Failure ("cannot use int with bool type inside expression")) else
+	raise (Failure ("type error in get_oper_type"))
+
+(* TODO ----- NEED TO have checks for boolean op and mathermatical op
+		get the type of expression:
+ *  -> string if one of the two operands having string type
+ *  -> int/boolean if both of the operands having the same type 
+	*)
+let get_bool_oper_type t1 t2 =
+	(*if t1 = "void" || t2 = "void" then raise (Failure ("cannot use void type inside expression")) else*)
+	if t1 = "json" then "json" else
+	if t1 = "list" then "list" else
+	if t1 = "string" || t2 = "string" then "string" else
 	if t1 = "int" && t2 = "int" then "bool" else
 	if t1 = "bool" && t2 = "bool" then "bool" else
 	if t1 = "int" && t2 = "bool" then raise (Failure ("cannot use int with bool type inside expression")) else
@@ -52,6 +68,7 @@ let match_oper e1 op e2 =
 	let expr_t = get_oper_type (snd e1) (snd e2) in
 	(match op with
 	   Ast.Add -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Add, fst e2), "int") else
+	   			if expr_t = "string" then (Sast.Binop(fst e1, Sast.Add, fst e2), "string") else
 		  		raise (Failure ("type error"))
 	 | Ast.Sub -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Sub, fst e2), "int") else
 		  raise (Failure ("type error"))
