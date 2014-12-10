@@ -16,7 +16,7 @@ Ocaml --->
 
 C++ --->
 
-	Null (arpit)	
+	Null (arpit)	--- Run testfiles\AllTypeCreation.jo for Null declaration
 	Mathematical Operators (arpit)
 	String Operators (arpit)
 	Logical Operator (arpit)
@@ -26,9 +26,9 @@ C++ --->
 	subtract from a list and json (arpit)
 	File handling (chase)
 
-	makeString (chase)
-	typeStruct (chase )
-	prettyPrint (chase)
+	makeString (chase) --- Run testfiles\MakeStringFunction.jo (ocaml prints CustType::makeString)
+	typeStruct (chase ) --- Run testfiles\TestTypeStruct.jo (ocaml prints CustType::typeStruct)
+	prettyPrint (chase) --- Run testfiles\PrettyPrintJson.jo to test
 
 	Typechecking ( Arpit + chase )
 
