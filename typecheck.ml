@@ -289,6 +289,10 @@ let rec check_stmt env func = function
 			 (Sast.Return(fst e)), env 
 	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
 							(Sast.Print(expr , expr_type)), env
+	| Ast.ObjType(expr) -> let (expr, expr_type) = check_expr env expr in
+							(Sast.ObjType(expr , expr_type)), env
+	| Ast.MakeString(expr) -> let (expr, expr_type) = check_expr env expr in
+							(Sast.MakeString(expr , expr_type)), env
 	| Ast.Block(stmt_list) -> (Sast.Block(check_stmt_list env func stmt_list)), env
 	| Ast.If(expr, stmt1, stmt2) ->	let e = check_expr env expr in
 								if not(snd e = "bool") then raise (Failure ("The type of the condition in If statement must be boolean!"))

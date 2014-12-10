@@ -1,12 +1,12 @@
 Ocaml ---> 
-	Null (HArsha)
+	Null (HArsha) - Done
 	If IN (abhi)
-	Add bracket to Print (HArsha)
+	Add bracket to Print (HArsha) - Done
 	String Concatenation (Abhi ) 
 	conv exr to Bool Type when inside If ( Abhi) - Done, added corresponding tasks in CPP
-	Type (harsha)
-	Typestruct (harsha)
-	MakeString (harsha)
+	Type (harsha) - Done
+	Typestruct (harsha)  - Done
+	MakeString (harsha) - Done
 	Type checking (Abhi + harsha)
 	
 	
@@ -15,23 +15,22 @@ Ocaml --->
 	! operator (Abhi ) - Done, added corresponding tasks in CPP
 
 C++ --->
-
 	NOTE : All operators like && || ! need to be overloaded
 	! --  testfile - TestNotOperator.jo
 
-	Null (arpit)	
-	Mathematical Operators (arpit)
+	Null (chase)	
+	Mathematical Operators (chase)
 	String Operators (arpit)
-	Logical Operator (arpit)
+	Logical Operator (chase)
 
 	conv exr to Bool Type when inside If (chase), All boolean operators should return a BoolType object and BoolType will have a method called getBoolValue(), testfile - TestIfCondition.jo
 
 	subtract from a list and json (arpit)
 	File handling (chase)
 
-	makeString (chase)
+	makeString (arpit)
 	typeStruct (chase )
-	prettyPrint (chase)
+	prettyPrint (arpit)
 
 	Typechecking ( Arpit + chase )
 

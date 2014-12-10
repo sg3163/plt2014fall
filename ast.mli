@@ -71,6 +71,8 @@ type stmt =
   | Expr of expr
   | Return of expr
   | Print of expr
+	| ObjType of expr
+	| MakeString of expr
   | If of expr * stmt * stmt
   | For of loop_var * for_expr * stmt  
 
