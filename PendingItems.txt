@@ -1,6 +1,6 @@
 Ocaml ---> 
 	Null (HArsha) - Done
-	If IN (abhi)
+	If IN (abhi) - Done, updated corresponding tasks in CPP
 	Add bracket to Print (HArsha) - Done
 	String Concatenation (Abhi ) - Done,  updated corresponding tasks in CPP
 	conv exr to Bool Type when inside If ( Abhi) - Done, added corresponding tasks in CPP
@@ -18,6 +18,9 @@ C++ --->
 	NOTE : All operators like && || ! need to be overloaded
 	! --  testfile - TestNotOperator.jo
 	+ -- This operator is mathematical for CPP but when overloading, it should alsp work for StringType + StringType and concat the string, testfile - TestStringConcat.jo
+
+	If IN statement - add function <list>->contains(<any type here>), this again return BoolType
+					testfile -- TestIfIn.jo
 
 	Null (arpit)	--- Run testfiles\AllTypeCreation.jo for Null declaration
 	Mathematical Operators (arpit)
