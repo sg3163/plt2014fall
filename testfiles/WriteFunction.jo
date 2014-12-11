@@ -1,0 +1,7 @@
+/* Test Write function */
+
+func main () 
+decl a = "Text to write into file"
+write (a, "path/to/store/file.txt")
+return mainfunc
+end

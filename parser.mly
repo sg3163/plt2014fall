@@ -6,7 +6,7 @@
 %token RETURN IF THEN ELSE HASH NULL
 %token AND OR FOR IN
 %token FUNC END DECL MAINFUNC
-%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST
+%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST WRITE
 %token <int> NUM_LIT
 %token <string> STRING_LIT
 %token <string> JSON_LIT
@@ -88,6 +88,7 @@ stmt:
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
     | LBRACE rev_stmt_list RBRACE                       { Block($2) }
+		| WRITE LPAREN expr COMMA STRING_LIT RPAREN SEMI		{ Write($3, $5) }
 
 for_expr:
     ID                              { Forid($1) }
@@ -131,6 +132,7 @@ expr:
     | ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
     | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
     | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }
+		| READ LPAREN STRING_LIT RPAREN			{ Read($3) }
 
 list_items:
     { Noitem }

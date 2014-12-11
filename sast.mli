@@ -52,6 +52,7 @@ type expr_t =
 	| ElemAccess of string * list_expr_t
 	| TypeStruct of string
 	| AttrList of string
+	| Read of string
 	| MainRet of int
   | NoExpr
 
@@ -70,6 +71,7 @@ type stmt_t =
 	| MakeString of expr_t * string
   | For of loop_var_t * for_expr_t * stmt_t
   | If of expr_t * stmt_t * stmt_t
+	| Write of expr_t * string
 
 
 type var_decl_t = {
