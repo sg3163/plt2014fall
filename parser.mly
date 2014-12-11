@@ -6,7 +6,7 @@
 %token RETURN IF THEN ELSE HASH NULL
 %token AND OR FOR IN
 %token FUNC END DECL MAINFUNC
-%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST
+%token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST WRITE
 %token <int> NUM_LIT
 %token <string> STRING_LIT
 %token <string> JSON_LIT
@@ -82,12 +82,16 @@ stmt:
     expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
     | PRINT LPAREN expr RPAREN SEMI                     { Print($3) }
-		| TYPE LPAREN expr RPAREN SEMI										  { ObjType($3) }
-		| MAKESTRING LPAREN expr RPAREN SEMI								{ MakeString($3) }
+	| TYPE LPAREN expr RPAREN SEMI										  { ObjType($3) }
+	| MAKESTRING LPAREN expr RPAREN SEMI								{ MakeString($3) }
     | FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
+    | IF LPAREN ID IN ID RPAREN stmt ELSE stmt      { Ifin($3, $5, $7, $9) }
+    | IF LPAREN ID IN ID RPAREN stmt %prec NOELSE   { Ifin($3, $5, $7,Block([])) }
     | LBRACE rev_stmt_list RBRACE                       { Block($2) }
+		| WRITE LPAREN expr COMMA STRING_LIT RPAREN SEMI		{ Write($3, $5) }
+
 
 for_expr:
     ID                              { Forid($1) }
@@ -108,7 +112,7 @@ expr:
     | HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
     | LBRACK list_items RBRACK         { LitList($2) } 
     | BOOL_LIT                     { LitBool($1) }
-		| NULL												 { LitNull("null") }
+	| NULL												 { LitNull("null") }
     | ID                           { Id($1) }
     | NOT LPAREN expr  RPAREN             {Not($3)}
     | NOT expr                      {Not($2)}
@@ -131,6 +135,7 @@ expr:
     | ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
     | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
     | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }
+		| READ LPAREN STRING_LIT RPAREN			{ Read($3) }
 
 list_items:
     { Noitem }
@@ -139,15 +144,15 @@ list_items:
 
 list_element:
     NUM_LIT                      { LitIntElem($1) }
-  | STRING_LIT                 { LitStrElem($1) }
+    | STRING_LIT                 { LitStrElem($1) }
     | LBRACK list_items RBRACK   { LitListOfList($2) }
     | LBRACE json_items RBRACE   { LitJsonOfList($2) }
-		| BOOL_LIT                     { LitBoolElem($1) }
-		| NULL												 { LitNullElem("null") }
+	| BOOL_LIT                   { LitBoolElem($1) }
+	| NULL						 { LitNullElem("null") }
 
 json_items:
 { NoJsonItem }
-| json_item                                     { JsonItem($1)}
+| json_item                    { JsonItem($1)}
 | json_item COMMA json_items   { JsonSeq($1, Comma, $3) }  
 
 json_item:
@@ -155,11 +160,11 @@ json_item:
 
 json_item_value:
     NUM_LIT                      { LitIntJsonVal($1) }
-  | STRING_LIT                 { LitStrJsonVal($1) }
+    | STRING_LIT                 { LitStrJsonVal($1) }
     | LBRACE json_items RBRACE   { LitJsonOfJson($2) }
     | LBRACK list_items RBRACK   { LitListOfJson($2) }
-		| BOOL_LIT                     { LitBoolJsonVal($1) }
-		| NULL												 { LitNullJsonVal("null") }
+	| BOOL_LIT                   { LitBoolJsonVal($1) }
+	| NULL						 { LitNullJsonVal("null") }
 
 json_item_key:
  STRING_LIT                 { LitStrJsonKey($1) }

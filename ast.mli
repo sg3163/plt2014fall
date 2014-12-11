@@ -53,6 +53,7 @@ type expr =
 	| ElemAccess of string * list_expr
 	| TypeStruct of string
 	| AttrList of string
+	| Read of string
   | NoExpr
     
 type var_decl = {
@@ -74,7 +75,9 @@ type stmt =
 	| ObjType of expr
 	| MakeString of expr
   | If of expr * stmt * stmt
+  | Ifin of string * string * stmt * stmt
   | For of loop_var * for_expr * stmt  
+	| Write of expr * string
 
 type func_decl = {
     return : data_type;
