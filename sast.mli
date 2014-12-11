@@ -70,6 +70,7 @@ type stmt_t =
 	| MakeString of expr_t * string
   | For of loop_var_t * for_expr_t * stmt_t
   | If of expr_t * stmt_t * stmt_t
+  | Ifin of string * string * stmt_t * stmt_t
 
 
 type var_decl_t = {

@@ -7,12 +7,12 @@ Ocaml --->
 	Type (harsha) - Done
 	Typestruct (harsha)  - Done
 	MakeString (harsha) - Done
-	Type checking (Abhi + harsha)
-	
-	
-	File handling  (Harsha )  
-	
 	! operator (Abhi ) - Done, added corresponding tasks in CPP
+	File handling  (Harsha )
+	Type checking (Abhi + harsha)
+	return mainfunc should be removed
+	decl should be removed and assign should work as declalartion (lowest priority)
+
 
 C++ --->
 	NOTE : All operators like && || ! need to be overloaded

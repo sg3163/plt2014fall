@@ -19,12 +19,10 @@ let find_variable name env =
 	try StringMap.find name env.locals
 	with Not_found -> try StringMap.find name env.globals
 	with Not_found -> ""
-	(*raise (Failure ("undefined variable " ^ name)) *)
 
 let find_function name env =
 	try StringMap.find name env.functions
 	with Not_found -> []
-	(*raise (Failure ("undefined function " ^ name)) *)
 
 let add_local name v_type env =
 	if StringMap.mem name env.locals then StringMap.empty

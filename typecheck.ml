@@ -29,7 +29,6 @@ let get_vtype env id =
  *  -> string if one of the two operands having string type
  *  -> int/boolean if both of the operands having the same type *)
 let get_oper_type t1 t2 =
-	(*if t1 = "void" || t2 = "void" then raise (Failure ("cannot use void type inside expression")) else*)
 	if t1 = "json" then "json" else
 	if t1 = "list" then "list" else
 	if t1 = "string" || t2 = "string" then "string" else
@@ -40,12 +39,8 @@ let get_oper_type t1 t2 =
 	raise (Failure ("type error in get_oper_type"))
 
 (* TODO ----- NEED TO have checks for boolean op and mathermatical op
-		get the type of expression:
- *  -> string if one of the two operands having string type
- *  -> int/boolean if both of the operands having the same type 
 	*)
 let get_bool_oper_type t1 t2 =
-	(*if t1 = "void" || t2 = "void" then raise (Failure ("cannot use void type inside expression")) else*)
 	if t1 = "json" then "json" else
 	if t1 = "list" then "list" else
 	if t1 = "string" || t2 = "string" then "string" else
@@ -220,7 +215,7 @@ let rec check_expr env = function
 															then raise (Failure("Elements of only List and Json can be accessed"))
 														else
 															Sast.ElemAccess (id, (fst t2)), (snd t2)
-  | Ast.TypeStruct(id) ->	Sast.TypeStruct (id), id
+    | Ast.TypeStruct(id) ->	Sast.TypeStruct (id), id
 	| Ast.AttrList(id) -> Sast.AttrList (id), id
 	| Ast.NoExpr -> Sast.NoExpr, "void"
 
@@ -315,6 +310,11 @@ let rec check_stmt env func = function
 								if not(snd e = "bool") then raise (Failure ("The type of the condition in If statement must be boolean!"))
 								(* if() {} else{} *) 
 								else (Sast.If(fst e, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2))), env
+	| Ast.Ifin(var, id, stmt1, stmt2) ->
+								if not(get_vtype env id = "list") then raise (Failure ("The If in statement must be looking in a list!"))
+							else if (get_vtype env var = "list") then raise (Failure ("Checking a list in list is not supported"))
+						else if (get_vtype env var = "json") then raise (Failure ("Checking a json in list is not supported"))
+								else (Sast.Ifin(var, id, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2))), env
 	| Ast.For(expr1, expr2, stmt) -> let envNew, e1 = check_loopvar env expr1 in let e2 = check_forexpr envNew expr2 in
 						   if not ( snd e2 = "list" ) then raise (Failure("The type of the expression in a For statement must be path"))
 						   else (Sast.For( e1, fst e2, fst (check_stmt envNew func stmt))), envNew 

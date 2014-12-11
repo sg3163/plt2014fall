@@ -1,0 +1,23 @@
+func main () 
+decl a = "hi"
+decl b = "bye"
+decl c = ["bbye","hello","bye"]
+if(a in c)
+	print(a)
+end
+if(b in c)
+	print(b)
+else
+	print("Not found")
+end
+
+if(1==2)
+	print("equal")
+end
+if(1!=2)
+	print("not equal")
+else
+	print("equal")
+end
+return mainfunc
+end

@@ -74,6 +74,7 @@ type stmt =
 	| ObjType of expr
 	| MakeString of expr
   | If of expr * stmt * stmt
+  | Ifin of string * string * stmt * stmt
   | For of loop_var * for_expr * stmt  
 
 type func_decl = {

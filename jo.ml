@@ -92,6 +92,9 @@ let rec string_of_stmt = function
     | If(e, s, Block([])) -> "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^ string_of_stmt s
     | If(e, s1, s2) ->  "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^
         string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
+    | Ifin(var, lst, s, Block([])) -> "if ((" ^ lst ^ "->contains("^ var^"))->getBoolValue())\n" ^ string_of_stmt s
+    | Ifin(var, lst, s1, s2) ->  "if ((" ^ lst ^ "->contains("^ var^"))->getBoolValue())\n" ^
+        string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
 
 let string_of_vtype = function
    IntType -> "CustType*"
