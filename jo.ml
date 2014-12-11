@@ -75,6 +75,7 @@ let rec string_of_expr e = match e with
                         )                  
 	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
 	| AttrList(id) -> "CustType::attrList(" ^ id ^ ")"
+	| Read(str) -> "CustType::read(" ^ str ^ ")"
   | NoExpr -> ""
 
 let rec string_of_stmt = function
@@ -95,6 +96,7 @@ let rec string_of_stmt = function
     | Ifin(var, lst, s, Block([])) -> "if ((" ^ lst ^ "->contains("^ var^"))->getBoolValue())\n" ^ string_of_stmt s
     | Ifin(var, lst, s1, s2) ->  "if ((" ^ lst ^ "->contains("^ var^"))->getBoolValue())\n" ^
         string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
+		| Write(expr, str) -> "CustType::write(" ^ string_of_expr expr ^ "," ^ str ^ ");\n"
 
 let string_of_vtype = function
    IntType -> "CustType*"

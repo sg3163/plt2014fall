@@ -217,6 +217,7 @@ let rec check_expr env = function
 															Sast.ElemAccess (id, (fst t2)), (snd t2)
     | Ast.TypeStruct(id) ->	Sast.TypeStruct (id), id
 	| Ast.AttrList(id) -> Sast.AttrList (id), id
+	| Ast.Read(str) -> Sast.Read(str), "string"
 	| Ast.NoExpr -> Sast.NoExpr, "void"
 
 
@@ -318,6 +319,8 @@ let rec check_stmt env func = function
 	| Ast.For(expr1, expr2, stmt) -> let envNew, e1 = check_loopvar env expr1 in let e2 = check_forexpr envNew expr2 in
 						   if not ( snd e2 = "list" ) then raise (Failure("The type of the expression in a For statement must be path"))
 						   else (Sast.For( e1, fst e2, fst (check_stmt envNew func stmt))), envNew 
+	| Ast.Write(expr, str) -> let (expr, expr_type) = check_expr env expr in
+							(Sast.Write(expr , str)), env
 	
 
 and check_stmt_list env func = function 

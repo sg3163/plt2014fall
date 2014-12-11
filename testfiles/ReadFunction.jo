@@ -1,0 +1,7 @@
+/* Test Read function */
+
+func main () 
+decl a = read ("/path/to/file.txt")
+print (a)
+return mainfunc
+end
