@@ -160,6 +160,32 @@ int main() {
 	 if((b4)->getBoolValue()) {cout << endl << "ERROR with ! operator" << endl; }
 	 else { cout << "operator ! works Correctly!" << endl; }
 	 */
+	 
+	 CustType *m1 = CustType::parse("1", "NUMBER");
+	 CustType *m2 = CustType::parse("2", "NUMBER");
+	 CustType *m3 = CustType::parse("3", "NUMBER");
+
+	 CustType* m4 = CustType::add(CustType::add(m1, m2), ,m3);
+	 cout << endl << "1 + 2 + 3 = ";
+	 CustType::print(m4);
+
+	 m4 = CustType::subtract(CustType::subtract(m3, m2), m1);
+	 cout << endl << "3 - 2 - 1 = ";
+	 CustType::print(m4);
+
+	 cout << endl << "3 * 2 = ";
+	 m4 = CustType::multiply(m3, m2);
+	 CustType::print(m4);
+
+	 cout << endl << "3 / 2 = ";
+	 m4 = CustType::divide(m3, m2);
+	 CustType::print(m4);
+	 
+	 CustType *m5 = CustType::parse("Hello ", "STRING");
+	 CustType *m6 = CustType::parse("World!", "STRING");
+	 CustType *m7 = CustType::add(m5, m6);
+	 cout << endl << "Hello + World!: ";
+	 CustType::print(m7);
 
 	return 0;
 }

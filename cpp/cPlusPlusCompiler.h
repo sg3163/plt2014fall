@@ -100,10 +100,24 @@ class CustType {
 
 	}
 
+
 	//concat items and form a list
 	static CustType* concat (CustType* t1, CustType* t2) ; 
- 
 
+
+	//Mathematical Operators
+	//Add is valid for NUMBER + NUMBER and STRING + STRING (JO operator ++)
+	//The remaining mathematical operators are valid only for NUMBER, NUMBER
+	//Returns NULL pointer if arguments are of an invalid type. 
+	static CustType* add(CustType* t1, CustType* t2);
+
+	static CustType* subtract(CustType* t1, CustType* t2);
+
+	static CustType* multiply(CustType* t1, CustType* t2);
+
+	static CustType* divide(CustType* t1, CustType* t2);
+
+ 
 	//Get c++ Boolean value from BoolType
 	virtual bool getBoolValue() {
 	  cout << "In CustType, only valid for BoolType\n";
@@ -669,3 +683,73 @@ CustType* CustType :: concat (CustType* t1, CustType* t2){
 		t -> add (t2) ; 
 		return t ; 
 	}
+
+CustType* CustType::add(CustType* t1, CustType* t2) {
+  if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
+    
+    NumType *temp1 = dynamic_cast<NumType*>(t1);
+    NumType *temp2 = dynamic_cast<NumType*>(t2);
+    
+    double num = (temp1->da) + (temp2->da);
+    NumType *t = new NumType(num, NUMBER);
+    return t;  
+  }
+  else if( (t1->getType() == STRING) && (t2->getType() == STRING) ) {
+    StringType *temp1 = dynamic_cast<StringType*>(t1);
+    StringType *temp2 = dynamic_cast<StringType*>(t2);
+
+    string str = (temp1->da) + (temp2->da);
+    StringType *t = new StringType(str, STRING);
+    return t;
+  }
+  else {
+    cout << "ERROR: Add only allowed for NUMBER, NUMBER or STRING, STRING" << endl;
+    return NULL;
+  }
+
+}
+
+CustType* CustType::subtract(CustType* t1, CustType* t2) {
+  if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
+    NumType *temp1 = dynamic_cast<NumType*>(t1);
+    NumType *temp2 = dynamic_cast<NumType*>(t2);
+    
+    double num = (temp1->da) - (temp2->da);
+    NumType *t = new NumType(num, NUMBER);
+    return t;  
+  }
+  else {
+    cout << "ERROR: Subtract only allowed for NUMBER, NUMBER" << endl;
+    return NULL;
+  }
+}
+
+CustType* CustType::multiply(CustType* t1, CustType* t2) {
+  if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
+    NumType *temp1 = dynamic_cast<NumType*>(t1);
+    NumType *temp2 = dynamic_cast<NumType*>(t2);
+    
+    double num = (temp1->da) * (temp2->da);
+    NumType *t = new NumType(num, NUMBER);
+    return t;  
+  }
+  else {
+    cout << "ERROR: Multiply only allowed for NUMBER, NUMBER" << endl;
+    return NULL;
+  }
+}
+
+CustType* CustType::divide(CustType* t1, CustType* t2) {
+  if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
+    NumType *temp1 = dynamic_cast<NumType*>(t1);
+    NumType *temp2 = dynamic_cast<NumType*>(t2);
+    
+    double num = (temp1->da) / (temp2->da);
+    NumType *t = new NumType(num, NUMBER);
+    return t;  
+  }
+  else {
+    cout << "ERROR: Divide only allowed for NUMBER, NUMBER" << endl;
+    return NULL;
+  }
+}
