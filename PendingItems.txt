@@ -8,7 +8,7 @@ Ocaml --->
 	Typestruct (harsha)  - Done
 	MakeString (harsha) - Done
 	! operator (Abhi ) - Done, added corresponding tasks in CPP
-	File handling  (Harsha )
+	File handling  (Harsha ) - Done
 	Type checking (Abhi + harsha)
 	return mainfunc should be removed
 	decl should be removed and assign should work as declalartion (lowest priority)
