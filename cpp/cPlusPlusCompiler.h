@@ -4,6 +4,7 @@
 #include <map>
 #include <algorithm>
 #include "./JSON.h"
+#include <sstream>
 
 using namespace std;
 
@@ -54,13 +55,13 @@ class CustType {
 	virtual int getType(){
 		cout << "getting Type from CustType, Ooops!\n Somebody needs to implement this in child class" ;	
 	}
-	virtual JSONObject::iterator getBeginIterator (){
-		JSONObject::iterator it ;
+	virtual map<string , CustType* >::iterator getBeginIterator (){
+		map<string , CustType* >::iterator it ;
 		cout << "Accesing outside of Json Object "  ; 
 		return it ;
 	}
-	virtual JSONObject::iterator getEndIterator (){
-		JSONObject::iterator it ;
+	virtual map<string , CustType* >::iterator getEndIterator (){
+		map<string , CustType* >::iterator it ;
 		cout << "Accesing outside of Json Object "  ; 
 		return it ;	
 	}
@@ -86,6 +87,16 @@ class CustType {
 	virtual CustType* getElement ( int index ) {
 		cout << "In CustType, apparently not in LIST. Calling from some other type\n" ; 
 		return  NULL ; 
+	}
+
+	//Conv to String 
+	virtual string toString () {
+		return "\nInside CustType\n" ;
+	}
+
+	//conv to StrType
+	virtual CustType* makeString () {
+		return CustType :: parse ("\nInside CustType\n" , "STRING") ;
 	}
 
 	//append to a list
@@ -211,6 +222,18 @@ class BoolType : public CustType {
 	  if(da) { cout << "True" ; }
 	  else { cout << "False" ; }
 	}
+	string toString () { 
+		string ret = "False"; 
+		if ( da)
+			ret = "True" ;
+		return ret ; 
+	}
+	CustType* makeString () {
+		string ret = "False"; 
+		if ( da)
+			ret = "True" ;
+		return CustType :: parse (this -> toString() , "STRING") ; 
+	}
 
 	/*
 	CustType operator!()
@@ -241,7 +264,18 @@ class NumType : public CustType {
 	int getType () {
 		return NUMBER ;
 	}
-
+	string toString () { 
+		string ret ; 
+		ostringstream strs;
+		strs << this -> da;
+		ret = strs.str() ;
+		return ret ; 
+	}
+	CustType* makeString () {
+		
+		return CustType :: parse( this -> toString() , "STRING" ) ; 
+		
+	}
 	NumType& operator+=(CustType& rhs)
         {
 	  CustType& t1 = rhs;
@@ -297,6 +331,7 @@ class NumType : public CustType {
 
 	  return ((temp1->da)>(temp2->da));
 	}
+
 } ;
 
 class StringType : public CustType { 
@@ -311,6 +346,13 @@ class StringType : public CustType {
 	}
 	
 	StringType(){
+		
+	}
+	string toString () {
+		return da ;
+	}
+	CustType* makeString () {
+		return CustType :: parse(this -> toString() , "STRING" ) ; 
 		
 	}
 	void print () {
@@ -364,6 +406,23 @@ class ListType : public CustType {
 			(*it) -> print () ; 
 		} 
 	}
+	string toString () { 
+		string ret  = "[ " ; 
+		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
+			if ( it != da.begin () )
+				ret += " ," ; 
+			ret += (*it) -> toString () ;
+
+		}
+		ret += " ]" ; 
+		return ret ; 
+
+	}
+	CustType* makeString () {
+		
+		return CustType :: parse(this -> toString() , "STRING" ) ; 
+		
+	}
 	CustType* getElement (int index) {
 		
 		if ( index >= da.size())
@@ -404,26 +463,57 @@ class JsonType : public CustType {
       JSONValue *value = new JSONValue(data);
       print_out(value->Stringify().c_str());
     }
+    string toString () {
+    	string ret = "{ " ; 
+    	for ( map<string , CustType* > :: iterator it = (this -> da).begin() ; it != (this -> da).end() ; ++ it ) {
+    		if ( it != (this -> da).begin() )
+    			ret += " , " ; 
+    		ret += "\"" ;
+    		ret += it -> first ; 
+    		ret += "\"" ;
+
+    		ret += " : " ;
+    		string valStr =  (it -> second ) -> toString ();
+    		if ( (it -> second) -> getType () == STRING) {
+    			ret += "\"" ; 
+    			ret += valStr ;
+    			ret += "\"" ; 
+    		}
+    		else {
+    			ret += valStr ;
+    		}
+    	}
+    	ret += " }" ;
+    	return ret ; 
+
+    }
+    CustType* makeString () { 
+    	return CustType :: parse ( this -> toString () , "STRING") ; 
+    }
 
     int getType() {
         return JSON;
     }
     CustType* getAttrList () ;
-    JSONObject::iterator getBeginIterator (){
-		JSONObject::iterator it  = data.begin();
+    
+    map<string , CustType* >::iterator getBeginIterator (){
+		map<string , CustType* > :: iterator it  = (this -> da).begin();
 		
 		return it ;
 	}
-	JSONObject::iterator getEndIterator (){
-		JSONObject::iterator it = data.end ();
+	
+	map<string , CustType* >::iterator getEndIterator (){
+		map<string , CustType* > :: iterator it = (this -> da ).end ();
 		return it ;	
 	}
+	
 	CustType * getElement (string key) {
 		if ( da.find(key) == da.end())
 			return NULL ;
 		else
 			return da[key] ;  
 	}
+	
 	void add (string  key, CustType* el) { 
 		da [key] = el ; 
 	}
@@ -590,7 +680,7 @@ void JsonType :: convToJsonType (){
 
 	map <string , CustType* > a ; 
 	
-	for ( JSONObject::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
+	for ( JSONObject::iterator iter  = (this -> data).begin() ; iter !=  (this -> data).end () ; iter ++ ) {
 		
 		string key = wstringToString ( iter -> first ) ; 
 		if ( (iter -> second)-> IsString () ) {
@@ -678,9 +768,9 @@ void ListType :: convToListType () {
 CustType* JsonType :: getAttrList () { 
 
 	vector <string> atrrListStr;
-	for ( JSONObject::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
+	for ( map<string , CustType* > ::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
 		
-		string keyString = wstringToString ( iter -> first ) ; 
+		string keyString =  iter -> first  ; 
 		atrrListStr.push_back(keyString) ;
 	}
 	ListType* attrList = new ListType (atrrListStr) ; 

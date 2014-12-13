@@ -47,8 +47,9 @@ int main() {
             \"foo\" : \"False\", \
             \"bar\" : \"123\" \
             } ]" ;
-	CustType *testJsonType = CustType :: parse(listString, "LIST");
 
+	CustType *testJsonType = CustType :: parse(testString, "LIST");
+	cout << testJsonType -> toString() ; 
     //string testString = "arpit" ;
 	//CustType *testJsonType = CustType :: parse(testString, "JSON");
 	//CustType *testJsonAcc = testJsonType -> getElement("sub_object")->getElement("foo");
