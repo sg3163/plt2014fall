@@ -46,7 +46,7 @@ Other:
 	File write - Chase
 X	MakeString - Arpit
 	TypeStruct
-	Pretty Print - Arpit
+X	Pretty Print - Arpit
 	Type Checking
 
 X	Parse JSON should not print
