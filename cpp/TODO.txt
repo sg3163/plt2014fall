@@ -19,10 +19,10 @@ X		Operator <= (Done)
 X		Operator >= (Done)
 
 For BOOLTYPE:
-	Logical Operators: (For Type BOOLEAN only.)
-		Operator ! 
-		Operator &&
-		Operator ||
+	Logical Operators: (For Type BOOLEAN only.) -Chase
+		Operator ! -Chase
+		Operator && -Chase
+		Operator || -Chase
 
 X	Get c++ bool from BoolType (done. Made function getBoolValue().)
 
@@ -52,11 +52,3 @@ Other:
 	Parse JSON should not print
 	Parse LIST should not print
 X	Parse NUMBER should work for negative numbers and decimals.
-
-
-QUESTIONS:
-	Do we need to overwrite the BoolType Logical Operators? It is highly recommend that you never do this. The main reason being, is the logical operators for booleans short-circuit and 
-you can't get this behavior when overloading. The recommended way of dealing with this is to create an operator to convert to a bool and perform the logic on the bool. We are already 
-providing this operator with getboolValue(). I think it would be better if we change our OCaml rather than our c++ here. Let me know if there is a case where I am wrong here.
-
-	Similar to above, do the Comparison Operators need to return a BoolType? Or can we have them return a bool? Returning a bool prevents the problems I was having earlier with c++ not being able to downcast a pointer.
