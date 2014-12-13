@@ -165,7 +165,7 @@ int main() {
 	 CustType *m2 = CustType::parse("2", "NUMBER");
 	 CustType *m3 = CustType::parse("3", "NUMBER");
 
-	 CustType* m4 = CustType::add(CustType::add(m1, m2), ,m3);
+	 CustType* m4 = CustType::add(CustType::add(m1, m2), m3);
 	 cout << endl << "1 + 2 + 3 = ";
 	 CustType::print(m4);
 
