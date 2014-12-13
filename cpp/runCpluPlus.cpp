@@ -198,5 +198,24 @@ int main() {
 	 else { cout << "Failed Operator ||" << endl; }
 
 
+	 CustType *aa = CustType::parse("5", "NUMBER");
+	 CustType *bb = CustType::parse("6", "Number");
+
+	 if ( ( *(*(aa) != *(bb)) && *(*(CustType::parse("5","NUMBER")) < *(bb) ) ) -> getBoolValue() )
+	   {
+	     cout << "More Complex If Condition Works" << endl;
+	   }
+
+	 if ( (!( *( *(aa) != *(bb) ) ))->getBoolValue()  )
+	   {
+	     cout << "Didn't work " << endl;
+	   }
+	 else
+	   {
+	     cout << "More Complex If Condition with Not Works " << endl;
+	   }
+
+
+
 	return 0;
 }
