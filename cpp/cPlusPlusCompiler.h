@@ -157,16 +157,6 @@ class CustType {
 
 };
 
-
-/*
-
-    //Logical Operator Prototypes
-    bool operator!(const CustType& a);
-    bool operator&&(const CustType& t1, const CustType& t2);
-    bool operator||(const CustType& t1, const CustType& t2);
-*/
-
-
 class BoolType : public CustType { 
 	public :
 	
@@ -653,6 +643,8 @@ CustType* CustType :: concat (CustType* t1, CustType* t2){
 		return t ; 
 	}
 
+// Mathematical Operators for NumType
+
 CustType* CustType::add(CustType* t1, CustType* t2) {
   if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
     
@@ -743,6 +735,8 @@ CustType* CustType::mod(CustType* t1 , CustType* t2) {
   }
 }
 
+//Comparison Operators for NumType
+
 CustType* operator==(CustType &lhs, CustType &rhs)
 {
   NumType *temp1 = dynamic_cast<NumType *>(&lhs);
@@ -804,6 +798,39 @@ CustType* operator>=(CustType &lhs, CustType &rhs)
   NumType *temp2 = dynamic_cast<NumType *>(&rhs);
   
   bool tempBool = ((temp1->da)>=(temp2->da));
+  BoolType *toReturn = new BoolType(tempBool, BOOL);
+  
+  return toReturn;
+}
+
+// Logical Operators for BoolType
+
+CustType* operator!(CustType &term)
+{
+  BoolType *temp = dynamic_cast<BoolType *>(&term);
+
+  bool tempBool = !(temp->da);
+  BoolType *toReturn = new BoolType(tempBool, BOOL);
+  return toReturn;
+}
+
+CustType* operator&&(CustType &t1, CustType &t2)
+{
+  BoolType *temp1 = dynamic_cast<BoolType *>(&t1);
+  BoolType *temp2 = dynamic_cast<BoolType *>(&t2);
+
+  bool tempBool = ((temp1->da) && (temp2->da));
+  BoolType *toReturn = new BoolType(tempBool, BOOL);
+  
+  return toReturn;
+}
+
+CustType* operator||(CustType &t1, CustType &t2)
+{
+  BoolType *temp1 = dynamic_cast<BoolType *>(&t1);
+  BoolType *temp2 = dynamic_cast<BoolType *>(&t2);
+
+  bool tempBool = ((temp1->da) || (temp2->da));
   BoolType *toReturn = new BoolType(tempBool, BOOL);
   
   return toReturn;
