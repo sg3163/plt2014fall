@@ -147,19 +147,6 @@ int main() {
 	 *s1+=*s2;
 	 cout << "Should print Hello World!: "; CustType::print(s1);
 	 cout <<endl;
-
-	 //NOT WORKING YET
-	 /*
-	 cout << endl << "Testing BOOL ! operator:" <<endl;
-	 //using b1 from above.
-	 CustType *b2 = CustType::parse(boolean, "BOOL");
-	 CustType::print(b2);
-	 CustType b3 = !(*b2);
-	 CustType *b4 = &b3;
-	 CustType::print(b4);
-	 if((b4)->getBoolValue()) {cout << endl << "ERROR with ! operator" << endl; }
-	 else { cout << "operator ! works Correctly!" << endl; }
-	 */
 	 
 	 CustType *m1 = CustType::parse("1", "NUMBER");
 	 CustType *m2 = CustType::parse("2", "NUMBER");
@@ -180,12 +167,28 @@ int main() {
 	 cout << endl << "3 / 2 = ";
 	 m4 = CustType::divide(m3, m2);
 	 CustType::print(m4);
+
+	 cout << endl << "3 % 2 = ";
+	 m4 = CustType::mod(m3, m2);
+	 CustType::print(m4);
 	 
 	 CustType *m5 = CustType::parse("Hello ", "STRING");
 	 CustType *m6 = CustType::parse("World!", "STRING");
 	 CustType *m7 = CustType::add(m5, m6);
 	 cout << endl << "Hello + World!: ";
-	 CustType::print(m7);
+	 CustType::print(m7); cout << endl;	 
+
+	 /*
+	 //NOT WORKING YET	 
+	 cout << endl << "Testing BOOL ! operator:" <<endl;
+	 CustType *bTest1 = CustType::parse("true", "BOOL");
+	 CustType::print(bTest1);
+	 CustType b3 = !(*bTest1);
+	 CustType *b4 = &b3;
+	 CustType::print(b4);
+	 if((b4)->getBoolValue()) {cout << endl << "ERROR with ! operator" << endl; }
+	 else { cout << "operator ! works Correctly!" << endl; }
+	 */
 
 	return 0;
 }

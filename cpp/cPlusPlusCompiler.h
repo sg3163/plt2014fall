@@ -117,6 +117,8 @@ class CustType {
 
 	static CustType* divide(CustType* t1, CustType* t2);
 
+	static CustType* mod(CustType* t1, CustType* t2);
+
  
 	//Get c++ Boolean value from BoolType
 	virtual bool getBoolValue() {
@@ -144,18 +146,13 @@ class CustType {
 	  cout << "In CustType, only allowed in NUMBER\n";
 	}
 
-	/*
+
+	/*	
 	virtual CustType operator!()
 	{
 	  cout << "In CustType, only allowed in BOOL\n";
 	}
 	*/
-	/*CustType operator+(CustType& rhs)
-	{
-	  CustType result = *this;
-	  result += rhs;
-	  return result;
-	  }*/
 
 	/*	
 	friend bool operator<(const CustType& t1, const CustType& t2);
@@ -178,15 +175,6 @@ class CustType {
     bool operator!(const CustType& a);
     bool operator&&(const CustType& t1, const CustType& t2);
     bool operator||(const CustType& t1, const CustType& t2);
-*/
-
-/*
-	CustType operator+(CustType& lhs, CustType& rhs)
-	{
-	  CustType temp(lhs);
-	  temp += rhs;
-	  return temp;
-	}
 */
 
 
@@ -217,9 +205,9 @@ class BoolType : public CustType {
 	/*
 	CustType operator!()
 	{
-	  CustType& t1 = *this;
-	  BoolType& temp = dynamic_cast<BoolType&>(t1);
-	  temp.da = !(temp.da);
+	  CustType *t1 = this;
+	  BoolType* temp = dynamic_cast<BoolType*>(t1);
+	  temp->da = !(temp->da);
 	  return temp;
 	}
 	*/
@@ -275,14 +263,6 @@ class NumType : public CustType {
 	  da/=temp.da;
 	  return *this;
 	}
-
-
-	/*CustType operator+(CustType& rhs)
-	{
-	  NumType result = *this;
-	  result += rhs;
-	  return result;
-	  }*/
 } ;
 
 class StringType : public CustType { 
@@ -752,4 +732,25 @@ CustType* CustType::divide(CustType* t1, CustType* t2) {
     cout << "ERROR: Divide only allowed for NUMBER, NUMBER" << endl;
     return NULL;
   }
+}
+
+CustType* CustType::mod(CustType* t1 , CustType* t2) {
+  if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
+    NumType *temp1 = dynamic_cast<NumType*>(t1);
+    NumType *temp2 = dynamic_cast<NumType*>(t2);
+
+    int num1 = static_cast<int>(temp1->da);
+    int num2 = static_cast<int>(temp2->da);
+
+    int mod = num1 % num2;
+
+    double num = static_cast<double>(mod);
+    NumType *t = new NumType(num, NUMBER);
+    return t;  
+  }
+  else {
+    cout << "ERROR: Mod only allowed for NUMBER, NUMBER" << endl;
+    return NULL;
+  }
+
 }

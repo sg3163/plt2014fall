@@ -1,0 +1,60 @@
+TODO:
+
+For NUMTYPE:
+X	Mathematical Operators: (For Type NUMBER only.)
+X		Operator += (Done)
+X		Operator -= (Done)
+X		Operator *= (Done)
+X		Operator /= (Done)
+X		Operator + (Made static function 'add')
+X		Operator - (Made static function 'subtract')
+X		Operator * (Made static function 'multiply')
+X		Operator / (Made static function 'divide')
+X		Operator % (Made static function 'mod')
+
+	Comparison Operators: (For Type NUMBER only.)
+		Operator == 
+		Operator !=
+		Operator <
+		Operator >
+		Operator <=
+		Operator >=
+
+
+For BOOLTYPE:
+	Logical Operators: (For Type BOOLEAN only.)
+		Operator !
+		Operator &&
+		Operator ||
+
+X	Get c++ bool from BoolType (done. Made function getBoolValue().)
+
+
+For STRINGTYPE:
+X	String Operators: (For Type STRING only.)
+X		Operator += (Done)
+X		Operator + (Made static function add)
+
+
+For JSONTYPE:
+	Subtract
+
+
+ListType:
+	Subtract
+
+
+Other:
+	Type NULL
+	File read
+	File write
+	MakeString
+	TypeStruct
+	Pretty Print
+	Type Checking
+
+	Parse JSON should not print
+	Parse LIST should not print
+X	Parsing Number now works decimals and negative numbers
+
+
