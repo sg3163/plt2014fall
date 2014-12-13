@@ -46,9 +46,9 @@ Other:
 	Type NULL
 	File read
 	File write
-	MakeString
+	MakeString - Arpit
 	TypeStruct
-	Pretty Print
+	Pretty Print - Arpit
 	Type Checking
 
 	Parse JSON should not print
