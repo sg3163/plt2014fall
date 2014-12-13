@@ -51,7 +51,7 @@ let get_bool_equal_oper_type t1 t2 =
 
 let get_math_oper_type t1 t2 =
 	if t1 = "int" && t2 = "int" then "int" else
-	raise (Failure ("type error in get_oper_type"))
+	raise (Failure ("Mathematical operator work on Number types only"))
 
 let get_logical_oper_type t1 t2 =
 	if t1 = "bool" && t2 = "bool" then "bool" else
@@ -60,7 +60,11 @@ let get_logical_oper_type t1 t2 =
 let get_add_oper_type t1 t2 =
 	if t1 = "int" && t2 = "int" then "int" else
 	if t1 = "string" && t2 = "string" then "string" else
-	raise (Failure ("type error in get_oper_type"))
+	raise (Failure ("Add operator can work on integers or strings"))
+
+let get_comp_oper_type t1 t2 =
+	if t1 = "int" && t2 = "int" then "bool" else
+	raise (Failure ("comparison operators can work on only Number types types"))
 
 let check_listexpr env = function
  	Ast.ListItemInt(i) -> Sast.ListItemInt(i), "int"
@@ -73,52 +77,52 @@ let match_oper e1 op e2 =
 	(* snd of expr is type *)
 	(*let expr_t = get_oper_type (snd e1) (snd e2) in*)
 	(match op with
-	   Ast.Add -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+	   Ast.Add -> let expr_t = get_add_oper_type (snd e1) (snd e2) in 
 					if expr_t = "int" then (Sast.Binop(fst e1, Sast.Add, fst e2), "int") else
 	   			if expr_t = "string" then (Sast.Binop(fst e1, Sast.Add, fst e2), "string") else
-		  		raise (Failure ("type error"))
+		  		raise (Failure ("Add operator can work on integers or strings"))
 	 | Ast.Sub -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
 			 if expr_t = "int" then (Sast.Binop(fst e1, Sast.Sub, fst e2), "int") else
-		  raise (Failure ("type error"))
+		  raise (Failure ("Mathematical operator work on Number types only"))
 	 | Ast.Mult -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
 						 if expr_t = "int" then (Sast.Binop(fst e1, Sast.Mult, fst e2), "int") else
-	 	   raise (Failure ("type error"))
+	 	   raise (Failure ("Mathematical operator work on Number types only"))
 	 | Ast.Div -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
 						 if expr_t = "int" then (Sast.Binop(fst e1, Sast.Div, fst e2), "int") else
-		  raise (Failure ("type error"))
+		  raise (Failure ("Mathematical operator work on Number types only"))
 	 | Ast.Mod -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
 						 if expr_t = "int" then (Sast.Binop(fst e1, Sast.Mod, fst e2), "int") else
-		  raise (Failure ("type error"))
+		  raise (Failure ("Mathematical operator work on Number types only"))
 		  (* equal and not equal have special case for string comparison 
 		  		we may need to add SAST and Eqs and Neqs *)
 	 | Ast.Equal -> let expr_t = get_bool_equal_oper_type (snd e1) (snd e2) in 
 								 if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Equal, fst e2), "bool") else
-                  raise (Failure ("type error in == " ^ expr_t ^" "^(snd e1) ^" "^(snd e2)))
+                  raise (Failure ("Cannot Compare different types"))
 	 | Ast.Neq -> let expr_t = get_bool_equal_oper_type (snd e1) (snd e2) in 
 								 if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Neq, fst e2), "bool") else
-                  raise (Failure ("type error in !="))
-	 | Ast.Less -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+                  raise (Failure ("Cannot Compare different types"))
+	 | Ast.Less -> let expr_t = get_comp_oper_type (snd e1) (snd e2) in 
 									if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Less, fst e2), "bool") else
-                  raise (Failure ("type error in < ")) 
-	 | Ast.Leq -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+                  raise (Failure ("Comparison operators can work on only Number types types")) 
+	 | Ast.Leq -> let expr_t = get_comp_oper_type (snd e1) (snd e2) in 
 									if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Leq, fst e2), "bool") else
-                  raise (Failure ("type error"))
-	 | Ast.Greater -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+                  raise (Failure ("Comparison operators can work on only Number types types"))
+	 | Ast.Greater -> let expr_t = get_comp_oper_type (snd e1) (snd e2) in 
 									if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Greater, fst e2), "bool") else
-                  raise (Failure ("type error"))
-	 | Ast.Geq -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+                  raise (Failure ("Comparison operators can work on only Number types types"))
+	 | Ast.Geq -> let expr_t = get_comp_oper_type (snd e1) (snd e2) in 
 								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Geq, fst e2), "bool") else
-                  raise (Failure ("type error")) 
+                  raise (Failure ("Comparison operators can work on only Number types types")) 
      | Ast.And -> let expr_t = get_logical_oper_type (snd e1) (snd e2) in 
 								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.And, fst e2), "bool") else
-                  raise (Failure ("type error")) 
+                  raise (Failure ("Logical operators can work on only bool types")) 
      | Ast.Or -> let expr_t = get_logical_oper_type (snd e1) (snd e2) in 
 								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Or, fst e2), "bool") else
-                  raise (Failure ("type error")) 
+                  raise (Failure ("Logical operators can work on only bool types")) 
      | Ast.Concat -> (Sast.Binop(fst e1, Sast.Concat, fst e2), "list")
      | Ast.Minus -> if (snd e1) = "list" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "list") else
 					if (snd e1) = "json" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "json") else
-					raise (Failure ("type error in Minus"))
+					raise (Failure ("Minus operator can work only on list or json"))
 	)
 	
 let rec check_list_items env = function

@@ -51,9 +51,9 @@ let rec string_of_expr e = match e with
       
       ( match o with
           Add -> "CustType::add("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"
-          | Sub -> string_of_expr e1 ^ " " ^ "-" ^ " " ^ string_of_expr e2
-          | Mult -> string_of_expr e1 ^ " " ^ "*" ^ " " ^ string_of_expr e2              
-          | Div -> string_of_expr e1 ^ " " ^ "/" ^ " " ^ string_of_expr e2
+          | Sub -> "CustType::subtract("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"
+          | Mult -> "CustType::multiply("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"              
+          | Div -> "CustType::divide("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"
           | Mod -> string_of_expr e1 ^ " " ^ "%" ^ " " ^ string_of_expr e2 
           | Or -> string_of_expr e1 ^ " " ^ "||" ^ " " ^ string_of_expr e2               
           | And -> string_of_expr e1 ^ " " ^ "&&" ^ " " ^ string_of_expr e2
