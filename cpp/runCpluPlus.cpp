@@ -111,12 +111,6 @@ int main() {
 	 cout << "n1+=n2: "; CustType::print(n1);
 	 cout << endl;
 
-	 /* //DOES NOT WORK: Compiles, but does not recognize as a NumType
-	 CustType n3 = *n1 + *n2;
-	 cout << "+ Type: " <<  (&n3)->getType() << endl;
-	 cout << "+ result: ";
-	 CustType::print(&n3); */
-
 	 cout << "Testing NUMBER subtraction:" << endl;
 	 cout << "n1 Value:"; CustType::print(n1);
 	 cout << endl << "n2 Value:"; CustType::print(n2);
@@ -178,24 +172,34 @@ int main() {
 	 cout << endl << "Hello + World!: ";
 	 CustType::print(m7); cout << endl;	 
 
-	 cout << endl;
-	 if (m1==m2) { cout << "FAILED operator ==" << endl; }
-	 else { cout << "Operator == Passed"  << endl; }
+	 cout << endl << "???????" << endl;
+	 cout << m1->getType() << endl;
+	 cout << m2->getType() << endl;
+	 cout << (*m1==*m2)->getBoolValue() << endl;
+	 cout << (*m1==*m1)->getBoolValue() << endl;
 
-	 if (m1!=m2) {cout << "Operator != Passed" << endl; }
+	 cout << endl;
+	 if ((*m1==*m2)->getBoolValue()) { cout << "FAILED operator ==" << endl; }
+	 else { cout << "Operator == Passed"  << endl; }
+	 
+	 if ((*m1!=*m2)->getBoolValue()) {cout << "Operator != Passed" << endl; }
 	 else {cout << "FAILED operator !=" << endl; }
 
-	 if (m1<m2) {cout << "Operator < Passed" << endl; }
+	 if ((*m1<*m2)->getBoolValue()) {cout << "Operator < Passed" << endl; }
 	 else { cout << "FAILED operator <" <<endl; }
 
-	 if (m1>m2) {cout << "FAILED operator >" << endl; }
+	 if ((*m1>*m2)->getBoolValue()) {cout << "FAILED operator >" << endl; }
 	 else { cout << "Operator > Passed" << endl; }
 
-	 if (m1<=m1 && m1<=m2) {cout << "Operator <= Passed" << endl; }
+	 
+	 if ((*m1<=*m1)->getBoolValue() && (*m1<=*m2)->getBoolValue()) {cout << "Operator <= Passed" << endl; }
 	 else { cout << "FAILED Operator <=" << endl; }
 
-	 if (m2>=m2 && m2>=m1) {cout << "Operator >= Passed" << endl; }
+	 if ((*m2>=*m2)->getBoolValue() && (*m2>=*m1)->getBoolValue()) {cout << "Operator >= Passed" << endl; }
 	 else { cout << "FAILED Operator >=" << endl; }
+	 
+
+
 
 
 

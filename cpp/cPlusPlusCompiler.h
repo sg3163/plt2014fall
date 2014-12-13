@@ -154,31 +154,10 @@ class CustType {
 	}
 	*/
 
-	bool operator==(CustType *rhs) {
-	  cout << "In CustType, only allowed in NUMBER\n";
-	}
-
-	bool operator!=(CustType *rhs) {
-	  return !(this==rhs);
-	}
-
-	bool operator<(CustType *rhs) {
-	  cout << "In CustType, only allowed in NUMBER\n";
-	}
-
-	bool operator>(CustType *rhs) {
-	  cout << "In CustType, only allowed in NUMBER\n";
-	}
-
-	bool operator<=(CustType *rhs) {
-	  return !(this > rhs);
-	}
-
-	bool operator>=(CustType *rhs) {
-	  return !(this < rhs);
-	}
 
 };
+
+
 /*
 
     //Logical Operator Prototypes
@@ -272,30 +251,6 @@ class NumType : public CustType {
 	  NumType& temp = dynamic_cast<NumType&>(t1);
 	  da/=temp.da;
 	  return *this;
-	}
-
-	bool operator==(CustType *rhs)
-	{
-	  NumType *temp1 = dynamic_cast<NumType *>(this);
-	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
-
-	  return ((temp1->da)==(temp2->da));
-	}
-
-	bool operator<(CustType *rhs)
-	{
-	  NumType *temp1 = dynamic_cast<NumType *>(this);
-	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
-
-	  return ((temp1->da)<(temp2->da));
-	}
-
-	bool operator>(CustType *rhs)
-	{
-	  NumType *temp1 = dynamic_cast<NumType *>(this);
-	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
-
-	  return ((temp1->da)>(temp2->da));
 	}
 } ;
 
@@ -786,5 +741,70 @@ CustType* CustType::mod(CustType* t1 , CustType* t2) {
     cout << "ERROR: Mod only allowed for NUMBER, NUMBER" << endl;
     return NULL;
   }
+}
 
+CustType* operator==(CustType &lhs, CustType &rhs)
+{
+  NumType *temp1 = dynamic_cast<NumType *>(&lhs);
+  NumType *temp2 = dynamic_cast<NumType *>(&rhs);
+  
+  bool tempBool = ((temp1->da)==(temp2->da));
+  BoolType *toReturn = new BoolType(tempBool, BOOL);
+    
+  return toReturn;
+}
+
+CustType* operator!=(CustType &lhs, CustType &rhs)
+{
+  NumType *temp1 = dynamic_cast<NumType *>(&lhs);
+  NumType *temp2 = dynamic_cast<NumType *>(&rhs);
+  
+  bool tempBool = ((temp1->da)!=(temp2->da));
+  BoolType *toReturn = new BoolType(tempBool, BOOL);
+  
+  return toReturn;
+}
+
+CustType* operator<(CustType &lhs, CustType &rhs)
+{
+  NumType *temp1 = dynamic_cast<NumType *>(&lhs);
+  NumType *temp2 = dynamic_cast<NumType *>(&rhs);
+  
+  bool tempBool = ((temp1->da)<(temp2->da));
+  BoolType *toReturn = new BoolType(tempBool, BOOL);
+  
+  return toReturn;
+}
+
+CustType* operator>(CustType &lhs, CustType &rhs)
+{
+  NumType *temp1 = dynamic_cast<NumType *>(&lhs);
+  NumType *temp2 = dynamic_cast<NumType *>(&rhs);
+  
+  bool tempBool = ((temp1->da)>(temp2->da));
+  BoolType *toReturn = new BoolType(tempBool, BOOL);
+  
+  return toReturn;
+}
+
+CustType* operator<=(CustType &lhs, CustType &rhs)
+{
+  NumType *temp1 = dynamic_cast<NumType *>(&lhs);
+  NumType *temp2 = dynamic_cast<NumType *>(&rhs);
+  
+  bool tempBool = ((temp1->da)<=(temp2->da));
+  BoolType *toReturn = new BoolType(tempBool, BOOL);
+  
+  return toReturn;
+}
+
+CustType* operator>=(CustType &lhs, CustType &rhs)
+{
+  NumType *temp1 = dynamic_cast<NumType *>(&lhs);
+  NumType *temp2 = dynamic_cast<NumType *>(&rhs);
+  
+  bool tempBool = ((temp1->da)>=(temp2->da));
+  BoolType *toReturn = new BoolType(tempBool, BOOL);
+  
+  return toReturn;
 }

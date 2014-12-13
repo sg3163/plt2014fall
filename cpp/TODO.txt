@@ -11,22 +11,20 @@ X		Operator / (Made static function 'divide')
 X		Operator % (Made static function 'mod')
 
 X	Comparison Operators: (For Type NUMBER only.)
-X		Operator == (Returns c++ bool)
-X		Operator != (Returns c++ bool)
-X		Operator < (Returns c++ bool)
-X		Operator > (Returns c++ bool)
-X		Operator <= (Returns c++ bool)
-X		Operator >= (Returns c++ bool)
-
+X		Operator == (Done)
+X		Operator != (Done)
+X		Operator < (Done)
+X		Operator > (Done)
+X		Operator <= (Done)
+X		Operator >= (Done)
 
 For BOOLTYPE:
 	Logical Operators: (For Type BOOLEAN only.)
-		Operator !
+		Operator ! 
 		Operator &&
 		Operator ||
 
 X	Get c++ bool from BoolType (done. Made function getBoolValue().)
-
 
 For STRINGTYPE:
 X	String Operators: (For Type STRING only.)
