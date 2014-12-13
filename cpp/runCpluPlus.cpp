@@ -197,6 +197,7 @@ int main() {
 	 if ((*m8 || *m9)->getBoolValue()) {cout << "Operator || Passed" << endl; }
 	 else { cout << "Failed Operator ||" << endl; }
 
-
+	cout << testJsonType -> prettyPrint(0) ; 
+    
 	return 0;
 }

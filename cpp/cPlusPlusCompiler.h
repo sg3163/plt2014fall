@@ -26,7 +26,7 @@ string wstringToString (wstring w){
     return result ;
 }
 
-enum dataType { NUMBER , STRING , JSON, LIST, BOOL } ; 
+enum dataType { NUMBER , STRING , BOOL , JSON, LIST} ; 
 
 class CustType {
 		
@@ -98,7 +98,10 @@ class CustType {
 	virtual CustType* makeString () {
 		return CustType :: parse ("\nInside CustType\n" , "STRING") ;
 	}
-
+	//print json in prettyPrint format
+	virtual string prettyPrint(int offset){
+		cout << "prettyPrint() is only valid on JSON type objects.\n" ; 
+	}
 	//append to a list
 	virtual void add (CustType* el) { 
 		cout << "In CustType, apparently not in LIST. Calling from some other type\n" ; 
@@ -344,10 +347,11 @@ class StringType : public CustType {
 
 class ListType : public CustType { 
 	
-	vector <CustType*> da; 
+	
 	int type ;
 	JSONArray data ;
 	public : 
+	vector <CustType*> da; 
 	void convToListType() ;
 	/*(ListType (vector <CustType> da , int type) : CustType (  ) { 
 		
@@ -461,6 +465,89 @@ class JsonType : public CustType {
     	return CustType :: parse ( this -> toString () , "STRING") ; 
     }
 
+    string prettyPrint (int offset) {
+    	string ret = "" ; 
+    	string offsetTabs = "" ; 
+    	for ( int i = 1 ; i <= offset ; i ++) {
+    		offsetTabs += "\t" ; 
+    	}
+
+    	ret += offsetTabs ;
+    	ret += "{\n" ;
+    	string insideJsonPrint = prettyPrintJsonUtility (this , offset + 1) ;
+    	ret += insideJsonPrint ; 
+    	ret += offsetTabs ; 
+    	ret += "}\n" ;
+    	return ret ; 
+    }
+    string prettyPrintJsonUtility ( JsonType* t , int offset) {
+    	string ret = ""  ;
+    	string offsetTabs = "" ; 
+    	for ( int i = 1 ; i <= offset ; i ++) {
+    		offsetTabs += "\t" ; 
+    	} 
+	    for ( map<string , CustType* > :: iterator it = (t -> da).begin() ; it != (t -> da).end() ; ++ it ) {
+	    	string el = "" ;
+	    	if ( it != (t -> da).begin() )
+    			el += ",\n" ; 
+    		el += offsetTabs ; 
+	    	el += "\"" ;
+    		el += it -> first ; 
+    		el += "\"" ;
+
+    		el += ": " ;
+    		if ( (it -> second )  -> getType() < JSON){
+				el +=  (it -> second ) -> toString ();
+			}
+			else if ((it -> second ) -> getType () == JSON){
+				el += "{\n" ; 
+				el += prettyPrintJsonUtility ( (JsonType*)(it -> second ), offset + 1 ) ; 
+				el += offsetTabs ; 
+				el += "}" ; 
+			}
+			else{
+				el += "[\n" ; 
+				el += prettyPrintListUtility ( (ListType*)(it -> second) , offset + 1 ) ; 
+				el += offsetTabs ; 
+				el += "]" ; 
+			}
+			ret += el ;	
+		}
+	    ret += "\n" ; 
+	    return ret ; 
+	}
+    string prettyPrintListUtility( ListType* t, int offset){
+    	string ret = ""  ;
+    	string offsetTabs = "" ; 
+    	for ( int i = 1 ; i <= offset ; i ++) {
+    		offsetTabs += "\t" ; 
+    	} 
+	    for (vector<CustType*> :: iterator it = (t -> da).begin () ; it != (t -> da).end () ; ++ it ) {
+	    	string el = "" ;
+	    	if ( it != (t-> da).begin() )
+    			el += ",\n" ; 
+    		el += offsetTabs ; 
+
+    		if ( (*it) -> getType() < JSON){
+				el += (*it) -> toString ();
+			}
+			else if ((*it) -> getType () == JSON){
+				el += "{\n" ; 
+				el += prettyPrintJsonUtility ((JsonType*)(*it), offset + 1 ) ; 
+				el += offsetTabs ; 
+				el += "}" ; 
+			}
+			else{
+				el += "[\n" ; 
+				el += prettyPrintListUtility ((ListType*)(*it), offset + 1 ) ; 
+				el += offsetTabs ; 
+				el += "]" ;
+			}
+			ret += el ;	
+		}
+	    ret += "\n" ; 
+	    return ret ; 
+    }
     int getType() {
         return JSON;
     }
