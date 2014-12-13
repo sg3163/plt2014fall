@@ -178,6 +178,29 @@ int main() {
 	 cout << endl << "Hello + World!: ";
 	 CustType::print(m7); cout << endl;	 
 
+	 cout << endl;
+	 if (m1==m2) { cout << "FAILED operator ==" << endl; }
+	 else { cout << "Operator == Passed"  << endl; }
+
+	 if (m1!=m2) {cout << "Operator != Passed" << endl; }
+	 else {cout << "FAILED operator !=" << endl; }
+
+	 if (m1<m2) {cout << "Operator < Passed" << endl; }
+	 else { cout << "FAILED operator <" <<endl; }
+
+	 if (m1>m2) {cout << "FAILED operator >" << endl; }
+	 else { cout << "Operator > Passed" << endl; }
+
+	 if (m1<=m1 && m1<=m2) {cout << "Operator <= Passed" << endl; }
+	 else { cout << "FAILED Operator <=" << endl; }
+
+	 if (m2>=m2 && m2>=m1) {cout << "Operator >= Passed" << endl; }
+	 else { cout << "FAILED Operator >=" << endl; }
+
+
+
+
+
 	 /*
 	 //NOT WORKING YET	 
 	 cout << endl << "Testing BOOL ! operator:" <<endl;

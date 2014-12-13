@@ -154,20 +154,30 @@ class CustType {
 	}
 	*/
 
-	/*	
-	friend bool operator<(const CustType& t1, const CustType& t2);
-	friend bool operator>(const CustType& t1, const CustType& t2);
-	friend bool operator==(const CustType& t1, const CustType& t2);
-	friend bool operator!=(const CustType& t1, const CustType& t2) {
-	  return !(t1 == t2);
+	bool operator==(CustType *rhs) {
+	  cout << "In CustType, only allowed in NUMBER\n";
 	}
-	friend bool operator<=(const CustType& t1, const CustType& t2) {
-	  return !(t1 > t2);
+
+	bool operator!=(CustType *rhs) {
+	  return !(this==rhs);
 	}
-	friend bool operator >=(const CustType& t1, const CustType& t2) {
-	  return !(t1 < t2);
+
+	bool operator<(CustType *rhs) {
+	  cout << "In CustType, only allowed in NUMBER\n";
 	}
-	*/
+
+	bool operator>(CustType *rhs) {
+	  cout << "In CustType, only allowed in NUMBER\n";
+	}
+
+	bool operator<=(CustType *rhs) {
+	  return !(this > rhs);
+	}
+
+	bool operator>=(CustType *rhs) {
+	  return !(this < rhs);
+	}
+
 };
 /*
 
@@ -262,6 +272,30 @@ class NumType : public CustType {
 	  NumType& temp = dynamic_cast<NumType&>(t1);
 	  da/=temp.da;
 	  return *this;
+	}
+
+	bool operator==(CustType *rhs)
+	{
+	  NumType *temp1 = dynamic_cast<NumType *>(this);
+	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
+
+	  return ((temp1->da)==(temp2->da));
+	}
+
+	bool operator<(CustType *rhs)
+	{
+	  NumType *temp1 = dynamic_cast<NumType *>(this);
+	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
+
+	  return ((temp1->da)<(temp2->da));
+	}
+
+	bool operator>(CustType *rhs)
+	{
+	  NumType *temp1 = dynamic_cast<NumType *>(this);
+	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
+
+	  return ((temp1->da)>(temp2->da));
 	}
 } ;
 
