@@ -656,19 +656,19 @@ void JsonType :: convToJsonType (){
 		if ( (iter -> second)-> IsString () ) {
 			string val = wstringToString ((iter-> second)-> AsString () ) ; 
 			StringType* t = new StringType (val, STRING) ; 
-			cout << val ;
+			//cout << val ;
 			a[key] = t  ;  
 		}
 		else if ( (iter -> second)-> IsBool () ) {
 			bool val = (iter-> second)-> AsBool ()  ; 
 			BoolType* t = new BoolType (val, BOOL) ; 
-			cout << val ;
+			//cout << val ;
 			a[key] = t ;  
 		}
 		else if ( (iter -> second)-> IsNumber () ) {
 			double val = (iter-> second)-> AsNumber ()  ; 
 			NumType* t = new NumType (val, NUMBER) ; 
-			cout << val ;
+			//cout << val ;
 			a[key] = t ;  
 		}
 		else if ( (iter -> second)-> IsObject() ){
@@ -700,19 +700,19 @@ void ListType :: convToListType () {
 		if ( (*iter) -> IsString () ) {
 			string val = wstringToString ((*iter) -> AsString () ) ; 
 			StringType* t = new StringType (val, STRING) ; 
-			cout << val ;
+			//cout << val ;
 			da.push_back(t) ;  
 		}
 		else if ( (*iter) -> IsBool () ) {
 			bool val = (*iter) -> AsBool ()  ; 
 			BoolType* t = new BoolType (val, BOOL) ; 
-			cout << val ;
+			//cout << val ;
 			da.push_back(t) ; 
 		}
 		else if ( (*iter) -> IsNumber () ) {
 			double val = (*iter) -> AsNumber ()  ; 
 			NumType* t = new NumType (val, NUMBER) ; 
-			cout << val ;
+			//cout << val ;
 			da.push_back(t) ; 
 		}
 		else if ( (*iter) -> IsObject() ){
