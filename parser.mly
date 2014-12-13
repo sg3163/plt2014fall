@@ -83,14 +83,13 @@ stmt:
     | RETURN expr_opt SEMI                              { Return($2) } 
     | PRINT LPAREN expr RPAREN SEMI                     { Print($3) }
 	| TYPE LPAREN expr RPAREN SEMI										  { ObjType($3) }
-	| MAKESTRING LPAREN expr RPAREN SEMI								{ MakeString($3) }
-    | FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
+	| FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
     | IF LPAREN ID IN ID RPAREN stmt ELSE stmt      { Ifin($3, $5, $7, $9) }
     | IF LPAREN ID IN ID RPAREN stmt %prec NOELSE   { Ifin($3, $5, $7,Block([])) }
     | LBRACE rev_stmt_list RBRACE                       { Block($2) }
-		| WRITE LPAREN expr COMMA STRING_LIT RPAREN SEMI		{ Write($3, $5) }
+	| WRITE LPAREN expr COMMA STRING_LIT RPAREN SEMI		{ Write($3, $5) }
 
 
 for_expr:
@@ -137,7 +136,9 @@ expr:
     | ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
     | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
     | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }
-		| READ LPAREN STRING_LIT RPAREN			{ Read($3) }
+	| READ LPAREN STRING_LIT RPAREN			{ Read($3) }
+    | MAKESTRING LPAREN expr RPAREN    { MakeString($3) }
+    
 
 list_items:
     { Noitem }

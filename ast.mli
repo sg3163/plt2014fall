@@ -54,6 +54,7 @@ type expr =
 	| TypeStruct of string
 	| AttrList of string
 	| Read of string
+  | MakeString of expr
   | NoExpr
     
 type var_decl = {
@@ -73,7 +74,6 @@ type stmt =
   | Return of expr
   | Print of expr
 	| ObjType of expr
-	| MakeString of expr
   | If of expr * stmt * stmt
   | Ifin of string * string * stmt * stmt
   | For of loop_var * for_expr * stmt  

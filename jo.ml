@@ -54,15 +54,15 @@ let rec string_of_expr e = match e with
           | Sub -> "CustType::subtract("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"
           | Mult -> "CustType::multiply("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"              
           | Div -> "CustType::divide("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"
-          | Mod -> string_of_expr e1 ^ " " ^ "%" ^ " " ^ string_of_expr e2 
-          | Or -> string_of_expr e1 ^ " " ^ "||" ^ " " ^ string_of_expr e2               
+          | Mod -> "CustType::mod("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"
+          | Or -> "*("^string_of_expr e1 ^ ") " ^ "||" ^ " *(" ^ string_of_expr e2 ^")"              
           | And -> string_of_expr e1 ^ " " ^ "&&" ^ " " ^ string_of_expr e2
-          | Geq -> string_of_expr e1 ^ " " ^ ">=" ^ " " ^ string_of_expr e2             
-          | Leq -> string_of_expr e1 ^ " " ^ "<=" ^ " " ^ string_of_expr e2
-          | Greater -> string_of_expr e1 ^ " " ^ ">" ^ " " ^ string_of_expr e2           
-          | Less -> string_of_expr e1 ^ " " ^ "<" ^ " " ^ string_of_expr e2
-          | Equal -> string_of_expr e1 ^ " " ^ "==" ^ " " ^ string_of_expr e2      
-          | Neq -> string_of_expr e1 ^ " " ^ "!=" ^ " " ^ string_of_expr e2 
+          | Geq -> "*("^string_of_expr e1 ^ ") " ^ ">=" ^ " *(" ^ string_of_expr e2 ^")"                
+          | Leq -> "*("^string_of_expr e1 ^ ") " ^ "<=" ^ " *(" ^ string_of_expr e2 ^")"   
+          | Greater -> "*("^string_of_expr e1 ^ ") " ^ ">" ^ " *(" ^ string_of_expr e2 ^")"              
+          | Less -> "*("^string_of_expr e1 ^ ") " ^ "<" ^ " *(" ^ string_of_expr e2 ^")"   
+          | Equal -> "*("^string_of_expr e1 ^ ") " ^ "==" ^ " *(" ^ string_of_expr e2 ^")"      
+          | Neq -> "*("^string_of_expr e1 ^ ") " ^ "!=" ^ " *(" ^ string_of_expr e2 ^")"   
           | Concat -> "CustType::concat(" ^ string_of_expr e1 ^ "," ^ string_of_expr e2 ^ ")"
           | Minus -> "CustType::minus(" ^ string_of_expr e1 ^ "," ^ string_of_expr e2 ^ ")"
         ) 
@@ -76,6 +76,7 @@ let rec string_of_expr e = match e with
 	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
 	| AttrList(id) -> "CustType::attrList(" ^ id ^ ")"
 	| Read(str) -> "CustType::read(" ^ str ^ ")"
+  | MakeString(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->makeString()"
   | NoExpr -> ""
 
 let rec string_of_stmt = function
@@ -83,8 +84,7 @@ let rec string_of_stmt = function
     | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
 		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n"
 		| ObjType(expr, expr_type) -> "CustType::type(" ^ string_of_expr expr ^ ");\n"
-		| MakeString(expr, expr_type) -> "CustType::makeString(" ^ string_of_expr expr ^ ");\n"
-    | Block(stmts) ->
+		| Block(stmts) ->
         "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
     | For(e1, e2, s1) ->
       "for (vector<CustType*> :: iterator  " ^ string_of_loop_var_t e1 ^ "  = " ^ get_for_id e2 ^ " -> getListBegin () ; " ^ string_of_loop_var_t e1 ^ " != " ^ get_for_id e2 ^ 

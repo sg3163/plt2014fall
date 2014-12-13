@@ -53,6 +53,7 @@ type expr_t =
 	| TypeStruct of string
 	| AttrList of string
 	| Read of string
+  | MakeString of expr_t * string
 	| MainRet of int
   | NoExpr
 
@@ -68,7 +69,6 @@ type stmt_t =
   | Return of expr_t
 	| Print of expr_t * string
 	| ObjType of expr_t * string
-	| MakeString of expr_t * string
   | For of loop_var_t * for_expr_t * stmt_t
   | If of expr_t * stmt_t * stmt_t
   | Ifin of string * string * stmt_t * stmt_t
