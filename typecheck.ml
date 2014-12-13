@@ -40,16 +40,27 @@ let get_oper_type t1 t2 =
 
 (* TODO ----- NEED TO have checks for boolean op and mathermatical op
 	*)
-let get_bool_oper_type t1 t2 =
-	if t1 = "json" then "json" else
-	if t1 = "list" then "list" else
-	if t1 = "string" || t2 = "string" then "string" else
+	
+let get_bool_equal_oper_type t1 t2 =
+	if t1 = "json" && t2 = "json" then "bool" else
+	if t1 = "list" && t2 = "list" then "bool" else
+	if t1 = "string" && t2 = "string" then "bool" else
 	if t1 = "int" && t2 = "int" then "bool" else
 	if t1 = "bool" && t2 = "bool" then "bool" else
-	if t1 = "int" && t2 = "bool" then raise (Failure ("cannot use int with bool type inside expression")) else
-	if t1 = "bool" && t2 = "int" then raise (Failure ("cannot use int with bool type inside expression")) else
+	raise (Failure ("Cannot Compare different types"))
+
+let get_math_oper_type t1 t2 =
+	if t1 = "int" && t2 = "int" then "int" else
 	raise (Failure ("type error in get_oper_type"))
 
+let get_logical_oper_type t1 t2 =
+	if t1 = "bool" && t2 = "bool" then "bool" else
+	raise (Failure ("Logical operators can work on only bool types"))
+	
+let get_add_oper_type t1 t2 =
+	if t1 = "int" && t2 = "int" then "int" else
+	if t1 = "string" && t2 = "string" then "string" else
+	raise (Failure ("type error in get_oper_type"))
 
 let check_listexpr env = function
  	Ast.ListItemInt(i) -> Sast.ListItemInt(i), "int"
@@ -60,37 +71,50 @@ let check_func_arg lst expr arg_t = (fst expr)::lst
 
 let match_oper e1 op e2 =
 	(* snd of expr is type *)
-	let expr_t = get_oper_type (snd e1) (snd e2) in
+	(*let expr_t = get_oper_type (snd e1) (snd e2) in*)
 	(match op with
-	   Ast.Add -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Add, fst e2), "int") else
+	   Ast.Add -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+					if expr_t = "int" then (Sast.Binop(fst e1, Sast.Add, fst e2), "int") else
 	   			if expr_t = "string" then (Sast.Binop(fst e1, Sast.Add, fst e2), "string") else
 		  		raise (Failure ("type error"))
-	 | Ast.Sub -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Sub, fst e2), "int") else
+	 | Ast.Sub -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+			 if expr_t = "int" then (Sast.Binop(fst e1, Sast.Sub, fst e2), "int") else
 		  raise (Failure ("type error"))
-	 | Ast.Mult -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Mult, fst e2), "int") else
+	 | Ast.Mult -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+						 if expr_t = "int" then (Sast.Binop(fst e1, Sast.Mult, fst e2), "int") else
 	 	   raise (Failure ("type error"))
-	 | Ast.Div -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Div, fst e2), "int") else
+	 | Ast.Div -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+						 if expr_t = "int" then (Sast.Binop(fst e1, Sast.Div, fst e2), "int") else
 		  raise (Failure ("type error"))
-	 | Ast.Mod -> if expr_t = "int" then (Sast.Binop(fst e1, Sast.Mod, fst e2), "int") else
+	 | Ast.Mod -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+						 if expr_t = "int" then (Sast.Binop(fst e1, Sast.Mod, fst e2), "int") else
 		  raise (Failure ("type error"))
 		  (* equal and not equal have special case for string comparison 
 		  		we may need to add SAST and Eqs and Neqs *)
-	 | Ast.Equal -> if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Equal, fst e2), "bool") else
+	 | Ast.Equal -> let expr_t = get_bool_equal_oper_type (snd e1) (snd e2) in 
+								 if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Equal, fst e2), "bool") else
                   raise (Failure ("type error in == " ^ expr_t ^" "^(snd e1) ^" "^(snd e2)))
-	 | Ast.Neq -> if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Neq, fst e2), "bool") else
+	 | Ast.Neq -> let expr_t = get_bool_equal_oper_type (snd e1) (snd e2) in 
+								 if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Neq, fst e2), "bool") else
                   raise (Failure ("type error in !="))
-	 | Ast.Less ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Less, fst e2), "bool") else
+	 | Ast.Less -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+									if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Less, fst e2), "bool") else
                   raise (Failure ("type error in < ")) 
-	 | Ast.Leq ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Leq, fst e2), "bool") else
+	 | Ast.Leq -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+									if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Leq, fst e2), "bool") else
                   raise (Failure ("type error"))
-	 | Ast.Greater ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Greater, fst e2), "bool") else
+	 | Ast.Greater -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+									if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Greater, fst e2), "bool") else
                   raise (Failure ("type error"))
-	 | Ast.Geq ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Geq, fst e2), "bool") else
+	 | Ast.Geq -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
+								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Geq, fst e2), "bool") else
                   raise (Failure ("type error")) 
-     | Ast.And ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.And, fst e2), "bool") else
-      			  raise (Failure ("type error in and")) 
-     | Ast.Or ->if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Or, fst e2), "bool") else
-      			  raise (Failure ("type error in or"))
+     | Ast.And -> let expr_t = get_logical_oper_type (snd e1) (snd e2) in 
+								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.And, fst e2), "bool") else
+                  raise (Failure ("type error")) 
+     | Ast.Or -> let expr_t = get_logical_oper_type (snd e1) (snd e2) in 
+								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Or, fst e2), "bool") else
+                  raise (Failure ("type error")) 
      | Ast.Concat -> (Sast.Binop(fst e1, Sast.Concat, fst e2), "list")
      | Ast.Minus -> if (snd e1) = "list" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "list") else
 					if (snd e1) = "json" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "json") else
@@ -217,6 +241,7 @@ let rec check_expr env = function
 															Sast.ElemAccess (id, (fst t2)), (snd t2)
     | Ast.TypeStruct(id) ->	Sast.TypeStruct (id), id
 	| Ast.AttrList(id) -> Sast.AttrList (id), id
+	| Ast.Read(str) -> Sast.Read(str), "string"
 	| Ast.NoExpr -> Sast.NoExpr, "void"
 
 
@@ -318,6 +343,8 @@ let rec check_stmt env func = function
 	| Ast.For(expr1, expr2, stmt) -> let envNew, e1 = check_loopvar env expr1 in let e2 = check_forexpr envNew expr2 in
 						   if not ( snd e2 = "list" ) then raise (Failure("The type of the expression in a For statement must be path"))
 						   else (Sast.For( e1, fst e2, fst (check_stmt envNew func stmt))), envNew 
+	| Ast.Write(expr, str) -> let (expr, expr_type) = check_expr env expr in
+							(Sast.Write(expr , str)), env
 	
 
 and check_stmt_list env func = function 

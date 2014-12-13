@@ -77,11 +77,115 @@ int main() {
 		
 		print_out ( (iter -> first).c_str() ) ; 
 		print_out ( (iter-> second) -> Stringify ().c_str()) ; 
-		cout   << endl ; 
+		cout   << endl ;
 	}*/
 	cout << "testing concat below \n" ; 
 	 (CustType::parse("[1,99]","LIST") ) -> print () ; 
+
+
+	 cout << endl << endl << endl << endl << endl;
 	 
+	 cout << endl << "Testing getBoolValue()" << endl;
+	 string boolean = "True";
+	 CustType *b1 = CustType::parse(boolean, "BOOL");
+	 bool boo1 = b1->getBoolValue();
+	 if (boo1) { cout << "getBoolValue() worked" << endl; }
+	 else { cout << "ERROR with getBoolValue()" << endl; }
+	 
+
+	 cout << endl << "Testing Operators" << endl;
+	 
+	 string ns1 = "0.5";
+	 string ns2 = "0.25";
+	 CustType *n1 = CustType::parse(ns1, "NUMBER");
+	 CustType *n2 = CustType::parse(ns2, "NUMBER");
+
+	 cout << "n1 Type:" << n1->getType() << endl;
+	 cout << "n2 Type:" << n2->getType() << endl;
+	 cout << "Testing NUMBER addition:" << endl;
+	 cout << "n1 Value:"; CustType::print(n1);
+	 cout << endl << "n2 Value:"; CustType::print(n2);
+	 cout << endl;
+	 *n1+=*n2;
+	 cout << "n1+=n2 Type: " << n1->getType() << endl;
+	 cout << "n1+=n2: "; CustType::print(n1);
+	 cout << endl;
+
+	 /* //DOES NOT WORK: Compiles, but does not recognize as a NumType
+	 CustType n3 = *n1 + *n2;
+	 cout << "+ Type: " <<  (&n3)->getType() << endl;
+	 cout << "+ result: ";
+	 CustType::print(&n3); */
+
+	 cout << "Testing NUMBER subtraction:" << endl;
+	 cout << "n1 Value:"; CustType::print(n1);
+	 cout << endl << "n2 Value:"; CustType::print(n2);
+	 cout << endl;	 
+	 *n1-=*n2;
+	 cout << "n1-=n2:"; CustType::print(n1);
+	 cout << endl;
+
+	 cout << "Testing NUMBER multiplication:" << endl;
+	 cout << "n1 Value:"; CustType::print(n1);
+	 cout << endl << "n2 Value:"; CustType::print(n2);
+	 cout << endl;
+	 *n1*=*n2;
+	 cout << "n1*=n2:"; CustType::print(n1);
+	 cout << endl;
+
+	 cout << "Testing NUMBER division:" << endl;
+	 cout << "n1 Value:"; CustType::print(n1);
+	 cout << endl << "n2 Value:"; CustType::print(n2);
+	 cout << endl;
+	 *n1/=*n2;
+	 cout << "n1/=n2:"; CustType::print(n1);
+	 cout << endl;
+
+	 cout << endl << "Testing STRING concat:" << endl;
+	 CustType *s1 = CustType::parse("Hello ", "STRING");
+	 CustType *s2 = CustType::parse("World!", "STRING");
+	 *s1+=*s2;
+	 cout << "Should print Hello World!: "; CustType::print(s1);
+	 cout <<endl;
+
+	 //NOT WORKING YET
+	 /*
+	 cout << endl << "Testing BOOL ! operator:" <<endl;
+	 //using b1 from above.
+	 CustType *b2 = CustType::parse(boolean, "BOOL");
+	 CustType::print(b2);
+	 CustType b3 = !(*b2);
+	 CustType *b4 = &b3;
+	 CustType::print(b4);
+	 if((b4)->getBoolValue()) {cout << endl << "ERROR with ! operator" << endl; }
+	 else { cout << "operator ! works Correctly!" << endl; }
+	 */
+	 
+	 CustType *m1 = CustType::parse("1", "NUMBER");
+	 CustType *m2 = CustType::parse("2", "NUMBER");
+	 CustType *m3 = CustType::parse("3", "NUMBER");
+
+	 CustType* m4 = CustType::add(CustType::add(m1, m2), m3);
+	 cout << endl << "1 + 2 + 3 = ";
+	 CustType::print(m4);
+
+	 m4 = CustType::subtract(CustType::subtract(m3, m2), m1);
+	 cout << endl << "3 - 2 - 1 = ";
+	 CustType::print(m4);
+
+	 cout << endl << "3 * 2 = ";
+	 m4 = CustType::multiply(m3, m2);
+	 CustType::print(m4);
+
+	 cout << endl << "3 / 2 = ";
+	 m4 = CustType::divide(m3, m2);
+	 CustType::print(m4);
+	 
+	 CustType *m5 = CustType::parse("Hello ", "STRING");
+	 CustType *m6 = CustType::parse("World!", "STRING");
+	 CustType *m7 = CustType::add(m5, m6);
+	 cout << endl << "Hello + World!: ";
+	 CustType::print(m7);
 
 	return 0;
 }

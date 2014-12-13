@@ -44,6 +44,7 @@ rule token = parse
 	| "end"			{ END }			
 	| "not_in"		{ NOTIN }			
 	| "read"    	{ READ }  
+	| "write"			{ WRITE }
 	| "print"    	{PRINT}
 	| "type"    	{ TYPE } 
 	| "typeStruct" { TYPESTRUCT }

@@ -5,3 +5,4 @@ rm -rf testfiles/*.o
 rm -rf testfiles/*.cpp
 rm -rf testfiles/*.pjo
 rm -rf cpp/*.o
+rm -rf testfiles/*.out

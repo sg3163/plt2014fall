@@ -23,3 +23,5 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE) *~
+
+full: clean all

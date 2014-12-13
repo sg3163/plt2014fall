@@ -14,6 +14,7 @@ void print_out(const wchar_t *output)
     wcout.flush();
 
 }
+
 string wstringToString (wstring w){
 	string result = "" ;
 	char x ; 
@@ -23,11 +24,11 @@ string wstringToString (wstring w){
     }
     return result ;
 }
-enum dataType { NUMBER , STRING , JSON, LIST , BOOL } ; 
+
+enum dataType { NUMBER , STRING , JSON, LIST, BOOL } ; 
 
 class CustType {
-	
-	
+		
 	public :
 	 
 	static string data ; 
@@ -37,7 +38,6 @@ class CustType {
 		//this->dt = NUMBER ; 
 		this->data = data ; 
 	
-		
 	}
 	
 	CustType () { 
@@ -48,7 +48,7 @@ class CustType {
 	static void print(CustType* data) ;
 	static void print (vector<CustType*>  :: iterator it ) ;
 	virtual void print () {
-		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class" ;
+		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class\n" ;
 	}
 
 	virtual int getType(){
@@ -100,10 +100,96 @@ class CustType {
 
 	}
 
+
 	//concat items and form a list
 	static CustType* concat (CustType* t1, CustType* t2) ; 
-	
+
+
+	//Mathematical Operators
+	//Add is valid for NUMBER + NUMBER and STRING + STRING (JO operator ++)
+	//The remaining mathematical operators are valid only for NUMBER, NUMBER
+	//Returns NULL pointer if arguments are of an invalid type. 
+	static CustType* add(CustType* t1, CustType* t2);
+
+	static CustType* subtract(CustType* t1, CustType* t2);
+
+	static CustType* multiply(CustType* t1, CustType* t2);
+
+	static CustType* divide(CustType* t1, CustType* t2);
+
+ 
+	//Get c++ Boolean value from BoolType
+	virtual bool getBoolValue() {
+	  cout << "In CustType, only valid for BoolType\n";
+	}
+
+	//Operator Overloading:
+	virtual CustType& operator+=(CustType& rhs)
+	{
+	  cout << "In CustType, only allowed in NUMBER and STRING\n";
+	}
+
+	virtual CustType& operator-=(CustType& rhs)
+	{
+	  cout << "In CustType, only allowed in NUMBER\n";
+	}
+
+	virtual CustType& operator*=(CustType& rhs)
+	{
+	  cout << "In CustType, only allowed in NUMBER\n";
+	}
+
+	virtual CustType& operator/=(CustType& rhs)
+	{
+	  cout << "In CustType, only allowed in NUMBER\n";
+	}
+
+	/*
+	virtual CustType operator!()
+	{
+	  cout << "In CustType, only allowed in BOOL\n";
+	}
+	*/
+	/*CustType operator+(CustType& rhs)
+	{
+	  CustType result = *this;
+	  result += rhs;
+	  return result;
+	  }*/
+
+	/*	
+	friend bool operator<(const CustType& t1, const CustType& t2);
+	friend bool operator>(const CustType& t1, const CustType& t2);
+	friend bool operator==(const CustType& t1, const CustType& t2);
+	friend bool operator!=(const CustType& t1, const CustType& t2) {
+	  return !(t1 == t2);
+	}
+	friend bool operator<=(const CustType& t1, const CustType& t2) {
+	  return !(t1 > t2);
+	}
+	friend bool operator >=(const CustType& t1, const CustType& t2) {
+	  return !(t1 < t2);
+	}
+	*/
 };
+/*
+
+    //Logical Operator Prototypes
+    bool operator!(const CustType& a);
+    bool operator&&(const CustType& t1, const CustType& t2);
+    bool operator||(const CustType& t1, const CustType& t2);
+*/
+
+/*
+	CustType operator+(CustType& lhs, CustType& rhs)
+	{
+	  CustType temp(lhs);
+	  temp += rhs;
+	  return temp;
+	}
+*/
+
+
 class BoolType : public CustType { 
 	public :
 	
@@ -117,7 +203,28 @@ class BoolType : public CustType {
 	int getType () {
 		return BOOL ;
 	}
+
+	bool getBoolValue()
+	{
+	  return da;
+	}
+
+	void print () {
+	  if(da) { cout << "True" ; }
+	  else { cout << "False" ; }
+	}
+
+	/*
+	CustType operator!()
+	{
+	  CustType& t1 = *this;
+	  BoolType& temp = dynamic_cast<BoolType&>(t1);
+	  temp.da = !(temp.da);
+	  return temp;
+	}
+	*/
 };
+
 class NumType : public CustType { 
 	
 	
@@ -126,7 +233,6 @@ class NumType : public CustType {
 	double da; 
 	int type ; 
 	NumType (double da , int type) : CustType (  ) { 
-		
 		this -> da = da ;
 		this -> type = type ; 
 		
@@ -137,6 +243,46 @@ class NumType : public CustType {
 	int getType () {
 		return NUMBER ;
 	}
+
+	NumType& operator+=(CustType& rhs)
+        {
+	  CustType& t1 = rhs;
+	  NumType& temp = dynamic_cast<NumType&>(t1);
+	  da+=temp.da;
+	  return *this;
+	}
+
+	NumType& operator-=(CustType& rhs)
+        {
+	  CustType& t1 = rhs;
+	  NumType& temp = dynamic_cast<NumType&>(t1);
+	  da-=temp.da;
+	  return *this;
+	}
+
+	NumType& operator*=(CustType& rhs)
+        {
+	  CustType& t1 = rhs;
+	  NumType& temp = dynamic_cast<NumType&>(t1);
+	  da*=temp.da;
+	  return *this;
+	}
+
+	NumType& operator/=(CustType& rhs)
+        {
+	  CustType& t1 = rhs;
+	  NumType& temp = dynamic_cast<NumType&>(t1);
+	  da/=temp.da;
+	  return *this;
+	}
+
+
+	/*CustType operator+(CustType& rhs)
+	{
+	  NumType result = *this;
+	  result += rhs;
+	  return result;
+	  }*/
 } ;
 
 class StringType : public CustType { 
@@ -158,6 +304,14 @@ class StringType : public CustType {
 	}
 	int getType () {
 		return STRING ;
+	}
+
+	StringType& operator+=(CustType& rhs)
+        {
+	  CustType& t1 = rhs;
+	  StringType& temp = dynamic_cast<StringType&>(t1);
+	  da+=temp.da;
+	  return *this;
 	}
 	
 } ;
@@ -265,6 +419,9 @@ class JsonType : public CustType {
 		CLASS DEFINITIONS END HERE 
 ******************************************************/
 
+
+//Commented method does not handle fractions. Alternate method is included below.
+/*
 NumType* getNum (string data, int type ){
 	double num  = 0 ; 
 	int decimal_bool = 0, decimal = 1 ; 
@@ -284,6 +441,16 @@ NumType* getNum (string data, int type ){
 	num = num / decimal ; 
 	NumType* t  = new NumType(num , NUMBER) ;
 	return t ;
+}
+*/
+
+NumType* getNum(string data, int type)
+{
+  const char *cstr = data.c_str();
+  char* pEnd;
+  double num = strtod(cstr, &pEnd);
+  NumType* t = new NumType(num, NUMBER);
+  return t;
 }
 
 StringType* getString (string data, int type){
@@ -324,10 +491,12 @@ ListType* getList (string data, int type){
 
 	return (ListType *) t -> getElement ("List"); 
 }
+
 BoolType* getBool (string data , int type) {
 	BoolType * t = new BoolType ( data == "True" ? 1 : 0 , BOOL ) ; 
 	return t ; 
 }
+
 JsonType* getJson (string data, int type){
 
     std::string str = data;
@@ -374,16 +543,18 @@ CustType* CustType :: parse (string data, string type)  {
 		}
 		else{
 			//CustType :: dt = NUMBER ; 
-			return getNum (data,NUMBER) ;
+			return getNum (data, NUMBER) ;
 		}
 }
 
 void CustType :: print ( CustType* data) { 
 	data -> print () ;
 }
+
 void CustType :: print (vector<CustType*>  :: iterator it ) {
 	(*it) -> print () ; 
 }
+
 string CustType :: typeString ( CustType* t) {
 
 	int typeVal = t -> getType () ;
@@ -400,6 +571,7 @@ string CustType :: typeString ( CustType* t) {
 	}
 	return type ; 
 }
+
 void JsonType :: convToJsonType (){
 
 	map <string , CustType* > a ; 
@@ -445,6 +617,7 @@ void JsonType :: convToJsonType (){
 	da.insert ( a.begin() , a.end () ) ; 
 	//return a ; 
 }
+
 void ListType :: convToListType () {
 
 	for ( vector<JSONValue*>  :: iterator iter  = data.begin () ; iter !=  data.end () ; iter ++ ) {
@@ -487,6 +660,7 @@ void ListType :: convToListType () {
 
 
 }
+
 CustType* JsonType :: getAttrList () { 
 
 	vector <string> atrrListStr;
@@ -509,13 +683,73 @@ CustType* CustType :: concat (CustType* t1, CustType* t2){
 		t -> add (t2) ; 
 		return t ; 
 	}
-/*
-int main() {
-	// your code goes here
 
-	string b  = "\"arpit\""; 
-	CustType a = CustType(b) ; 
-	CustType c = a.parse() ; 
-	
-	return 0;
-}*/
+CustType* CustType::add(CustType* t1, CustType* t2) {
+  if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
+    
+    NumType *temp1 = dynamic_cast<NumType*>(t1);
+    NumType *temp2 = dynamic_cast<NumType*>(t2);
+    
+    double num = (temp1->da) + (temp2->da);
+    NumType *t = new NumType(num, NUMBER);
+    return t;  
+  }
+  else if( (t1->getType() == STRING) && (t2->getType() == STRING) ) {
+    StringType *temp1 = dynamic_cast<StringType*>(t1);
+    StringType *temp2 = dynamic_cast<StringType*>(t2);
+
+    string str = (temp1->da) + (temp2->da);
+    StringType *t = new StringType(str, STRING);
+    return t;
+  }
+  else {
+    cout << "ERROR: Add only allowed for NUMBER, NUMBER or STRING, STRING" << endl;
+    return NULL;
+  }
+
+}
+
+CustType* CustType::subtract(CustType* t1, CustType* t2) {
+  if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
+    NumType *temp1 = dynamic_cast<NumType*>(t1);
+    NumType *temp2 = dynamic_cast<NumType*>(t2);
+    
+    double num = (temp1->da) - (temp2->da);
+    NumType *t = new NumType(num, NUMBER);
+    return t;  
+  }
+  else {
+    cout << "ERROR: Subtract only allowed for NUMBER, NUMBER" << endl;
+    return NULL;
+  }
+}
+
+CustType* CustType::multiply(CustType* t1, CustType* t2) {
+  if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
+    NumType *temp1 = dynamic_cast<NumType*>(t1);
+    NumType *temp2 = dynamic_cast<NumType*>(t2);
+    
+    double num = (temp1->da) * (temp2->da);
+    NumType *t = new NumType(num, NUMBER);
+    return t;  
+  }
+  else {
+    cout << "ERROR: Multiply only allowed for NUMBER, NUMBER" << endl;
+    return NULL;
+  }
+}
+
+CustType* CustType::divide(CustType* t1, CustType* t2) {
+  if( (t1->getType() == NUMBER) && (t2->getType() == NUMBER) ) {
+    NumType *temp1 = dynamic_cast<NumType*>(t1);
+    NumType *temp2 = dynamic_cast<NumType*>(t2);
+    
+    double num = (temp1->da) / (temp2->da);
+    NumType *t = new NumType(num, NUMBER);
+    return t;  
+  }
+  else {
+    cout << "ERROR: Divide only allowed for NUMBER, NUMBER" << endl;
+    return NULL;
+  }
+}
