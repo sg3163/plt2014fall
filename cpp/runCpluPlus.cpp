@@ -217,5 +217,7 @@ int main() {
 
 
 
+	cout << testJsonType -> prettyPrint(0) ; 
+    
 	return 0;
 }
