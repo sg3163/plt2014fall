@@ -10,6 +10,7 @@ X		Operator * (Made static function 'multiply')
 X		Operator / (Made static function 'divide')
 X		Operator % (Made static function 'mod')
 
+
 X	Comparison Operators: (For Type NUMBER only.)
 X		Operator == (Done)
 X		Operator != (Done)
@@ -17,6 +18,14 @@ X		Operator < (Done)
 X		Operator > (Done)
 X		Operator <= (Done)
 X		Operator >= (Done)
+
+	Comparison Operators: (For Type LIST,JSON,STRING also.)
+		Operator == (Done)  - Arpit
+		Operator != (Done)
+		Operator < (Done)
+		Operator > (Done)
+		Operator <= (Done)
+		Operator >= (Done)
 
 For BOOLTYPE:
 X	Logical Operators: (For Type BOOLEAN only.)
