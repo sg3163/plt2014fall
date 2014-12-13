@@ -44,11 +44,11 @@ Other:
 	Type NULL
 	File read
 	File write
-	MakeString - Arpit
+X	MakeString - Arpit
 	TypeStruct
 	Pretty Print - Arpit
 	Type Checking
 
-	Parse JSON should not print
-	Parse LIST should not print
+X	Parse JSON should not print
+X	Parse LIST should not print
 X	Parse NUMBER should work for negative numbers and decimals.
