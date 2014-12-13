@@ -172,12 +172,6 @@ int main() {
 	 cout << endl << "Hello + World!: ";
 	 CustType::print(m7); cout << endl;	 
 
-	 cout << endl << "???????" << endl;
-	 cout << m1->getType() << endl;
-	 cout << m2->getType() << endl;
-	 cout << (*m1==*m2)->getBoolValue() << endl;
-	 cout << (*m1==*m1)->getBoolValue() << endl;
-
 	 cout << endl;
 	 if ((*m1==*m2)->getBoolValue()) { cout << "FAILED operator ==" << endl; }
 	 else { cout << "Operator == Passed"  << endl; }
@@ -191,31 +185,23 @@ int main() {
 	 if ((*m1>*m2)->getBoolValue()) {cout << "FAILED operator >" << endl; }
 	 else { cout << "Operator > Passed" << endl; }
 
-	 
 	 if ((*m1<=*m1)->getBoolValue() && (*m1<=*m2)->getBoolValue()) {cout << "Operator <= Passed" << endl; }
 	 else { cout << "FAILED Operator <=" << endl; }
 
 	 if ((*m2>=*m2)->getBoolValue() && (*m2>=*m1)->getBoolValue()) {cout << "Operator >= Passed" << endl; }
 	 else { cout << "FAILED Operator >=" << endl; }
 	 
+	 CustType *m8 = CustType::parse("True", "BOOL");
+	 CustType *m9 = CustType::parse("False", "BOOL");
+	 if((!*m8)->getBoolValue()) { cout << "FAILED Operator !" << endl; }
+	 else { cout << "Operator ! Passed" << endl; }
 
+	 if((*m8 && *m9)->getBoolValue()) { cout << "FAILED Operator &&" << endl; }
+	 else { cout << "Operator && Passed" << endl; }
 
+	 if ((*m8 || *m9)->getBoolValue()) {cout << "Operator || Passed" << endl; }
+	 else { cout << "Failed Operator ||" << endl; }
 
-
-
-
-
-	 /*
-	 //NOT WORKING YET	 
-	 cout << endl << "Testing BOOL ! operator:" <<endl;
-	 CustType *bTest1 = CustType::parse("true", "BOOL");
-	 CustType::print(bTest1);
-	 CustType b3 = !(*bTest1);
-	 CustType *b4 = &b3;
-	 CustType::print(b4);
-	 if((b4)->getBoolValue()) {cout << endl << "ERROR with ! operator" << endl; }
-	 else { cout << "operator ! works Correctly!" << endl; }
-	 */
 
 	return 0;
 }

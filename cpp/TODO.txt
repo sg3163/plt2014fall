@@ -19,10 +19,10 @@ X		Operator <= (Done)
 X		Operator >= (Done)
 
 For BOOLTYPE:
-	Logical Operators: (For Type BOOLEAN only.) -Chase
-		Operator ! -Chase
-		Operator && -Chase
-		Operator || -Chase
+X	Logical Operators: (For Type BOOLEAN only.)
+X		Operator ! (Done)
+X		Operator && (Done)
+X		Operator || (Done)
 
 X	Get c++ bool from BoolType (done. Made function getBoolValue().)
 
