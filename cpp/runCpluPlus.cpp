@@ -47,15 +47,10 @@ int main() {
             \"foo\" : \"False\", \
             \"bar\" : \"123\" \
             } ]" ;
-	CustType *testJsonType = CustType :: parse(listString, "LIST");
 
-    //string testString = "arpit" ;
-	//CustType *testJsonType = CustType :: parse(testString, "JSON");
-	//CustType *testJsonAcc = testJsonType -> getElement("sub_object")->getElement("foo");
-	//testJsonType -> add ("class" , c) ; 
-	//CustType *testJsonAcc = testJsonType -> getElement("scores");
-	//cout << testJsonAcc -> getType () ; 
-	//testJsonAcc -> print () ;
+	CustType *testJsonType = CustType :: parse(testString, "LIST");
+	cout << testJsonType -> toString() ; 
+    
 	int ctr = 0 ; 
 	cout << "that was through new method \n" ; 
 	for (vector<CustType*> :: iterator it = testJsonType -> getListBegin () ; it != testJsonType -> getListEnd () ; ++ it) {
