@@ -50,7 +50,7 @@ let rec string_of_expr e = match e with
   | Binop(e1, o, e2) ->
       
       ( match o with
-          Add -> string_of_expr e1 ^ " " ^ "+" ^ " " ^ string_of_expr e2
+          Add -> "CustType::add("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"
           | Sub -> string_of_expr e1 ^ " " ^ "-" ^ " " ^ string_of_expr e2
           | Mult -> string_of_expr e1 ^ " " ^ "*" ^ " " ^ string_of_expr e2              
           | Div -> string_of_expr e1 ^ " " ^ "/" ^ " " ^ string_of_expr e2
