@@ -42,8 +42,8 @@ ListType:
 
 Other:
 	Type NULL
-	File read
-	File write
+	File read - Chase
+	File write - Chase
 	MakeString - Arpit
 	TypeStruct
 	Pretty Print - Arpit
