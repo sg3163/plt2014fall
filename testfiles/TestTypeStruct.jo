@@ -5,5 +5,4 @@ func main ()
 decl a = #{"name":"harsha"}#
 decl b = a.typeStruct()
 print (b)
-return mainfunc
 end

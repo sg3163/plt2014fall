@@ -6,5 +6,4 @@ func main ()
 for b in a
 	print (b)
 end
-return mainfunc
 end

@@ -2,10 +2,12 @@ func main ()
 decl a = true
 decl b = false
 if( !(a==b))
+print (a)
 end
 if(!a)
+print(b)
 end
 if(!a ==b)
+print(a)
 end
-return mainfunc
 end

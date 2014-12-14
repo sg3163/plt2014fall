@@ -5,5 +5,4 @@ decl a = "Hello World"
 func main () 
 print (a)
 
-return mainfunc
 end

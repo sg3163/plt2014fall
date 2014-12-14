@@ -1,7 +1,6 @@
 /* Test Read function */
 
 func main () 
-decl a = read ("/path/to/file.txt")
+decl a = read ("/Users/harsha/git/plt2014fall/testfiles/testreadinput.txt")
 print (a)
-return mainfunc
 end

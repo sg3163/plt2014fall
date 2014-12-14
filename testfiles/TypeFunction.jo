@@ -5,5 +5,4 @@ func main ()
 decl a = #{}#
 type (a)
 
-return mainfunc
 end

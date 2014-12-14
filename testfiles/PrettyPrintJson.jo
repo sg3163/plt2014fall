@@ -5,5 +5,4 @@ decl a = #{"name":"harsha","courses":["OS","PLT","DB"]}#
 func main () 
 print (a)
 
-return mainfunc
 end

@@ -6,5 +6,4 @@ decl b = 6
 
 print (a == b)
 
-return mainfunc
 end

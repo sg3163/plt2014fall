@@ -2,5 +2,4 @@ func main ()
 decl a = "hi"
 decl b = "bye"
 print(a ++ b)
-return mainfunc
 end

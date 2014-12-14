@@ -79,7 +79,7 @@ Compare ${reffile}.output ${reffile}.exp ${reffile}.error
 #        rm -rf ${reffile}.cpp
 #rm -rf ${reffile}.out
 rm -rf ${reffile}.o
-rm -rf ${reffile}.output
+#rm -rf ${reffile}.output
 echo "ran $1 successfully"
 else
 echo "C++ to binary of ${reffile}.cpp failed"

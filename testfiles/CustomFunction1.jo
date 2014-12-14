@@ -10,6 +10,5 @@ end
 func main () 
 print (a)
 test(a)
-return mainfunc
 end
 

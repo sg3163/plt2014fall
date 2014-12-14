@@ -26,6 +26,5 @@ decl b = #{"Name":{"First":"Abhinav","Last":"Bajaj"},"School":"Columbia","Age":1
 
 merge(a,b)
 
-return mainfunc
 end
 

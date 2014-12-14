@@ -2,6 +2,5 @@
 
 func main () 
 decl a = "Text to write into file"
-write (a, "path/to/store/file.txt")
-return mainfunc
+write (a, "/Users/harsha/git/plt2014fall/testfiles/testfilewriting.txt")
 end

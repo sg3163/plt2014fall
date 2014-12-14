@@ -8,5 +8,4 @@ end
 
 func main () 
 createVarAndPrint()
-return mainfunc
 end

@@ -10,5 +10,4 @@ end
 if (a!=b)
   print ("hello")
 end 
-return mainfunc
 end

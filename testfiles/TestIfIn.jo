@@ -19,5 +19,4 @@ if(1!=2)
 else
 	print("equal")
 end
-return mainfunc
 end

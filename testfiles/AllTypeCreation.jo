@@ -10,5 +10,4 @@ decl d = [4,6,7]
 decl e = "true"
 decl f = null
 print (a)
-return mainfunc
 end
