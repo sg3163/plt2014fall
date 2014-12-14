@@ -5,7 +5,7 @@
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
 %token RETURN IF THEN ELSE HASH NULL
 %token AND OR FOR IN
-%token FUNC END DECL MAINFUNC
+%token FUNC END DECL
 %token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST WRITE
 %token <int> NUM_LIT
 %token <string> STRING_LIT
@@ -111,7 +111,7 @@ expr:
     | HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
     | LBRACK list_items RBRACK         { LitList($2) } 
     | BOOL_LIT                     { LitBool($1) }
-	| NULL												 { LitNull("null") }
+	| NULL						   { LitNull("null") }
     | ID                           { Id($1) }
     | NOT LPAREN expr  RPAREN             {Not($3)}
     | NOT expr                      {Not($2)}
@@ -132,7 +132,6 @@ expr:
     | expr OR expr                 { Binop($1, Or,       $3) }
     | ID ASSIGN   expr             { Assign($1, $3) }
     | ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
-    | MAINFUNC                     { MainRet(0) }
     | ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
     | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
     | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }

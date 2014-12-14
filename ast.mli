@@ -43,8 +43,7 @@ type expr =
   | LitJson of json_items
   | LitList of items
 	| LitBool of string
-	| LitNull of string 
-	| MainRet of int
+	| LitNull of string
   | Id of string
   | Not of expr
   | Binop of expr * op * expr

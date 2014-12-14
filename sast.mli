@@ -54,7 +54,6 @@ type expr_t =
 	| AttrList of string
 	| Read of string
   | MakeString of expr_t * string
-	| MainRet of int
   | NoExpr
 
 type for_expr_t = 

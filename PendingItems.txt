@@ -10,7 +10,7 @@ Ocaml --->
 	! operator (Abhi ) - Done, added corresponding tasks in CPP
 	File handling  (Harsha ) - Done
 	Type checking (Abhi + harsha)
-	return mainfunc should be removed
+	return mainfunc should be removed (Abhinav) - Done
 	decl should be removed and assign should work as declalartion (lowest priority)
 
 

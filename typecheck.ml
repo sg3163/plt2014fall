@@ -210,7 +210,6 @@ let rec check_expr env = function
 	| Ast.Id(id) ->
 	(*	let _ = print_string "in iD" in*)
 		Sast.Id(id), (get_vtype env id)
-	| Ast.MainRet(i) -> Sast.MainRet(i), "return"
 	
 	| Ast.Not(e1) -> 
 	(*	let _ = print_string "in Not " in*)
@@ -359,12 +358,6 @@ and check_stmt_list env func = function
 
 (* this function will return the updated formals and body as per the abstract syntax tree, the return type, name and locals *)
 let check_function env func = 
-	(* if List.length func.body = 0 then raise (Failure ("The last statement must be return statement"))
-	else if func.fname = "main" && (List.length func.formals) > 0 
-	then raise (Failure ("The main function cannot take any argument"))
-	else if  func.fname = "main" && ((func.returnType = "int") || (func.returnType = "boolean"))
-	then raise (Failure ("The main function cannot can only has type void"))
-	else  *)
 	match List.hd (List.rev func.body) with
 	Return(_) ->
 	  	let env = {locals = StringMap.empty; globals = env.globals; functions = env.functions } in
@@ -409,7 +402,50 @@ let check_function env func =
 	                  }, e 
           )
 
-	| _ -> raise (Failure ("The last statement must be return statement"))
+	| _ ->
+		if not (func.fname = "main") then raise (Failure ("Return statement is missing for function '"^func.fname^"'"))
+	else
+	let env = {locals = StringMap.empty; globals = env.globals; functions = env.functions } in
+	  	(*  ret is new env *)
+		let ret = add_function func.fname func.return func.formals env in
+		if StringMap.is_empty ret then raise (Failure ("function " ^ func.fname ^ " is already defined"))
+		(* update the env with functions from ret *)
+		else let env = {locals = env.locals; globals = env.globals; functions = ret } in
+		(* check the formal arguments, returns formal list appended with their env *)
+		let f = check_formals env func.formals in
+		(* get the list of formals from f *)
+		let formals = List.map (fun formal -> fst formal) f in
+		
+		(* get the final env from the last formal *)
+		let l, env = 
+		(match f with
+			  [] -> let l = check_locals env func.fnlocals in
+					 l, env
+			| _ -> 	let env = snd (List.hd (List.rev f)) in
+					let l = check_locals env func.fnlocals in
+					l, env
+		) in
+		let fnlocals = List.map (fun fnlocal -> fst fnlocal) l in
+		 (match l with
+		 	(* empty f, no fomal args *)
+	            [] -> let body = check_stmt_list env func func.body in
+	                { Sast.return = get_sast_type func.return; 
+	                  Sast.fname = func.fname; 
+	                  Sast.formals = formals; 
+	                  Sast.fnlocals = fnlocals; 
+	                  Sast.body = body
+	                }, env
+
+	            (* get the final env from the last formal *)
+	            | _ -> let e = snd (List.hd (List.rev l)) in
+	                   let body = check_stmt_list e func func.body in
+	                  { Sast.return = get_sast_type func.return; 
+	                    Sast.fname = func.fname; 
+	                    Sast.formals = formals; 
+	                    Sast.fnlocals = fnlocals; 
+	                    Sast.body = body
+	                  }, e 
+          )
 
 
 let rec check_functions env funcs = 

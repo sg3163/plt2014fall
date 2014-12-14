@@ -43,8 +43,7 @@ let rec string_of_expr e = match e with
 	| LitJson(l) -> "CustType::parse(\"{" ^ json_items l ^ "}\",\"JSON\")"
 	| LitList(l) -> "CustType::parse(\"[" ^ string_of_items l ^ "]\",\"LIST\")"
 	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")" 
-	| LitNull(l) -> "CustType::parse(\"" ^ l ^ "\",\"NULL\")" 
-	| MainRet(l) -> "0"
+	| LitNull(l) -> "CustType::parse(\"" ^ l ^ "\",\"NULL\")"
   | Id(s) ->  s
   | Not(e1) -> "!(*(" ^ string_of_expr e1 ^ "))"
   | Binop(e1, o, e2) ->
