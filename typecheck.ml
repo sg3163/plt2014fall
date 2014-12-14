@@ -286,7 +286,6 @@ let find_vtype = function
 
 let check_formal env formal = 
 	let ret = add_local formal.vname (find_vtype formal.vexpr) env in
-	if (string_of_vtype formal.vtype) = "void" then raise (Failure("cannot use void as variable type")) else
 	if StringMap.is_empty ret then raise (Failure ("local variable " ^ formal.vname ^ " is already defined"))
 	(* update the env with locals from ret *)
 	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
@@ -447,8 +446,10 @@ let check_function env func =
 	                  }, e 
           )
 
+let check_main_function funcs =
+	List.fold_left (fun s e -> s || (e="main")) false funcs
 
-let rec check_functions env funcs = 
+let rec check_functions env funcs =
 	match funcs with
 	  [] -> []
 	| hd::tl -> let f, e = (check_function env hd) in f::(check_functions e tl) 
@@ -469,18 +470,20 @@ let rec check_globals env globals =
 
 let check_program (globals, funcs) = 
 	(* create the default environment *)
- 	let env = {	locals = StringMap.empty;
+	(*if check_main_function funcs then raise (Failure ("main function is not defined in the program"))
+else *)
+	let env = {	locals = StringMap.empty;
 				globals = StringMap.empty;
 				functions = StringMap.empty }
 	in
 	(* return the list of each global appended with its environments, the last global has the final env *)
-	let g = check_globals env globals in
+	let g = check_globals env globals in 
 	(* make a list of globals *)
 	let globals = List.map (fun global -> fst global) g in
 	match g with
 	(* no globals *)
-	 [] -> (globals, (check_functions env (List.rev funcs)))
-	(* get the envirnment from the last global *)
-	| _ -> let e = snd (List.hd (List.rev g)) in (globals, (check_functions e (List.rev funcs)))
+	 	[] -> (globals, (check_functions env (List.rev funcs)))
+		(* get the envirnment from the last global *)
+		| _ -> let e = snd (List.hd (List.rev g)) in (globals, (check_functions e (List.rev funcs)))
 
 
