@@ -1075,7 +1075,8 @@ CustType* operator!=(CustType &lhs, CustType &rhs)
   bool tempBool = ((temp1->da)!=(temp2->da));
   BoolType *toReturn = new BoolType(tempBool, BOOL);
   
-  return (CustType :: parse ( !((&lhs == &rhs) ->getBool()), BOOL));
+  return tempBool ; 
+  
 }
 
 CustType* operator<(CustType &lhs, CustType &rhs)
