@@ -63,7 +63,7 @@ let rec string_of_expr e = match e with
           | Equal -> "*("^string_of_expr e1 ^ ") " ^ "==" ^ " *(" ^ string_of_expr e2 ^")"      
           | Neq -> "*("^string_of_expr e1 ^ ") " ^ "!=" ^ " *(" ^ string_of_expr e2 ^")"   
           | Concat -> "CustType::concat(" ^ string_of_expr e1 ^ "," ^ string_of_expr e2 ^ ")"
-          | Minus -> "CustType::minus(" ^ string_of_expr e1 ^ "," ^ string_of_expr e2 ^ ")"
+          | Minus ->  string_of_expr e1 ^ "->minus(" ^ string_of_expr e2 ^ ")"
         ) 
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";"
 	| Call(f, el) ->

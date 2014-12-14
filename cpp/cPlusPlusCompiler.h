@@ -388,14 +388,14 @@ class ListType : public CustType {
 		} 
 	}
 	string toString () { 
-		string ret  = "[ " ; 
+		string ret  = "[" ; 
 		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
 			if ( it != da.begin () )
-				ret += " ," ; 
+				ret += "," ; 
 			ret += (*it) -> toString () ;
 
 		}
-		ret += " ]" ; 
+		ret += "]" ; 
 		return ret ; 
 
 	}
@@ -463,15 +463,15 @@ class JsonType : public CustType {
 		return ((CustType :: parse ("Json" , "STRING")) ) ;
 	}
     string toString () {
-    	string ret = "{ " ; 
+    	string ret = "{" ; 
     	for ( map<string , CustType* > :: iterator it = (this -> da).begin() ; it != (this -> da).end() ; ++ it ) {
     		if ( it != (this -> da).begin() )
-    			ret += " , " ; 
+    			ret += "," ; 
     		ret += "\"" ;
     		ret += it -> first ; 
     		ret += "\"" ;
 
-    		ret += " : " ;
+    		ret += ":" ;
     		string valStr =  (it -> second ) -> toString ();
     		if ( (it -> second) -> getType () == STRING) {
     			ret += "\"" ; 
@@ -482,7 +482,7 @@ class JsonType : public CustType {
     			ret += valStr ;
     		}
     	}
-    	ret += " }" ;
+    	ret += "}" ;
     	return ret ; 
 
     }
@@ -1179,10 +1179,10 @@ CustType* ListType :: findIndex (CustType* c){
 CustType* ListType :: minus (CustType* c){
 	ListType* tmp = new ListType ; 
 	for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
-		cout << "hello\n" ; 
+		
 		if (! ((*(*it)) == *c)->getBoolValue() ){
 			tmp -> add ((*it)) ; 
-			cout << "world\n" ; 
+			
 		}
 		 
 	}
