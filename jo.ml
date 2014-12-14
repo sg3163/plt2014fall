@@ -35,7 +35,7 @@ let get_for_id e = match e
     Forid(id) -> id
 
 let string_of_loop_var_t = function
-  Loopvar(l) -> l
+  LoopVar(l) -> l
 
 let rec string_of_expr e = match e with
     LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")"
@@ -46,7 +46,7 @@ let rec string_of_expr e = match e with
 	| LitNull(l) -> "CustType::parse(\"" ^ l ^ "\",\"NULL\")" 
 	| MainRet(l) -> "0"
   | Id(s) ->  s
-  | Not(e1) -> "!(" ^ string_of_expr e1 ^ ")"
+  | Not(e1) -> "!(*(" ^ string_of_expr e1 ^ "))"
   | Binop(e1, o, e2) ->
       
       ( match o with
@@ -56,7 +56,7 @@ let rec string_of_expr e = match e with
           | Div -> "CustType::divide("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"
           | Mod -> "CustType::mod("^string_of_expr e1 ^ "," ^ string_of_expr e2 ^")"
           | Or -> "*("^string_of_expr e1 ^ ") " ^ "||" ^ " *(" ^ string_of_expr e2 ^")"              
-          | And -> string_of_expr e1 ^ " " ^ "&&" ^ " " ^ string_of_expr e2
+          | And -> "*("^string_of_expr e1 ^ ") " ^ "&&" ^ " *(" ^ string_of_expr e2 ^")"  
           | Geq -> "*("^string_of_expr e1 ^ ") " ^ ">=" ^ " *(" ^ string_of_expr e2 ^")"                
           | Leq -> "*("^string_of_expr e1 ^ ") " ^ "<=" ^ " *(" ^ string_of_expr e2 ^")"   
           | Greater -> "*("^string_of_expr e1 ^ ") " ^ ">" ^ " *(" ^ string_of_expr e2 ^")"              
@@ -70,11 +70,11 @@ let rec string_of_expr e = match e with
 	| Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 	| ElemAccess(id, e) -> ( match e with
-                          ListItemInt(l) -> id ^ "-> access("^string_of_int l ^ ")"
-                        | ListItemStr(l) -> id ^ "-> access("^ l ^ ")"   
+                          ListItemInt(l) -> id ^ "-> getElement("^string_of_int l ^ ")"
+                        | ListItemStr(l) -> id ^ "-> getElement("^ l ^ ")"   
                         )                  
 	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
-	| AttrList(id) -> "CustType::attrList(" ^ id ^ ")"
+	| AttrList(id) -> id ^ "-> getAttrList()"
 	| Read(str) -> "CustType::read(" ^ str ^ ")"
   | MakeString(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->makeString()"
   | NoExpr -> ""
@@ -83,12 +83,12 @@ let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";"
     | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
 		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n"
-		| ObjType(expr, expr_type) -> "CustType::type(" ^ string_of_expr expr ^ ");\n"
+		| ObjType(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->getJoType()\n"
 		| Block(stmts) ->
         "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
     | For(e1, e2, s1) ->
-      "for (vector<CustType*> :: iterator  " ^ string_of_loop_var_t e1 ^ "  = " ^ get_for_id e2 ^ " -> getListBegin () ; " ^ string_of_loop_var_t e1 ^ " != " ^ get_for_id e2 ^ 
-        " -> getListEnd () ;  " ^ "++" ^ string_of_loop_var_t e1 ^ ") { \n" 
+      "for (vector<CustType*> :: iterator  loopVar" ^ string_of_loop_var_t e1 ^ "  = " ^ get_for_id e2 ^ " -> getListBegin () ; loopVar" ^ string_of_loop_var_t e1 ^ " != " ^ get_for_id e2 ^ 
+        " -> getListEnd () ;  " ^ "++loopVar" ^ string_of_loop_var_t e1 ^ ") {\n CustType* "^ string_of_loop_var_t e1 ^ " = *loopVar" ^ string_of_loop_var_t e1 ^ ";\n" 
       ^ string_of_stmt s1 ^ "\n}\n"
     | If(e, s, Block([])) -> "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^ string_of_stmt s
     | If(e, s1, s2) ->  "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^
@@ -97,6 +97,7 @@ let rec string_of_stmt = function
     | Ifin(var, lst, s1, s2) ->  "if ((" ^ lst ^ "->contains("^ var^"))->getBoolValue())\n" ^
         string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
 		| Write(expr, str) -> "CustType::write(" ^ string_of_expr expr ^ "," ^ str ^ ");\n"
+
 
 let string_of_vtype = function
    IntType -> "CustType*"

@@ -324,7 +324,7 @@ let check_forexpr env = function
 
 let check_loopvar env = function
 	Ast.LoopVar(id) -> let loopId = convert_to_vdecl_type id in 
-        let l, e = (check_local env loopId) in e, Sast.Loopvar(id)
+        let l, e = (check_local env loopId) in e, Sast.LoopVar(id)
 
 let rec check_stmt env func = function
 	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env

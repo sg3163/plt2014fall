@@ -61,7 +61,7 @@ type for_expr_t =
     Forid of string
 
 type loop_var_t = 
-    Loopvar of string
+    LoopVar of string
 
 type stmt_t =
 	 Expr of expr_t
