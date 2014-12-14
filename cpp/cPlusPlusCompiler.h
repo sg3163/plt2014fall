@@ -52,11 +52,6 @@ class CustType {
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class\n" ;
 	}
-
-	//	virtual void write(string  filename) {
-	//	  cout << "Writing in CustType. Need to implement this in child class\n";
-	//	}
-
 	virtual int getType(){
 		cout << "getting Type from CustType, Ooops!\n Somebody needs to implement this in child class" ;	
 	}
@@ -189,21 +184,6 @@ class BoolType : public CustType {
 	  if(da) { cout << "True" ; }
 	  else { cout << "False" ; }
 	}
-
-	/*
-	void write(string filename) {
-	  ofstream file(filename.c_str(), ios::app);
-	  if ( file.is_open() )
-	    {
-	      if(da) { file << "True"; }
-	      else { file << "False"; }
-	      fle << endl;
-	      file.close();
-	    }
-	  else { cout << "Unable to open file" << endl; }
-	}
-	*/
-
 	string toString () { 
 		string ret = "False"; 
 		if ( da)
@@ -233,19 +213,6 @@ class NumType : public CustType {
 	void print () {
 		cout << da ; 
 	}
-
-	/*
-	void write(string filename) {
-	  ofstream file(filename.c_str(), ios::app);
-	  if ( file.is_open() )
-	    {
-	      file << da;
-	      file << endl;
-	    }
-	  else { cout << "Unable to open file" << endl; }
-	}
-	*/
-
 	int getType () {
 		return NUMBER ;
 	}
@@ -344,19 +311,6 @@ class StringType : public CustType {
 	void print () {
 		cout << da ; 
 	}
-
-	/*
-	void write(string filename) {
-	  ofstream file(filename.c_str(), ios::app);
-	  if ( file.is_open() )
-	    {
-	      file << da;
-	      file << endl;
-	    }
-	  else { cout << "Unable to open file" << endl; }
-	}
-	*/
-	
 	int getType () {
 		return STRING ;
 	}
@@ -622,31 +576,6 @@ class JsonType : public CustType {
 		CLASS DEFINITIONS END HERE 
 ******************************************************/
 
-
-//Commented method does not handle fractions. Alternate method is included below.
-/*
-NumType* getNum (string data, int type ){
-	double num  = 0 ; 
-	int decimal_bool = 0, decimal = 1 ; 
-	for ( unsigned int i = 0 ; i < data.length() ; i ++ ){
-		if ( ( data.at(i) < '0' || data.at(i) > '9' ) && data.at(i) != '.' )
-			return NULL ; 
-		else if (data.at(i) > '0' || data.at(i) < '9') {
-			num *= 10 ;
-			num += (data.at(i) - '0' ) ; 
-		}
-		else 
-			decimal_bool  = 1 ; 
-		if (decimal_bool) 
-			decimal *= 10 ; 
-		
-	}
-	num = num / decimal ; 
-	NumType* t  = new NumType(num , NUMBER) ;
-	return t ;
-}
-*/
-
 NumType* getNum(string data, int type)
 {
   const char *cstr = data.c_str();
@@ -766,7 +695,6 @@ void CustType :: write (CustType * data, string filename) {
     {
       cout << "Unable to open file" << endl;
     }
-  //data -> write(filename);
 }
 
 void CustType :: print (vector<CustType*>  :: iterator it ) {
@@ -1131,10 +1059,3 @@ CustType* CustType::read(string filename)
   CustType *toReturn = CustType::parse(fileText, "LIST");
   return toReturn;
 }
-
-
-/*
-OCAML OUTPUT FOR READ AND WRITE
-"CustType::write(" ^ string_of_expr expr ^ "," ^ str ^ ");\n"
-"CustType::read(" ^ str ^ ")"
- */
