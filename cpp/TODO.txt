@@ -20,12 +20,8 @@ X		Operator <= (Done)
 X		Operator >= (Done)
 
 	Comparison Operators: (For Type LIST,JSON,STRING also.)
-		Operator == (Done)  - Arpit
+X		Operator == (Done)  - Arpit
 		Operator != (Done)
-		Operator < (Done)
-		Operator > (Done)
-		Operator <= (Done)
-		Operator >= (Done)
 
 For BOOLTYPE:
 X	Logical Operators: (For Type BOOLEAN only.)
