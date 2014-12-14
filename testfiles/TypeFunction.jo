@@ -3,7 +3,7 @@
 func main () 
 
 decl a = #{}#
-type (a)
+print(type(a))
 
 end
 

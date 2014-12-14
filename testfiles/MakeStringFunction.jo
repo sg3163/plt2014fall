@@ -3,6 +3,6 @@
 func main () 
 
 decl a = 2243
-makeString (a)
+print(makeString(a))
 
 end
