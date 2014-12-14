@@ -447,7 +447,7 @@ let check_function env func =
           )
 
 let check_main_function funcs =
-	List.fold_left (fun s e -> s || (e="main")) false funcs
+	List.fold_left (fun s e -> s || (e.fname="main")) false funcs
 
 let rec check_functions env funcs =
 	match funcs with
@@ -470,8 +470,8 @@ let rec check_globals env globals =
 
 let check_program (globals, funcs) = 
 	(* create the default environment *)
-	(*if check_main_function funcs then raise (Failure ("main function is not defined in the program"))
-else *)
+	if not (check_main_function funcs) then raise (Failure ("main function is not defined in the program"))
+else
 	let env = {	locals = StringMap.empty;
 				globals = StringMap.empty;
 				functions = StringMap.empty }
