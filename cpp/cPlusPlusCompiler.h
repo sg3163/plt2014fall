@@ -196,19 +196,19 @@ class BoolType : public CustType {
 		return ( CustType :: parse ("Bool" , "STRING")) ;
 	}
 	void print () {
-	  if(da) { cout << "True" ; }
-	  else { cout << "False" ; }
+	  if(da) { cout << "true" ; }
+	  else { cout << "false" ; }
 	}
 	string toString () { 
-		string ret = "False"; 
+		string ret = "false"; 
 		if ( da)
-			ret = "True" ;
+			ret = "true" ;
 		return ret ; 
 	}
 	CustType* makeString () {
-		string ret = "False"; 
+		string ret = "false"; 
 		if ( da)
-			ret = "True" ;
+			ret = "true" ;
 		return CustType :: parse (this -> toString() , "STRING") ; 
 	}
 };
@@ -388,14 +388,14 @@ class ListType : public CustType {
 		} 
 	}
 	string toString () { 
-		string ret  = "[ " ; 
+		string ret  = "[" ; 
 		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
 			if ( it != da.begin () )
-				ret += " ," ; 
+				ret += "," ; 
 			ret += (*it) -> toString () ;
 
 		}
-		ret += " ]" ; 
+		ret += "]" ; 
 		return ret ; 
 
 	}
@@ -455,23 +455,24 @@ class JsonType : public CustType {
 
     JsonType() {}
 
-    void print() {
+    void print() {/*
       JSONValue *value = new JSONValue(data);
-      print_out(value->Stringify().c_str());
+      print_out(value->Stringify().c_str());*/
+      cout <<  prettyPrint(0) ; 
     }
     CustType* getJoType() {
 		return ((CustType :: parse ("Json" , "STRING")) ) ;
 	}
     string toString () {
-    	string ret = "{ " ; 
+    	string ret = "{" ; 
     	for ( map<string , CustType* > :: iterator it = (this -> da).begin() ; it != (this -> da).end() ; ++ it ) {
     		if ( it != (this -> da).begin() )
-    			ret += " , " ; 
+    			ret += "," ; 
     		ret += "\"" ;
     		ret += it -> first ; 
     		ret += "\"" ;
 
-    		ret += " : " ;
+    		ret += ":" ;
     		string valStr =  (it -> second ) -> toString ();
     		if ( (it -> second) -> getType () == STRING) {
     			ret += "\"" ; 
@@ -482,7 +483,7 @@ class JsonType : public CustType {
     			ret += valStr ;
     		}
     	}
-    	ret += " }" ;
+    	ret += "}" ;
     	return ret ; 
 
     }
@@ -520,10 +521,14 @@ class JsonType : public CustType {
     		el += it -> first ; 
     		el += "\"" ;
 
-    		el += ": " ;
-    		if ( (it -> second )  -> getType() < JSON){
+    		el += ":" ;
+    		if ( (it -> second )  -> getType() == NUMBER || (it -> second )  -> getType() == BOOL ){
 				el +=  (it -> second ) -> toString ();
 			}
+			else if ((it -> second ) -> getType () == STRING){
+				el +=  "\"" + (it -> second ) -> toString () + "\"";
+			}
+
 			else if ((it -> second ) -> getType () == JSON){
 				el += "{\n" ; 
 				el += prettyPrintJsonUtility ( (JsonType*)(it -> second ), offset + 1 ) ; 
@@ -553,8 +558,11 @@ class JsonType : public CustType {
     			el += ",\n" ; 
     		el += offsetTabs ; 
 
-    		if ( (*it) -> getType() < JSON){
+    		if ( (*it) -> getType() == NUMBER || (*it) -> getType() == BOOL){
 				el += (*it) -> toString ();
+			}
+			else if ( (*it) -> getType () == STRING){
+				el +=  "\"" + (*it) -> toString () + "\"";
 			}
 			else if ((*it) -> getType () == JSON){
 				el += "{\n" ; 
@@ -690,7 +698,7 @@ ListType* getList (string data, int type){
 }
 
 BoolType* getBool (string data , int type) {
-	BoolType * t = new BoolType ( data == "True" ? 1 : 0 , BOOL ) ; 
+	BoolType * t = new BoolType ( data == "true" ? 1 : 0 , BOOL ) ; 
 	return t ; 
 }
 
@@ -1017,6 +1025,7 @@ CustType* operator==(CustType &lhs, CustType &rhs)
 		BoolType *temp5 = dynamic_cast<BoolType *>(&lhs);
 		BoolType *temp6 = dynamic_cast<BoolType *>(&rhs);
 		tempBool = ((temp5->da)==(temp6->da));
+		//cout << "\nprinting inside c ++ " << temp5 -> getBoolValue() << temp6 -> getBoolValue() << tempBool << endl ; 
   		toReturn = new BoolType(tempBool, BOOL);
   		return toReturn ;	
 	}
@@ -1026,8 +1035,8 @@ CustType* operator==(CustType &lhs, CustType &rhs)
 		if ( (temp7 -> da).size() != (temp8 -> da).size() )
 			return (new BoolType(false, BOOL) ) ; 
 		for (vector<CustType*> :: iterator it1 = (temp7 -> da).begin () , it2 = (temp8 -> da).begin ()  ; it1 != (temp7 -> da).end () && it2 != (temp8 -> da).end () ; ++ it1 , ++it2) {
-			(*it1) -> print() ; 
-			(*it2) -> print () ; 
+			//(*it1) -> print() ; 
+			//(*it2) -> print () ; 
 			BoolType* tmpResult = dynamic_cast<BoolType *> ((*(*it1)) == (*(*it2)) );
 			if (tmpResult -> getBoolValue () == false)
 				return (new BoolType(false, BOOL) ) ; 
@@ -1179,10 +1188,10 @@ CustType* ListType :: findIndex (CustType* c){
 CustType* ListType :: minus (CustType* c){
 	ListType* tmp = new ListType ; 
 	for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
-		cout << "hello\n" ; 
+		
 		if (! ((*(*it)) == *c)->getBoolValue() ){
 			tmp -> add ((*it)) ; 
-			cout << "world\n" ; 
+			
 		}
 		 
 	}
