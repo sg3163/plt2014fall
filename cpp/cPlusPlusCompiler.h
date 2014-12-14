@@ -37,8 +37,7 @@ class CustType {
 	CustType (string data) {
 	
 		//this->dt = NUMBER ; 
-		this->data = data ; 
-	
+		this->data = data ;
 	}
 	
 	CustType () { 
@@ -49,13 +48,14 @@ class CustType {
 	static CustType* read(string filename);
 	static void print(CustType* data) ;
 	static void print (vector<CustType*>  :: iterator it ) ;
+	static void write(CustType* data, string filename);
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class\n" ;
 	}
 
-	virtual void write(CustType* data, string  filename) {
-	  cout << "Not in child class\n";
-	}
+	//	virtual void write(string  filename) {
+	//	  cout << "Writing in CustType. Need to implement this in child class\n";
+	//	}
 
 	virtual int getType(){
 		cout << "getting Type from CustType, Ooops!\n Somebody needs to implement this in child class" ;	
@@ -189,6 +189,21 @@ class BoolType : public CustType {
 	  if(da) { cout << "True" ; }
 	  else { cout << "False" ; }
 	}
+
+	/*
+	void write(string filename) {
+	  ofstream file(filename.c_str(), ios::app);
+	  if ( file.is_open() )
+	    {
+	      if(da) { file << "True"; }
+	      else { file << "False"; }
+	      fle << endl;
+	      file.close();
+	    }
+	  else { cout << "Unable to open file" << endl; }
+	}
+	*/
+
 	string toString () { 
 		string ret = "False"; 
 		if ( da)
@@ -218,6 +233,19 @@ class NumType : public CustType {
 	void print () {
 		cout << da ; 
 	}
+
+	/*
+	void write(string filename) {
+	  ofstream file(filename.c_str(), ios::app);
+	  if ( file.is_open() )
+	    {
+	      file << da;
+	      file << endl;
+	    }
+	  else { cout << "Unable to open file" << endl; }
+	}
+	*/
+
 	int getType () {
 		return NUMBER ;
 	}
@@ -316,6 +344,19 @@ class StringType : public CustType {
 	void print () {
 		cout << da ; 
 	}
+
+	/*
+	void write(string filename) {
+	  ofstream file(filename.c_str(), ios::app);
+	  if ( file.is_open() )
+	    {
+	      file << da;
+	      file << endl;
+	    }
+	  else { cout << "Unable to open file" << endl; }
+	}
+	*/
+	
 	int getType () {
 		return STRING ;
 	}
@@ -380,6 +421,9 @@ class ListType : public CustType {
 		return ret ; 
 
 	}
+	
+
+
 	CustType* makeString () {
 		
 		return CustType :: parse(this -> toString() , "STRING" ) ; 
@@ -708,6 +752,21 @@ CustType* CustType :: parse (string data, string type)  {
 
 void CustType :: print ( CustType* data) { 
 	data -> print () ;
+}
+
+void CustType :: write (CustType * data, string filename) {
+  string toWrite = data -> toString();
+
+  ofstream file(filename.c_str(), ios::app);
+  if ( file.is_open() )
+    {
+      file << toWrite << endl;
+    }
+  else
+    {
+      cout << "Unable to open file" << endl;
+    }
+  //data -> write(filename);
 }
 
 void CustType :: print (vector<CustType*>  :: iterator it ) {
@@ -1067,6 +1126,7 @@ CustType* CustType::read(string filename)
 	}
       file.close();
     }
+  else { cout << "Unable to open file" << endl; }
 
   CustType *toReturn = CustType::parse(fileText, "LIST");
   return toReturn;
