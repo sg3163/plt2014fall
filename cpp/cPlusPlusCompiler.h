@@ -196,19 +196,19 @@ class BoolType : public CustType {
 		return ( CustType :: parse ("Bool" , "STRING")) ;
 	}
 	void print () {
-	  if(da) { cout << "True" ; }
-	  else { cout << "False" ; }
+	  if(da) { cout << "true" ; }
+	  else { cout << "false" ; }
 	}
 	string toString () { 
-		string ret = "False"; 
+		string ret = "false"; 
 		if ( da)
-			ret = "True" ;
+			ret = "true" ;
 		return ret ; 
 	}
 	CustType* makeString () {
-		string ret = "False"; 
+		string ret = "false"; 
 		if ( da)
-			ret = "True" ;
+			ret = "true" ;
 		return CustType :: parse (this -> toString() , "STRING") ; 
 	}
 };
@@ -698,7 +698,7 @@ ListType* getList (string data, int type){
 }
 
 BoolType* getBool (string data , int type) {
-	BoolType * t = new BoolType ( data == "True" ? 1 : 0 , BOOL ) ; 
+	BoolType * t = new BoolType ( data == "true" ? 1 : 0 , BOOL ) ; 
 	return t ; 
 }
 
@@ -1025,6 +1025,7 @@ CustType* operator==(CustType &lhs, CustType &rhs)
 		BoolType *temp5 = dynamic_cast<BoolType *>(&lhs);
 		BoolType *temp6 = dynamic_cast<BoolType *>(&rhs);
 		tempBool = ((temp5->da)==(temp6->da));
+		//cout << "\nprinting inside c ++ " << temp5 -> getBoolValue() << temp6 -> getBoolValue() << tempBool << endl ; 
   		toReturn = new BoolType(tempBool, BOOL);
   		return toReturn ;	
 	}
@@ -1034,8 +1035,8 @@ CustType* operator==(CustType &lhs, CustType &rhs)
 		if ( (temp7 -> da).size() != (temp8 -> da).size() )
 			return (new BoolType(false, BOOL) ) ; 
 		for (vector<CustType*> :: iterator it1 = (temp7 -> da).begin () , it2 = (temp8 -> da).begin ()  ; it1 != (temp7 -> da).end () && it2 != (temp8 -> da).end () ; ++ it1 , ++it2) {
-			(*it1) -> print() ; 
-			(*it2) -> print () ; 
+			//(*it1) -> print() ; 
+			//(*it2) -> print () ; 
 			BoolType* tmpResult = dynamic_cast<BoolType *> ((*(*it1)) == (*(*it2)) );
 			if (tmpResult -> getBoolValue () == false)
 				return (new BoolType(false, BOOL) ) ; 

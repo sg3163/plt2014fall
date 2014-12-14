@@ -248,6 +248,12 @@ int main() {
 	cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------\n" ; 
 	(testJsonType -> getJoType()) -> print () ; 
 	//cout << testJsonType -> prettyPrint(0) ; 
-    
+    CustType* ab = CustType::parse("True","BOOL");
+	CustType* ba = CustType::parse("False","BOOL");
+	if ((!(*(*ab == *ba)))->getBoolValue())
+	{
+	 CustType::print(ab);
+
+	}
 	return 0;
 }
