@@ -5,7 +5,7 @@ decl b = 81
 
 func findGCD(a,b) 
 	if(b == 0) 
-	 return a
+	 	return a
 	 end
 	return findGCD(b, a%%b)
 end
