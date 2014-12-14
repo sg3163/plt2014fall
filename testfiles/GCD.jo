@@ -1,0 +1,7 @@
+/* Test GCD function */
+
+func main () 
+decl a = 45
+decl b = 81
+print (a)
+end
