@@ -415,10 +415,10 @@ class ListType : public CustType {
 	void remove (NumType* num) {
 		
 	}
-	void remove (StringType* num) {
+	void remove (StringType* str) {
 		
 	}
-	void remove (BoolType* num) {
+	void remove (BoolType* bl) {
 		
 	}
 
@@ -562,6 +562,16 @@ class JsonType : public CustType {
         return JSON;
     }
     CustType* getAttrList () ;
+
+    vector<string> getStringAttrList () {
+    	vector <string> atrrListStr;
+		for ( map<string , CustType* > ::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
+		
+			string keyString =  iter -> first  ; 
+			atrrListStr.push_back(keyString) ;
+		}
+		return atrrListStr ;
+    }
     
     map<string , CustType* >::iterator getBeginIterator (){
 		map<string , CustType* > :: iterator it  = (this -> da).begin();
@@ -781,7 +791,7 @@ void JsonType :: convToJsonType (){
 		else { 
 			cout << "Here I am, stuck in JsonType :: convToJsonType, I think the JSON library is screwing up, and throwing random types. " ; 
 		}
-		cout << endl ; 
+		//cout << endl ; 
 		
 	}
 
@@ -825,7 +835,7 @@ void ListType :: convToListType () {
 		else { 
 			cout << "Here I am, stuck in ListType :: convToListType, I think the JSON library is screwing up, and throwing random types. " ; 
 		}
-		cout << endl ; 
+		//cout << endl ; 
 		
 	}
 
@@ -967,13 +977,71 @@ CustType* CustType::mod(CustType* t1 , CustType* t2) {
 
 CustType* operator==(CustType &lhs, CustType &rhs)
 {
-  NumType *temp1 = dynamic_cast<NumType *>(&lhs);
-  NumType *temp2 = dynamic_cast<NumType *>(&rhs);
-  
-  bool tempBool = ((temp1->da)==(temp2->da));
-  BoolType *toReturn = new BoolType(tempBool, BOOL);
-    
-  return toReturn;
+	CustType *t1 = (&lhs);
+  	CustType *t2 = (&rhs);
+  	bool tempBool ; 
+  	BoolType *toReturn ;
+  	if ( t1 -> getType() != t2 -> getType () ){
+		cout << "== defined on operands of same type" ;
+		return NULL ;
+	}
+	if (t1 -> getType() == NUMBER ){
+		NumType *temp1 = dynamic_cast<NumType *>(&lhs);
+		NumType *temp2 = dynamic_cast<NumType *>(&rhs);
+		bool tempBool = ((temp1->da)==(temp2->da)); 
+		toReturn = new BoolType(tempBool, BOOL);
+		return toReturn ;	
+	}
+	else if (t1 -> getType() == STRING ){
+		StringType *temp3 = dynamic_cast<StringType *>(&lhs);
+		StringType *temp4 = dynamic_cast<StringType *>(&rhs);
+		tempBool = ((temp3->da)==(temp4->da));
+  		toReturn = new BoolType(tempBool, BOOL);
+  		return toReturn ;	 
+  	}	
+	else if (t1 -> getType ()  == BOOL){
+		BoolType *temp5 = dynamic_cast<BoolType *>(&lhs);
+		BoolType *temp6 = dynamic_cast<BoolType *>(&rhs);
+		tempBool = ((temp5->da)==(temp6->da));
+  		toReturn = new BoolType(tempBool, BOOL);
+  		return toReturn ;	
+	}
+	else if (t1 -> getType () == LIST){
+		ListType *temp7 = dynamic_cast<ListType *>(&lhs);
+		ListType *temp8 = dynamic_cast<ListType *>(&rhs);
+		if ( (temp7 -> da).size() != (temp8 -> da).size() )
+			return (new BoolType(false, BOOL) ) ; 
+		for (vector<CustType*> :: iterator it1 = (temp7 -> da).begin () , it2 = (temp8 -> da).begin ()  ; it1 != (temp7 -> da).end () && it2 != (temp8 -> da).end () ; ++ it1 , ++it2) {
+			(*it1) -> print() ; 
+			(*it2) -> print () ; 
+			BoolType* tmpResult = dynamic_cast<BoolType *> ((*(*it1)) == (*(*it2)) );
+			if (tmpResult -> getBoolValue () == false)
+				return (new BoolType(false, BOOL) ) ; 
+		}
+		return (new BoolType(true, BOOL));
+  	}				
+  	else if (t1 -> getType () == JSON ) {
+  		JsonType *temp9 = dynamic_cast<JsonType *>(&lhs);
+		JsonType *temp10 = dynamic_cast<JsonType *>(&rhs);
+		vector<string> attrList1 = temp9 -> getStringAttrList () ; 
+		vector<string> attrList2 = temp10 -> getStringAttrList () ; 
+		if ( attrList1.size () != attrList2.size() )
+			return (new BoolType(false, BOOL) ) ; 
+		for ( vector<string> :: iterator it = attrList1.begin () ; it != attrList1.end () ; ++ it) {
+			CustType* el2 = temp10 ->getElement(*it) ; 
+			if ( el2 == NULL)
+				return (new BoolType(false, BOOL) ) ; 
+			CustType* el1 = temp9 -> getElement(*it) ;
+			BoolType* tmpResult = dynamic_cast<BoolType *> ((*el1 == *el2)) ;
+			if (tmpResult -> getBoolValue () == false)
+				return (new BoolType(false, BOOL) ) ; 
+		}
+		return (new BoolType(true, BOOL));
+  	}
+  	else {
+  		cout << "ERROR: TYPE NOT DEFINIED FOR OBJECT" << endl;
+		return NULL;
+	}
 }
 
 CustType* operator!=(CustType &lhs, CustType &rhs)

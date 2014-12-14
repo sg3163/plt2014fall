@@ -30,7 +30,7 @@ int main() {
 	cout << endl;
 
 	string testString = "\
-        { \
+         \
           \"name\" : \"name1\", \
           \"age\" : 25123, \
           \"BoolVal\" : True, \
@@ -47,8 +47,14 @@ int main() {
             \"foo\" : \"False\", \
             \"bar\" : \"123\" \
             } ]" ;
-
-	CustType *testJsonType = CustType :: parse(testString, "LIST");
+	//listString = "[1 , 2 ,3]" ;	
+	CustType *testJsonType = CustType :: parse(listString, "LIST");
+		//listString = "[1 , 2 ,3 , 4]" ;	
+	listString = "[1, 2, 3 , { \
+            \"foo\" : \"False\", \
+            \"bar\" : \"1237\" \
+            } ]" ;
+	CustType *testJsonTypeCmp = CustType :: parse(listString, "LIST");
 	cout << testJsonType -> toString() ; 
     
 	int ctr = 0 ; 
@@ -215,9 +221,10 @@ int main() {
 	     cout << "More Complex If Condition with Not Works " << endl;
 	   }
 
+	if ((*testJsonType==*testJsonTypeCmp)->getBoolValue()) { cout << "Operator == Passed" << endl; }
+	 else { cout << "FAILED operator =="  << endl; }
 
-
-	cout << testJsonType -> prettyPrint(0) ; 
+	//cout << testJsonType -> prettyPrint(0) ; 
     
 	return 0;
 }
