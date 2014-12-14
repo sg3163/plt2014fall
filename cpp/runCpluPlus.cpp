@@ -223,8 +223,8 @@ int main() {
 	     cout << "More Complex If Condition with 'Not' Works " << endl;
 	   }
 
-	 cout << testJsonType -> prettyPrint(0) ; 
-
+	 //cout << testJsonType -> prettyPrint(0) ; 
+	 /*
 	 CustType *sampleRead = CustType::read("SampleInput.txt");
 	 CustType::print(sampleRead);
 	 
@@ -242,10 +242,11 @@ int main() {
 	 CustType::write(writeJson, fn);
 	 
 	 cout << "Wrote to \"SampleOutput.txt\" " << endl;
-
+	*/
 	if ((*testJsonType==*testJsonTypeCmp)->getBoolValue()) { cout << "Operator == Passed" << endl; }
 	 else { cout << "FAILED operator =="  << endl; }
-
+	cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------\n" ; 
+	(testJsonType -> getJoType()) -> print () ; 
 	//cout << testJsonType -> prettyPrint(0) ; 
     
 	return 0;

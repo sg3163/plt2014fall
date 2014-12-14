@@ -125,6 +125,9 @@ class CustType {
 		cout << "Only defined for Lists. \n" ; 
 		return NULL ; 
 	}
+	virtual CustType* getJoType() {
+				cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class\n" ;
+	}
 	//concat items and form a list
 	static CustType* concat (CustType* t1, CustType* t2) ; 
 
@@ -189,7 +192,9 @@ class BoolType : public CustType {
 	{
 	  return da;
 	}
-
+	CustType* getJoType() {
+		return ( CustType :: parse ("Bool" , "STRING")) ;
+	}
 	void print () {
 	  if(da) { cout << "True" ; }
 	  else { cout << "False" ; }
@@ -225,6 +230,9 @@ class NumType : public CustType {
 	}
 	int getType () {
 		return NUMBER ;
+	}
+	CustType* getJoType() {
+		return ( CustType :: parse ("Number" , "STRING")) ;
 	}
 	string toString () { 
 		string ret ; 
@@ -318,6 +326,9 @@ class StringType : public CustType {
 		return CustType :: parse(this -> toString() , "STRING" ) ; 
 		
 	}
+	CustType* getJoType() {
+		return (CustType :: parse ("String" , "STRING")) ;
+	}
 	void print () {
 		cout << da ; 
 	}
@@ -364,6 +375,9 @@ class ListType : public CustType {
 	}
 	int getType () {
 		return LIST ;
+	}
+	CustType* getJoType() {
+		return ( CustType :: parse ("List" , "STRING")) ;
 	}
 	void print () {
 		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
@@ -445,6 +459,9 @@ class JsonType : public CustType {
       JSONValue *value = new JSONValue(data);
       print_out(value->Stringify().c_str());
     }
+    CustType* getJoType() {
+		return ((CustType :: parse ("Json" , "STRING")) ) ;
+	}
     string toString () {
     	string ret = "{ " ; 
     	for ( map<string , CustType* > :: iterator it = (this -> da).begin() ; it != (this -> da).end() ; ++ it ) {
