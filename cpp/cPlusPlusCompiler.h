@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector> 
 #include <map>
@@ -13,7 +14,6 @@ void print_out(const wchar_t *output)
 {
     wcout << output;
     wcout.flush();
-
 }
 
 string wstringToString (wstring w){
@@ -46,10 +46,15 @@ class CustType {
 	}
 	static CustType* parse (string data, string type) ; 
 	static string typeString ( CustType* t) ;
+	static CustType* read(string filename);
 	static void print(CustType* data) ;
 	static void print (vector<CustType*>  :: iterator it ) ;
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class\n" ;
+	}
+
+	virtual void write(CustType* data, string  filename) {
+	  cout << "Not in child class\n";
 	}
 
 	virtual int getType(){
@@ -159,16 +164,6 @@ class CustType {
 	{
 	  cout << "In CustType, only allowed in NUMBER\n";
 	}
-
-
-	/*	
-	virtual CustType operator!()
-	{
-	  cout << "In CustType, only allowed in BOOL\n";
-	}
-	*/
-
-
 };
 
 class BoolType : public CustType { 
@@ -206,16 +201,6 @@ class BoolType : public CustType {
 			ret = "True" ;
 		return CustType :: parse (this -> toString() , "STRING") ; 
 	}
-
-	/*
-	CustType operator!()
-	{
-	  CustType *t1 = this;
-	  BoolType* temp = dynamic_cast<BoolType*>(t1);
-	  temp->da = !(temp->da);
-	  return temp;
-	}
-	*/
 };
 
 class NumType : public CustType { 
@@ -377,7 +362,10 @@ class ListType : public CustType {
 	}
 	void print () {
 		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
-			(*it) -> print () ; 
+			(*it) -> print () ;
+			if ( it != (da.end() - 1) ) {
+			  cout << ",";
+			}
 		} 
 	}
 	string toString () { 
@@ -1063,3 +1051,30 @@ CustType* operator||(CustType &t1, CustType &t2)
   
   return toReturn;
 }
+
+
+// Reads from text file. Returns a ListType
+CustType* CustType::read(string filename)
+{
+  string fileText = "";
+  string line;
+  ifstream file (filename.c_str());
+  if ( file.is_open() )
+    {
+      while ( getline(file, line) )
+	{
+	  fileText+=line;
+	}
+      file.close();
+    }
+
+  CustType *toReturn = CustType::parse(fileText, "LIST");
+  return toReturn;
+}
+
+
+/*
+OCAML OUTPUT FOR READ AND WRITE
+"CustType::write(" ^ string_of_expr expr ^ "," ^ str ^ ");\n"
+"CustType::read(" ^ str ^ ")"
+ */

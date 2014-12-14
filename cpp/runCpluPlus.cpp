@@ -212,12 +212,13 @@ int main() {
 	   }
 	 else
 	   {
-	     cout << "More Complex If Condition with Not Works " << endl;
+	     cout << "More Complex If Condition with 'Not' Works " << endl;
 	   }
 
+	 cout << testJsonType -> prettyPrint(0) ; 
 
+	 CustType *sampleRead = CustType::read("SampleInput.txt");
+	 CustType::print(sampleRead);
 
-	cout << testJsonType -> prettyPrint(0) ; 
-    
 	return 0;
 }
