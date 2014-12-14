@@ -74,6 +74,7 @@ let rec string_of_expr e = match e with
                         )                  
 	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
 	| AttrList(id) -> id ^ "-> getAttrList()"
+  | DataType(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->getJoType()"
 	| Read(str) -> "CustType::read(" ^ str ^ ")"
   | MakeString(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->makeString()"
   | NoExpr -> ""
@@ -82,7 +83,6 @@ let rec string_of_stmt = function
     Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";"
     | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
 		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n"
-		| ObjType(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->getJoType()\n"
 		| Block(stmts) ->
         "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
     | For(e1, e2, s1) ->

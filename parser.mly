@@ -82,7 +82,6 @@ stmt:
     expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
     | PRINT LPAREN expr RPAREN SEMI                     { Print($3) }
-	| TYPE LPAREN expr RPAREN SEMI										  { ObjType($3) }
 	| FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
@@ -135,6 +134,7 @@ expr:
     | ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
     | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
     | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }
+    | TYPE LPAREN expr RPAREN       { DataType($3) }
 	| READ LPAREN STRING_LIT RPAREN			{ Read($3) }
     | MAKESTRING LPAREN expr RPAREN    { MakeString($3) }
     

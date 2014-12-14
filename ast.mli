@@ -52,6 +52,7 @@ type expr =
 	| ElemAccess of string * list_expr
 	| TypeStruct of string
 	| AttrList of string
+  | DataType of expr
 	| Read of string
   | MakeString of expr
   | NoExpr
@@ -72,7 +73,6 @@ type stmt =
   | Expr of expr
   | Return of expr
   | Print of expr
-	| ObjType of expr
   | If of expr * stmt * stmt
   | Ifin of string * string * stmt * stmt
   | For of loop_var * for_expr * stmt  
