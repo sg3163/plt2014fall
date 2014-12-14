@@ -1,6 +1,6 @@
 /* Test Json Pretty Print */
 
-decl a = #{"name":"harsha","courses":["OS","PLT","DB"]}#
+decl a = #{"name":"harsha","courses":[1,"PLT",true]}#
 
 func main () 
 print (a)

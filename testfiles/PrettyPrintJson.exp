@@ -1,8 +1,8 @@
 {
-    "name":"harsha",
     "courses":[
-    "OS",
-    "PLT",
-    "DB"
-    ]
+    	1,
+    	"PLT",
+    	True
+    ],
+    "name":"harsha"
 }

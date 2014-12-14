@@ -455,9 +455,10 @@ class JsonType : public CustType {
 
     JsonType() {}
 
-    void print() {
+    void print() {/*
       JSONValue *value = new JSONValue(data);
-      print_out(value->Stringify().c_str());
+      print_out(value->Stringify().c_str());*/
+      cout <<  prettyPrint(0) ; 
     }
     CustType* getJoType() {
 		return ((CustType :: parse ("Json" , "STRING")) ) ;
@@ -520,10 +521,14 @@ class JsonType : public CustType {
     		el += it -> first ; 
     		el += "\"" ;
 
-    		el += ": " ;
-    		if ( (it -> second )  -> getType() < JSON){
+    		el += ":" ;
+    		if ( (it -> second )  -> getType() == NUMBER || (it -> second )  -> getType() == BOOL ){
 				el +=  (it -> second ) -> toString ();
 			}
+			else if ((it -> second ) -> getType () == STRING){
+				el +=  "\"" + (it -> second ) -> toString () + "\"";
+			}
+
 			else if ((it -> second ) -> getType () == JSON){
 				el += "{\n" ; 
 				el += prettyPrintJsonUtility ( (JsonType*)(it -> second ), offset + 1 ) ; 
@@ -553,8 +558,11 @@ class JsonType : public CustType {
     			el += ",\n" ; 
     		el += offsetTabs ; 
 
-    		if ( (*it) -> getType() < JSON){
+    		if ( (*it) -> getType() == NUMBER || (*it) -> getType() == BOOL){
 				el += (*it) -> toString ();
+			}
+			else if ( (*it) -> getType () == STRING){
+				el +=  "\"" + (*it) -> toString () + "\"";
 			}
 			else if ((*it) -> getType () == JSON){
 				el += "{\n" ; 
