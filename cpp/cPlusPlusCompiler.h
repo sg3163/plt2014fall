@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector> 
 #include <map>
@@ -13,7 +14,6 @@ void print_out(const wchar_t *output)
 {
     wcout << output;
     wcout.flush();
-
 }
 
 string wstringToString (wstring w){
@@ -37,8 +37,7 @@ class CustType {
 	CustType (string data) {
 	
 		//this->dt = NUMBER ; 
-		this->data = data ; 
-	
+		this->data = data ;
 	}
 	
 	CustType () { 
@@ -46,12 +45,13 @@ class CustType {
 	}
 	static CustType* parse (string data, string type) ; 
 	static string typeString ( CustType* t) ;
+	static CustType* read(string filename);
 	static void print(CustType* data) ;
 	static void print (vector<CustType*>  :: iterator it ) ;
+	static void write(CustType* data, string filename);
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class\n" ;
 	}
-
 	virtual int getType(){
 		cout << "getting Type from CustType, Ooops!\n Somebody needs to implement this in child class" ;	
 	}
@@ -159,16 +159,6 @@ class CustType {
 	{
 	  cout << "In CustType, only allowed in NUMBER\n";
 	}
-
-
-	/*	
-	virtual CustType operator!()
-	{
-	  cout << "In CustType, only allowed in BOOL\n";
-	}
-	*/
-
-
 };
 
 class BoolType : public CustType { 
@@ -206,16 +196,6 @@ class BoolType : public CustType {
 			ret = "True" ;
 		return CustType :: parse (this -> toString() , "STRING") ; 
 	}
-
-	/*
-	CustType operator!()
-	{
-	  CustType *t1 = this;
-	  BoolType* temp = dynamic_cast<BoolType*>(t1);
-	  temp->da = !(temp->da);
-	  return temp;
-	}
-	*/
 };
 
 class NumType : public CustType { 
@@ -377,7 +357,10 @@ class ListType : public CustType {
 	}
 	void print () {
 		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
-			(*it) -> print () ; 
+			(*it) -> print () ;
+			if ( it != (da.end() - 1) ) {
+			  cout << ",";
+			}
 		} 
 	}
 	string toString () { 
@@ -392,6 +375,9 @@ class ListType : public CustType {
 		return ret ; 
 
 	}
+	
+
+
 	CustType* makeString () {
 		
 		return CustType :: parse(this -> toString() , "STRING" ) ; 
@@ -590,31 +576,6 @@ class JsonType : public CustType {
 		CLASS DEFINITIONS END HERE 
 ******************************************************/
 
-
-//Commented method does not handle fractions. Alternate method is included below.
-/*
-NumType* getNum (string data, int type ){
-	double num  = 0 ; 
-	int decimal_bool = 0, decimal = 1 ; 
-	for ( unsigned int i = 0 ; i < data.length() ; i ++ ){
-		if ( ( data.at(i) < '0' || data.at(i) > '9' ) && data.at(i) != '.' )
-			return NULL ; 
-		else if (data.at(i) > '0' || data.at(i) < '9') {
-			num *= 10 ;
-			num += (data.at(i) - '0' ) ; 
-		}
-		else 
-			decimal_bool  = 1 ; 
-		if (decimal_bool) 
-			decimal *= 10 ; 
-		
-	}
-	num = num / decimal ; 
-	NumType* t  = new NumType(num , NUMBER) ;
-	return t ;
-}
-*/
-
 NumType* getNum(string data, int type)
 {
   const char *cstr = data.c_str();
@@ -720,6 +681,20 @@ CustType* CustType :: parse (string data, string type)  {
 
 void CustType :: print ( CustType* data) { 
 	data -> print () ;
+}
+
+void CustType :: write (CustType * data, string filename) {
+  string toWrite = data -> toString();
+
+  ofstream file(filename.c_str(), ios::app);
+  if ( file.is_open() )
+    {
+      file << toWrite << endl;
+    }
+  else
+    {
+      cout << "Unable to open file" << endl;
+    }
 }
 
 void CustType :: print (vector<CustType*>  :: iterator it ) {
@@ -1061,5 +1036,26 @@ CustType* operator||(CustType &t1, CustType &t2)
   bool tempBool = ((temp1->da) || (temp2->da));
   BoolType *toReturn = new BoolType(tempBool, BOOL);
   
+  return toReturn;
+}
+
+
+// Reads from text file. Returns a ListType
+CustType* CustType::read(string filename)
+{
+  string fileText = "";
+  string line;
+  ifstream file (filename.c_str());
+  if ( file.is_open() )
+    {
+      while ( getline(file, line) )
+	{
+	  fileText+=line;
+	}
+      file.close();
+    }
+  else { cout << "Unable to open file" << endl; }
+
+  CustType *toReturn = CustType::parse(fileText, "LIST");
   return toReturn;
 }

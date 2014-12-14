@@ -22,6 +22,6 @@ $(EXECUTABLE): $(OBJECTS)
 #	$(CC) $(CFLAGS) $(@:obj/%.o=%.cpp) -o $@
 
 clean:
-	rm -f $(OBJECTS) $(EXECUTABLE) *~
+	rm -f $(OBJECTS) $(EXECUTABLE) *~ SampleOutput.txt
 
 full: clean all

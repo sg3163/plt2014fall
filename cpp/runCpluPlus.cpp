@@ -212,12 +212,28 @@ int main() {
 	   }
 	 else
 	   {
-	     cout << "More Complex If Condition with Not Works " << endl;
+	     cout << "More Complex If Condition with 'Not' Works " << endl;
 	   }
 
+	 cout << testJsonType -> prettyPrint(0) ; 
 
+	 CustType *sampleRead = CustType::read("SampleInput.txt");
+	 CustType::print(sampleRead);
+	 
+	 cout << endl << endl;
+	 string fn = "SampleOutput.txt";
+	 CustType *writeBool = CustType::parse("True", "BOOL");
+	 CustType *writeNum = CustType::parse("5", "NUMBER");
+	 CustType *writeString = CustType::parse("Hello", "STRING");
+	 CustType *writeList = CustType:: parse(listString, "LIST");
+	 CustType *writeJson = CustType:: parse(testString, "JSON");
+	 CustType::write(writeBool, fn);
+	 CustType::write(writeNum, fn);
+	 CustType::write(writeString, fn);
+	 CustType::write(writeList, fn);
+	 CustType::write(writeJson, fn);
+	 
+	 cout << "Wrote to \"SampleOutput.txt\" " << endl;
 
-	cout << testJsonType -> prettyPrint(0) ; 
-    
 	return 0;
 }
