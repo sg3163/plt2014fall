@@ -592,6 +592,32 @@ class JsonType : public CustType {
 	void add (string  key, CustType* el) { 
 		da [key] = el ; 
 	}
+	CustType* minus (CustType* c){
+		string k = c -> toString () ; 
+		CustType* t = new JsonType ;
+		for ( map<string , CustType* > ::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
+		
+			if ( k != iter -> first)
+				t -> add (iter -> first,iter -> second) ; 
+			
+		}
+		return t ; 
+	}
+	CustType* contains (CustType* c){
+		if (c ->getType() != STRING){
+			cout << "\n JSON :: contains(key) expects a STRING argument\n" ;
+			return this ; 
+		}
+		string k = c -> toString() ; 
+		for ( map<string , CustType* > ::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
+		
+			if ( iter -> first == k)
+				return (new BoolType(true,BOOL))  ; 
+			
+		}
+		return (new BoolType(false,BOOL))  ; 
+
+	}
 
 };
 /******************************************************
