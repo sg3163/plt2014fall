@@ -6,3 +6,21 @@ decl a = #{}#
 type (a)
 
 end
+
+
+/*
+
+decl a = #{"a":"b","c":"d"}#
+decl b = null
+decl c = [1,2,3]
+decl d = #{"a":"b","e":"d"}#
+
+func pr(x)
+ print (type(x))
+ return true
+end
+func main()
+		print(type(pr(c)))
+end
+
+*/
