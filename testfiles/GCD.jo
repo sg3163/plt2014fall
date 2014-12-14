@@ -1,7 +1,15 @@
 /* Test GCD function */
 
-func main () 
 decl a = 45
 decl b = 81
-print (a)
+
+func findGCD(a,b) 
+	if(b == 0) 
+	 return a
+	 end
+	return findGCD(b, a%%b)
+end
+
+func main () 
+	print( findGCD(a,b) )
 end
