@@ -2,7 +2,7 @@
     "courses":[
     	1,
     	"PLT",
-    	True
+    	true
     ],
     "name":"harsha"
 }
