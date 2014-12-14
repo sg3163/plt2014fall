@@ -113,8 +113,18 @@ class CustType {
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 
 	}
-
-
+	virtual CustType* contains (CustType* t) {
+		cout << "Only defined for Lists. \n" ;
+		return NULL ; 
+	}
+	virtual CustType* findIndex (CustType* t){
+		cout << "Only defined for Lists. \n" ;
+		return NULL ; 
+	}
+	virtual CustType* minus (CustType* t) {
+		cout << "Only defined for Lists. \n" ; 
+		return NULL ; 
+	}
 	//concat items and form a list
 	static CustType* concat (CustType* t1, CustType* t2) ; 
 
@@ -412,15 +422,17 @@ class ListType : public CustType {
 	void add ( CustType* el ) { 
 		da.push_back (el) ;
 	}
-	void remove (NumType* num) {
-		
+	bool operator==(CustType *rhs)
+	{
+	  NumType *temp1 = dynamic_cast<NumType *>(this);
+	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
+
+	  return ((temp1->da)==(temp2->da));
 	}
-	void remove (StringType* str) {
-		
-	}
-	void remove (BoolType* bl) {
-		
-	}
+	//returns index of element if found, otherwise returns -1 
+	CustType* findIndex (CustType* c) ; 
+	CustType* minus (CustType* c) ; 
+	CustType* contains (CustType * c) ;
 
 } ;
 
@@ -901,22 +913,6 @@ CustType* CustType::subtract(CustType* t1, CustType* t2) {
 		NumType *t = new NumType(num, NUMBER);
 		return t;  
 	}
-	else if ((t1->getType() == LIST) && (t2->getType() < JSON)) {
-		ListType *temp1 = dynamic_cast<ListType*>(t1);
-		if (t2->getType() == NUMBER){
-    		NumType *temp2 = dynamic_cast<NumType*>(t2);
-    		temp1 -> remove (temp2) ; 
-    	}
-    	if (t2->getType() == STRING){
-    		StringType *temp2 = dynamic_cast<StringType*>(t2);
-    		temp1 -> remove (temp2) ; 
-    	}
-    	if (t2->getType() == BOOL){
-    		BoolType *temp2 = dynamic_cast<BoolType*>(t2);
-    		temp1 -> remove (temp2) ; 
-    	}
-    	return temp1 ;
-	}
 	else {
 		cout << "ERROR: Subtract only allowed for NUMBER, NUMBER" << endl;
 		return NULL;
@@ -982,8 +978,8 @@ CustType* operator==(CustType &lhs, CustType &rhs)
   	bool tempBool ; 
   	BoolType *toReturn ;
   	if ( t1 -> getType() != t2 -> getType () ){
-		cout << "== defined on operands of same type" ;
-		return NULL ;
+		//cout << "== defined on operands of same type" ;
+		return (new BoolType(false, BOOL) ) ;
 	}
 	if (t1 -> getType() == NUMBER ){
 		NumType *temp1 = dynamic_cast<NumType *>(&lhs);
@@ -1130,4 +1126,37 @@ CustType* operator||(CustType &t1, CustType &t2)
   BoolType *toReturn = new BoolType(tempBool, BOOL);
   
   return toReturn;
+}
+//returns index of element if found, otherwise returns -1 
+CustType* ListType :: findIndex (CustType* c){
+		double i = 0 ; 
+		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
+			if (( (*(*it)) == *c ) -> getBoolValue())
+				return (new NumType(i,NUMBER)) ; 
+			i = i + 1 ;   
+		}
+		i = -1 ; 
+		return  (new NumType(i,NUMBER)) ;  
+}
+CustType* ListType :: minus (CustType* c){
+	ListType* tmp = new ListType ; 
+	for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
+		cout << "hello\n" ; 
+		if (! ((*(*it)) == *c)->getBoolValue() ){
+			tmp -> add ((*it)) ; 
+			cout << "world\n" ; 
+		}
+		 
+	}
+	return (CustType*)tmp ; 
+}
+CustType* ListType :: contains (CustType* c){
+		
+		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
+			if (( (*(*it)) == *c ) -> getBoolValue())
+				return (new BoolType(true,BOOL)) ; 
+			   
+		}
+		
+		return  (new BoolType(false,BOOL)) ;  
 }

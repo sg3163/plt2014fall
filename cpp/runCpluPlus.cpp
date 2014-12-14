@@ -56,7 +56,9 @@ int main() {
             } ]" ;
 	CustType *testJsonTypeCmp = CustType :: parse(listString, "LIST");
 	cout << testJsonType -> toString() ; 
-    
+    cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------\n" ;
+    testJsonType = testJsonType -> minus (CustType :: parse("3", "NUMBER")) ; 
+    cout << testJsonType -> toString() ; cout << endl ; 
 	int ctr = 0 ; 
 	cout << "that was through new method \n" ; 
 	for (vector<CustType*> :: iterator it = testJsonType -> getListBegin () ; it != testJsonType -> getListEnd () ; ++ it) {
