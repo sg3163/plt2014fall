@@ -3,11 +3,13 @@
 func main () 
 decl a = 5
 decl b = 6
+decl c = "f"
+decl d = "l"
 if(a==b)
   print ("hi")
 end
 
-if (a!=b)
+if (c!=d)
   print ("hello")
 end 
 end

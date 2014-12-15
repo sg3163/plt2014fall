@@ -246,14 +246,15 @@ int main() {
 	if ((*testJsonType==*testJsonTypeCmp)->getBoolValue()) { cout << "Operator == Passed" << endl; }
 	 else { cout << "FAILED operator =="  << endl; }
 	cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------\n" ; 
-	(testJsonType -> getJoType()) -> print () ; 
+	//(testJsonType -> getJoType()) -> print () ; 
 	//cout << testJsonType -> prettyPrint(0) ; 
-    CustType* ab = CustType::parse("True","BOOL");
-	CustType* ba = CustType::parse("False","BOOL");
-	if ((!(*(*ab == *ba)))->getBoolValue())
+    CustType* ab = CustType::parse("false","BOOL");
+	CustType* ba = CustType::parse("false","BOOL");
+	if ((*ab == *ba)->getBoolValue())
 	{
 	 CustType::print(ab);
 
 	}
+
 	return 0;
 }
