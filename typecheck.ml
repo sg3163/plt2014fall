@@ -248,11 +248,11 @@ let rec check_expr env = function
 						   with Invalid_argument "arg" -> raise(Failure("unmatched argument list"))
 				    in Sast.Call(func, List.rev new_list ), hd )
 	| Ast.ElemAccess(id, e) -> let t1 = get_vtype env id in
-														let t2 = check_listexpr env e in
-														if not (t1 = "json" || t1 = "list") 
-															then raise (Failure("Elements of only List and Json can be accessed"))
+														let t2 = check_expr env e in
+														if not ( (t1 = "json" && snd t2 = "string") || (t1="list" && snd t2 ="int") )
+															then raise (Failure("Elements of List and Json can be accessed via index and key respectively"))
 														else
-															Sast.ElemAccess (id, (fst t2)), (snd t2)
+															Sast.ElemAccess (id, (fst t2)), "notype"
     | Ast.TypeStruct(id) ->	Sast.TypeStruct (id), id
 	| Ast.AttrList(id) -> Sast.AttrList (id), id
 	| Ast.DataType(expr) -> let (expr, expr_type) = check_expr env expr in

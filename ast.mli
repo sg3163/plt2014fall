@@ -49,7 +49,7 @@ type expr =
   | Binop of expr * op * expr
   | Assign of string * expr
 	| Call of string * expr list
-	| ElemAccess of string * list_expr
+	| ElemAccess of string * expr
 	| TypeStruct of string
 	| AttrList of string
   | DataType of expr

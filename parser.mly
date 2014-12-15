@@ -100,10 +100,6 @@ expr_opt:
     /* nothing */ { NoExpr }
   | expr          { $1 }
 
-list_expr:
-        NUM_LIT                      { ListItemInt($1) }
-    | STRING_LIT                      { ListItemStr($1) }
-
 expr:
     | NUM_LIT                      { LitInt($1) }
     | STRING_LIT                   { LitStr($1) }
@@ -131,7 +127,7 @@ expr:
     | expr OR expr                 { Binop($1, Or,       $3) }
     | ID ASSIGN   expr             { Assign($1, $3) }
     | ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
-    | ID LBRACK list_expr RBRACK   { ElemAccess($1, $3) }
+    | ID LBRACK expr RBRACK   { ElemAccess($1, $3) }
     | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
     | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }
     | TYPE LPAREN expr RPAREN       { DataType($3) }

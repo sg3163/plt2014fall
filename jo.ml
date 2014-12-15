@@ -68,10 +68,7 @@ let rec string_of_expr e = match e with
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";"
 	| Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
-	| ElemAccess(id, e) -> ( match e with
-                          ListItemInt(l) -> id ^ "-> getElement("^string_of_int l ^ ")"
-                        | ListItemStr(l) -> id ^ "-> getElement("^ l ^ ")"   
-                        )                  
+	| ElemAccess(id, e) ->  id ^ "-> getElement("^string_of_expr e ^ ")"           
 	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
 	| AttrList(id) -> id ^ "-> getAttrList()"
   | DataType(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->getJoType()"
