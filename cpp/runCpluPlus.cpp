@@ -29,7 +29,7 @@ int main() {
 	cout << endl;
 	cout << endl;
 
-	string testString = "\
+	string testString = "{\
          \
           \"name\" : \"name1\", \
           \"age\" : 25123, \
@@ -208,7 +208,8 @@ int main() {
 
 	 CustType *aa = CustType::parse("5", "NUMBER");
 	 CustType *bb = CustType::parse("6", "Number");
-
+	
+	 /*
 	 if ( ( *(*(aa) != *(bb)) && *(*(CustType::parse("5","NUMBER")) < *(bb) ) ) -> getBoolValue() )
 	   {
 	     cout << "More Complex If Condition Works" << endl;
@@ -222,6 +223,10 @@ int main() {
 	   {
 	     cout << "More Complex If Condition with 'Not' Works " << endl;
 	   }
+	*/
+	CustType * prettyPrintJs  = CustType :: parse (testString , "JSON") ; 
+	cout << prettyPrintJs ->  prettyPrint (0) ; 
+
 
 	 //cout << testJsonType -> prettyPrint(0) ; 
 	 /*
@@ -243,6 +248,7 @@ int main() {
 	 
 	 cout << "Wrote to \"SampleOutput.txt\" " << endl;
 	*/
+	
 	if ((*testJsonType==*testJsonTypeCmp)->getBoolValue()) { cout << "Operator == Passed" << endl; }
 	 else { cout << "FAILED operator =="  << endl; }
 	cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------\n" ; 
@@ -255,6 +261,6 @@ int main() {
 	 CustType::print(ab);
 
 	}
-
+	
 	return 0;
 }

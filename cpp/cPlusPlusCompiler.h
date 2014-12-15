@@ -466,6 +466,7 @@ class JsonType : public CustType {
     string toString () {
     	string ret = "{" ; 
     	for ( map<string , CustType* > :: iterator it = (this -> da).begin() ; it != (this -> da).end() ; ++ it ) {
+    		cout << endl << ret ; 
     		if ( it != (this -> da).begin() )
     			ret += "," ; 
     		ret += "\"" ;
@@ -746,9 +747,12 @@ CustType* CustType :: parse (string data, string type)  {
 		else if (type == "BOOL"){
 			return getBool (data, JSON) ;
 		}
-		else{
+		else if (type == "NUMBER"){
 			//CustType :: dt = NUMBER ; 
 			return getNum (data, NUMBER) ;
+		}
+		else {
+			return NULL ; 
 		}
 }
 
