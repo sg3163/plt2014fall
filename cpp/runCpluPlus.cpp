@@ -225,7 +225,7 @@ int main() {
 	   }
 	*/
 	CustType * prettyPrintJs  = CustType :: parse (testString , "JSON") ; 
-	cout << prettyPrintJs ->  prettyPrint (0) ; 
+	cout << prettyPrintJs ->  toString() ; 
 
 
 	 //cout << testJsonType -> prettyPrint(0) ; 
