@@ -41,7 +41,7 @@ int main() {
             \"foo\" : \"True\", \
             \"bar\" : \"123\" \
             }, \
-	       \"object\" : {\"foo\" : \"bar\"}\
+	  \"object\" : {\"foo\" : \"bar\"}\
 	 } ";
 	string listString = "[1, 2, 3 , { \
             \"foo\" : \"False\", \
@@ -206,15 +206,16 @@ int main() {
 	 else { cout << "Failed Operator ||" << endl; }
 
 
+	 
 	 CustType *aa = CustType::parse("5", "NUMBER");
 	 CustType *bb = CustType::parse("6", "Number");
-	
-	 /*
+	 
+	 /*	 
 	 if ( ( *(*(aa) != *(bb)) && *(*(CustType::parse("5","NUMBER")) < *(bb) ) ) -> getBoolValue() )
 	   {
 	     cout << "More Complex If Condition Works" << endl;
 	   }
-
+	 	 
 	 if ( (!( *( *(aa) != *(bb) ) ))->getBoolValue()  )
 	   {
 	     cout << "Didn't work " << endl;
@@ -223,23 +224,23 @@ int main() {
 	   {
 	     cout << "More Complex If Condition with 'Not' Works " << endl;
 	   }
-	*/
+	 */
+	
+	 /*
 	CustType * prettyPrintJs  = CustType :: parse (testString , "JSON") ; 
 	cout << prettyPrintJs ->  toString() ; 
-
-
-	 
+	 */
+	
 	 CustType *sampleRead = CustType::read("SampleInput.txt");
 	 cout << "Writing Input from File:" << endl;
 	 CustType::print(sampleRead);
-
+	
 
 	 /*
 	 CustType *newJson = CustType::parse(testString, "JSON");
 	 cout << "Pretty Printing JSON:" << endl;
 	 cout << newJson -> prettyPrint(0) ; 
 	 */
-
 	 
 	 string fn = "SampleOutput.txt";
 	 CustType *writeBool = CustType::parse("True", "BOOL");
