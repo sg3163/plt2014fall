@@ -1069,13 +1069,7 @@ CustType* operator==(CustType &lhs, CustType &rhs)
 
 CustType* operator!=(CustType &lhs, CustType &rhs)
 {
-  NumType *temp1 = dynamic_cast<NumType *>(&lhs);
-  NumType *temp2 = dynamic_cast<NumType *>(&rhs);
-  
-  bool tempBool = ((temp1->da)!=(temp2->da));
-  BoolType *toReturn = new BoolType(tempBool, BOOL);
-  
-  return toReturn ; 
+  return (new BoolType( !( (lhs == rhs) ->getBoolValue()), BOOL ) ); ; 
 
 }
 
