@@ -113,6 +113,10 @@ class CustType {
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 
 	}
+	virtual void addToJson (CustType* key, CustType* el) { 
+		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
+
+	}
 	virtual CustType* contains (CustType* t) {
 		cout << "Only defined for Lists. \n" ;
 		return NULL ; 
@@ -614,7 +618,11 @@ class JsonType : public CustType {
 		else
 			return da[key] ;  
 	}
-	
+	void addToJson (CustType* key, CustType* el){
+		StringType *keyStr = dynamic_cast<StringType *>(key);
+		string stringKey = keyStr -> toString () ; 
+		da [stringKey] = el ;
+	}
 	void add (string  key, CustType* el) { 
 		da [key] = el ; 
 	}
