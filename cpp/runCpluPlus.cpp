@@ -30,7 +30,6 @@ int main() {
 	cout << endl;
 
 	string testString = "{\
-         \
           \"name\" : \"name1\", \
           \"age\" : 25123, \
           \"BoolVal\" : True, \
@@ -41,8 +40,9 @@ int main() {
           \"sub_object\" : { \
             \"foo\" : \"True\", \
             \"bar\" : \"123\" \
-            } \
-        } ";
+            }, \
+	       \"object\" : {\"foo\" : \"bar\"}\
+	 } ";
 	string listString = "[1, 2, 3 , { \
             \"foo\" : \"False\", \
             \"bar\" : \"123\" \
@@ -194,8 +194,8 @@ int main() {
 	 if ((*m2>=*m2)->getBoolValue() && (*m2>=*m1)->getBoolValue()) {cout << "Operator >= Passed" << endl; }
 	 else { cout << "FAILED Operator >=" << endl; }
 	 
-	 CustType *m8 = CustType::parse("True", "BOOL");
-	 CustType *m9 = CustType::parse("False", "BOOL");
+	 CustType *m8 = CustType::parse("true", "BOOL");
+	 CustType *m9 = CustType::parse("false", "BOOL");
 	 if((!*m8)->getBoolValue()) { cout << "FAILED Operator !" << endl; }
 	 else { cout << "Operator ! Passed" << endl; }
 
@@ -228,12 +228,19 @@ int main() {
 	cout << prettyPrintJs ->  toString() ; 
 
 
-	 //cout << testJsonType -> prettyPrint(0) ; 
-	 /*
-	 CustType *sampleRead = CustType::read("SampleInput.txt");
-	 CustType::print(sampleRead);
 	 
-	 cout << endl << endl;
+	 CustType *sampleRead = CustType::read("SampleInput.txt");
+	 cout << "Writing Input from File:" << endl;
+	 CustType::print(sampleRead);
+
+
+	 /*
+	 CustType *newJson = CustType::parse(testString, "JSON");
+	 cout << "Pretty Printing JSON:" << endl;
+	 cout << newJson -> prettyPrint(0) ; 
+	 */
+
+	 
 	 string fn = "SampleOutput.txt";
 	 CustType *writeBool = CustType::parse("True", "BOOL");
 	 CustType *writeNum = CustType::parse("5", "NUMBER");
@@ -247,13 +254,14 @@ int main() {
 	 CustType::write(writeJson, fn);
 	 
 	 cout << "Wrote to \"SampleOutput.txt\" " << endl;
-	*/
 	
+	 /*
 	if ((*testJsonType==*testJsonTypeCmp)->getBoolValue()) { cout << "Operator == Passed" << endl; }
 	 else { cout << "FAILED operator =="  << endl; }
 	cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------\n" ; 
 	//(testJsonType -> getJoType()) -> print () ; 
 	//cout << testJsonType -> prettyPrint(0) ; 
+
     CustType* ab = CustType::parse("false","BOOL");
 	CustType* ba = CustType::parse("false","BOOL");
 	if ((*ab == *ba)->getBoolValue())
@@ -261,6 +269,11 @@ int main() {
 	 CustType::print(ab);
 
 	}
-	
+	 */
+
+	 cout << endl << "TypeStruct:" << endl;
+	 CustType *ts = CustType::typeStruct(writeJson);
+	 CustType::print(ts);
+
 	return 0;
 }
