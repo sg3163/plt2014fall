@@ -14,6 +14,7 @@ let string_of_vtype = function
   | BoolType -> "bool"
   | JsonType -> "json"
   | ListType -> "list"
+  | NoType -> "notype"
 
 let find_variable name env =
 	try StringMap.find name env.locals
@@ -27,6 +28,9 @@ let find_function name env =
 let add_local name v_type env =
 	if StringMap.mem name env.locals then StringMap.empty
 	else StringMap.add name (string_of_vtype v_type) env.locals
+
+let update_local name ocaml_type env =
+	StringMap.add name ocaml_type env.locals
 
 let add_global name v_type env =
 	if StringMap.mem name env.globals then StringMap.empty

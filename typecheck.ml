@@ -9,6 +9,7 @@ let string_of_vtype = function
   | BoolType -> "bool"
   | JsonType -> "json"
   | ListType -> "list"
+  | NoType	-> "notype"
 
 let get_sast_type = function
 	Ast.JsonType -> Sast.JsonType
@@ -16,6 +17,7 @@ let get_sast_type = function
 	| Ast.IntType -> Sast.IntType
 	| Ast.BoolType -> Sast.BoolType
 	| Ast.ListType -> Sast.ListType
+	| Ast.NoType -> Sast.NoType
 
 
 (* get variable type according to the name
@@ -42,6 +44,8 @@ let get_oper_type t1 t2 =
 	*)
 	
 let get_bool_equal_oper_type t1 t2 =
+	if t1 = "notype" then "bool" else
+	if t2 = "notype" then "bool" else
 	if t1 = "json" && t2 = "json" then "bool" else
 	if t1 = "list" && t2 = "list" then "bool" else
 	if t1 = "string" && t2 = "string" then "bool" else
@@ -50,19 +54,28 @@ let get_bool_equal_oper_type t1 t2 =
 	raise (Failure ("Cannot Compare different types"))
 
 let get_math_oper_type t1 t2 =
+	if t1 = "notype" && t2 = "notype" then "int" else
+	if t1 = "notype" then t2 else
+	if t2 = "notype" then t1 else
 	if t1 = "int" && t2 = "int" then "int" else
 	raise (Failure ("Mathematical operator work on Number types only"))
 
 let get_logical_oper_type t1 t2 =
+	if t1 = "notype" then t2 else
+	if t2 = "notype" then t1 else
 	if t1 = "bool" && t2 = "bool" then "bool" else
 	raise (Failure ("Logical operators can work on only bool types"))
 	
 let get_add_oper_type t1 t2 =
+	if t1 = "notype" then t2 else
+	if t2 = "notype" then t1 else
 	if t1 = "int" && t2 = "int" then "int" else
 	if t1 = "string" && t2 = "string" then "string" else
 	raise (Failure ("Add operator can work on integers or strings"))
 
 let get_comp_oper_type t1 t2 =
+	if t1 = "notype" then t2 else
+	if t2 = "notype" then t1 else
 	if t1 = "int" && t2 = "int" then "bool" else
 	raise (Failure ("comparison operators can work on only Number types types"))
 
@@ -120,8 +133,8 @@ let match_oper e1 op e2 =
 								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Or, fst e2), "bool") else
                   raise (Failure ("Logical operators can work on only bool types")) 
      | Ast.Concat -> (Sast.Binop(fst e1, Sast.Concat, fst e2), "list")
-     | Ast.Minus -> if (snd e1) = "list" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "list") else
-					if (snd e1) = "json" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "json") else
+     | Ast.Minus -> if (snd e1) = "list" || (snd e1) = "notype" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "list") else
+					if (snd e1) = "json" || (snd e1) = "notype" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "json") else
 					raise (Failure ("Minus operator can work only on list or json"))
 	)
 	
@@ -221,13 +234,11 @@ let rec check_expr env = function
 	(*	let _ = print_string "in binop" in*)
 		match_oper (check_expr env e1) op (check_expr env e2)
 
-	| Ast.Assign(id, e) ->
+	| Ast.Assign(id, e) -> (*Assignment updates the type of the data type as well*)
 	(*	let _ = print_string "in assign" in*)
-		let t = get_vtype env id in
-		(* if t = "string" then 
-		     Ast.AssignStr(id, (conv_type (check_expr env e))), "void"
-		else  *)
-		Sast.Assign(id, (get_expr_with_type env e t)), "void"
+		let ret = update_local id (get_expr_with_type env e) env in
+		let env = {locals = ret; globals = env.globals; functions = env.functions } in
+		Sast.Assign(id, fst (check_expr env e)), "void"
 	| Ast.Call(func, el) ->
 		(* find_function is from the symbol table *)
 		let args = find_function func env in	(* return & arguments type list from definition *)
@@ -251,31 +262,27 @@ let rec check_expr env = function
 							(Sast.MakeString(expr , expr_type)), "string"
 	| Ast.NoExpr -> Sast.NoExpr, "void"
 
-
-(* get expr_t(sast type) by expr(ast type) with given type
- * raise error if the expression type does match requirement, snd e has the type and fst has the expr *)
-and get_expr_with_type env expr t = 
-	let e = check_expr env expr in fst e
+and get_expr_with_type env expr = 
+	let e = check_expr env expr in snd e
 
 (* convert a variable to its SAST type *)
 let convert_to_sast_type x env = 
-	let t = get_vtype env x.vname in
-		let s_expr = 
-		if not (x.vexpr = Ast.NoExpr) then
-			get_expr_with_type env x.vexpr t
-		else Sast.NoExpr
-		in
+	let s_expr = 
+	if not (x.vexpr = Ast.NoExpr) then
+		fst(check_expr env x.vexpr)
+	else Sast.NoExpr
+	in
 	{
 		Sast.vtype = get_sast_type x.vtype;
 		Sast.vname = x.vname;
 		Sast.vexpr = s_expr;
 	}
+
 let convert_to_vdecl_type x  = 
-	
 	{
-		vtype = StrType;
+		vtype = NoType;
 		vname = x;
-		vexpr = Ast.LitStr ("") ;
+		vexpr = NoExpr;
 	}
 	
 let find_vtype = function
@@ -284,7 +291,7 @@ let find_vtype = function
   | LitJson(d) -> JsonType
   | LitList(d) -> ListType
   | LitBool(d) -> BoolType
-  | _ -> StrType
+  | _ -> NoType
 
 let check_formal env formal = 
 	let ret = add_local formal.vname (find_vtype formal.vexpr) env in
@@ -300,7 +307,6 @@ let rec check_formals env formals =
 
 let check_local env local =
 	let ret = add_local local.vname (find_vtype local.vexpr) env in
-	(*if (string_of_vtype local.vtype) = "void" then raise (Failure("cannot use void as variable type")) else*)
 	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local.vname ^ " is already defined"))
 	(* update the env with globals from ret *)
 	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
@@ -381,7 +387,7 @@ let check_function env func =
 		) in
 		let fnlocals = List.map (fun fnlocal -> fst fnlocal) l in
 		 (match l with
-		 	(* empty f, no fomal args *)
+		 	(* empty f, no formal args *)
 	            [] -> let body = check_stmt_list env func func.body in
 	                { Sast.return = get_sast_type func.return; 
 	                  Sast.fname = func.fname; 

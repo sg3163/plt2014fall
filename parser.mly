@@ -56,7 +56,7 @@ formal_list:
     | formal_list COMMA formal { $3 :: $1 }
 
 formal:
-    ID      { { vtype = StrType;  vname = $1; vexpr = NoExpr; } }
+    ID      { { vtype = NoType;  vname = $1; vexpr = NoExpr; } }
     
 /* Var declarations can also be optional */
 vdecl_opt:

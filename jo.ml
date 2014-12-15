@@ -104,6 +104,7 @@ let string_of_vtype = function
   | BoolType ->"CustType*"
   | ListType -> "CustType*"
   | JsonType -> "CustType*"
+  | NoType -> "CustType*"
 
   
 let string_of_vdecl vdecl = (*if vdecl.vexpr = NoExpr then

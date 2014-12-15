@@ -1,6 +1,6 @@
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | And | Or | Concat | Minus | Mod
 
-type data_type =  StrType | IntType | BoolType | JsonType | ListType 
+type data_type =  StrType | IntType | BoolType | JsonType | ListType | NoType
 
 type sep = Comma
 
