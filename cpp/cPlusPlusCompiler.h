@@ -910,12 +910,12 @@ CustType* CustType::typeStruct(CustType *input)
 	}
       else if ( type == LIST )
 	{
-	  CustType *e1 = CustType::typeStructList(it->second);
-	  CustType *e2 = new StringType(", ", STRING);
-	  element = CustType::add(e1, e2);
+	  //CustType *e1 = CustType::typeStructList(it->second);
+	  //CustType *e2 = new StringType(", ", STRING);
+	  //element = CustType::add(e1, e2);
 
 	  //Use next line instead of above 3 if desired behavior is to simply return "List" instead of the types contained within the list.
-	  //element = new StringType(" String : List, ", STRING);
+	  element = new StringType(" String : List, ", STRING);
 	}
 
       returnString = CustType::add(returnString, element);
