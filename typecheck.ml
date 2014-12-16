@@ -234,11 +234,11 @@ let rec check_expr env = function
 	(*	let _ = print_string "in binop" in*)
 		match_oper (check_expr env e1) op (check_expr env e2)
 
-	| Ast.Assign(id, e) -> (*Assignment updates the type of the data type as well*)
+	(*| Ast.Assign(id, e) -> (*Assignment updates the type of the data type as well*)
 	(*	let _ = print_string "in assign" in*)
 		let ret = update_local id (get_expr_with_type env e) env in
 		let env = {locals = ret; globals = env.globals; functions = env.functions } in
-		Sast.Assign(id, fst (check_expr env e)), "void"
+		Sast.Assign(id, fst (check_expr env e)), "void" *)
 	| Ast.Call(func, el) ->
 		(* find_function is from the symbol table *)
 		let args = find_function func env in	(* return & arguments type list from definition *)
@@ -285,19 +285,17 @@ let convert_to_vdecl_type x  =
 		vexpr = NoExpr;
 	}
 	
-let find_vtype = function
+(*let find_vtype = function
 	LitInt(d) -> IntType
   | LitStr(d) -> StrType
   | LitJson(d) -> JsonType
   | LitList(d) -> ListType
   | LitBool(d) -> BoolType
-  | _ -> NoType
+  | _ -> NoType *)
 
 let check_formal env formal = 
-	let ret = add_local formal.vname (find_vtype formal.vexpr) env in
-	if StringMap.is_empty ret then raise (Failure ("local variable " ^ formal.vname ^ " is already defined"))
-	(* update the env with locals from ret *)
-	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
+	let ret = update_local formal.vname (get_expr_with_type env formal.vexpr) env in
+	let env = {locals = ret; globals = env.globals; functions = env.functions } in
 	convert_to_sast_type formal env, env
 
 let rec check_formals env formals = 
@@ -306,19 +304,15 @@ let rec check_formals env formals =
 	| hd::tl -> let f, e = (check_formal env hd) in (f, e)::(check_formals e tl) 
 
 let check_local env local =
-	let ret = add_local local.vname (find_vtype local.vexpr) env in
-	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local.vname ^ " is already defined"))
-	(* update the env with globals from ret *)
-	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
+	let ret = update_local local.vname (get_expr_with_type env local.vexpr) env in
+	let env = {locals = ret; globals = env.globals; functions = env.functions } in
 	convert_to_sast_type local env, env
 
-let check_local_for_loop_var env local =
-	let ret = add_local local StrType env in
-	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local ^ " is already defined"))
-	(* update the env with globals from ret *)
-	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
+(*let check_local_for_loop_var env local =
+	let ret = update_local local StrType env in
+	let env = {locals = ret; globals = env.globals; functions = env.functions } in
 	let loop_var_dec = convert_to_vdecl_type local in 
-	convert_to_sast_type  loop_var_dec env, env
+	convert_to_sast_type  loop_var_dec env, env*)
 
 let rec check_locals env locals = 
 	match locals with
@@ -333,7 +327,8 @@ let check_loopvar env = function
         let l, e = (check_local env loopId) in e, Sast.LoopVar(id)
 
 let rec check_stmt env func = function
-	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
+	Ast.Vdecl(vdecl) -> let e, env = check_local env vdecl in Sast.Vdecl(e) , env
+	| Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
 	| Ast.Return(expr) -> let e = check_expr env expr in
 			 (Sast.Return(fst e)), env 
 	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
@@ -463,10 +458,9 @@ let rec check_functions env funcs =
 (* returns the global and its env *)
 let check_global env global =
  	(*let _ = print_string "in iD" in*)
-	let ret = add_global global.vname (find_vtype global.vexpr) env in
-	if StringMap.is_empty ret then raise (Failure ("global variable " ^ global.vname ^ " is already defined"))
+	let ret = update_global global.vname (get_expr_with_type env global.vexpr) env in
 	(* update the env with globals from ret *)
-	else let env = {locals = env.locals; globals = ret; functions = env.functions } in
+	let env = {locals = env.locals; globals = ret; functions = env.functions } in
 	convert_to_sast_type global env, env
 
 let rec check_globals env globals = 

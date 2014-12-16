@@ -39,13 +39,13 @@ program:
     | program fdecl { fst $1, ($2 :: snd $1) } 
 
 fdecl:
-    FUNC ID LPAREN formals_opt RPAREN LBRACE vdecl_opt stmt_list RBRACE
+    FUNC ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
        {{
         return = Ast.StrType;
         fname = $2;
         formals = $4;
-        fnlocals = List.rev $7;
-        body = List.rev $8 }}
+        fnlocals = [];
+        body = List.rev $7 }}
 
 formals_opt:
     { [] }
@@ -59,16 +59,16 @@ formal:
     ID      { { vtype = NoType;  vname = $1; vexpr = NoExpr; } }
     
 /* Var declarations can also be optional */
-vdecl_opt:
+/*vdecl_opt:
     { [] }
     | vdecl_list    { $1 }
 
 vdecl_list:
     vdecl              { [$1] }
-    | vdecl_list vdecl { $2 :: $1 }
+    | vdecl_list vdecl { $2 :: $1 }*/
 
 vdecl:
-     DECL ID ASSIGN expr SEMI  { { vtype = StrType ;  vname = $2; vexpr = $4 } }
+    ID ASSIGN expr SEMI { { vtype = StrType ;  vname = $1; vexpr = $3 } }
 
 stmt_list:
     { [] }
@@ -77,9 +77,10 @@ stmt_list:
 rev_stmt_list:
     stmt_list          { List.rev $1 }
 
-/* using SEMI to separate stmts for now */
+/* using SEMI ';' to separate stmts */
 stmt:
-    expr SEMI                                           { Expr($1) }
+    vdecl                                     {Vdecl($1)}
+    | expr SEMI                                           { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
     | PRINT LPAREN expr RPAREN SEMI                     { Print($3) }
 	| FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
@@ -106,7 +107,7 @@ expr:
     | HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
     | LBRACK list_items RBRACK         { LitList($2) } 
     | BOOL_LIT                     { LitBool($1) }
-	| NULL						   { LitNull("null") }
+    | NULL                         { LitNull("null") }
     | ID                           { Id($1) }
     | NOT LPAREN expr  RPAREN             {Not($3)}
     | NOT expr                      {Not($2)}
@@ -125,13 +126,12 @@ expr:
     | expr MOD    expr             { Binop($1, Mod,   $3) }
     | expr AND expr                { Binop($1, And,      $3) }
     | expr OR expr                 { Binop($1, Or,       $3) }
-    | ID ASSIGN   expr             { Assign($1, $3) }
     | ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
     | ID LBRACK expr RBRACK   { ElemAccess($1, $3) }
     | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
     | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }
     | TYPE LPAREN expr RPAREN       { DataType($3) }
-	| READ LPAREN STRING_LIT RPAREN			{ Read($3) }
+    | READ LPAREN STRING_LIT RPAREN         { Read($3) }
     | MAKESTRING LPAREN expr RPAREN    { MakeString($3) }
     
 
@@ -168,7 +168,7 @@ json_item_key:
  STRING_LIT                 { LitStrJsonKey($1) }
 
 actuals_opt:
-    /* nothing */   { [] }
+    { [] }
     | actuals_list  { List.rev $1 }
 
 actuals_list:

@@ -36,6 +36,9 @@ let add_global name v_type env =
 	if StringMap.mem name env.globals then StringMap.empty
 	else StringMap.add name (string_of_vtype v_type) env.globals
 
+let update_global name ocaml_type env =
+	StringMap.add name ocaml_type env.globals
+
 (* from the ast *)
 let get_arg_type = function
 	v -> string_of_vtype v.vtype

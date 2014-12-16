@@ -37,13 +37,14 @@ let get_for_id e = match e
 let string_of_loop_var_t = function
   LoopVar(l) -> l
 
+
 let rec string_of_expr e = match e with
     LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")"
   | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")"
-	| LitJson(l) -> "CustType::parse(\"{" ^ json_items l ^ "}\",\"JSON\")"
-	| LitList(l) -> "CustType::parse(\"[" ^ string_of_items l ^ "]\",\"LIST\")"
-	| LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")" 
-	| LitNull(l) -> "CustType::parse(\"" ^ l ^ "\",\"NULL\")"
+  | LitJson(l) -> "CustType::parse(\"{" ^ json_items l ^ "}\",\"JSON\")"
+  | LitList(l) -> "CustType::parse(\"[" ^ string_of_items l ^ "]\",\"LIST\")"
+  | LitBool(l) -> "CustType::parse(\"" ^ l ^ "\",\"BOOL\")" 
+  | LitNull(l) -> "CustType::parse(\"" ^ l ^ "\",\"NULL\")"
   | Id(s) ->  s
   | Not(e1) -> "!(*(" ^ string_of_expr e1 ^ "))"
   | Binop(e1, o, e2) ->
@@ -65,19 +66,35 @@ let rec string_of_expr e = match e with
           | Concat -> "CustType::concat(" ^ string_of_expr e1 ^ "," ^ string_of_expr e2 ^ ")"
           | Minus ->  string_of_expr e1 ^ "->minus(" ^ string_of_expr e2 ^ ")"
         ) 
-  | Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";"
-	| Call(f, el) ->
+  (*| Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";"*)
+  | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
-	| ElemAccess(id, e) ->  id ^ "-> getElement("^string_of_expr e ^ ")"           
-	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
-	| AttrList(id) -> id ^ "-> getAttrList()"
+  | ElemAccess(id, e) ->  id ^ "-> getElement("^string_of_expr e ^ ")"           
+  | TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
+  | AttrList(id) -> id ^ "-> getAttrList()"
   | DataType(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->getJoType()"
-	| Read(str) -> "CustType::read(" ^ str ^ ")"
+  | Read(str) -> "CustType::read(" ^ str ^ ")"
   | MakeString(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->makeString()"
   | NoExpr -> ""
 
+let string_of_vtype = function
+   IntType -> "CustType*"
+  | StrType -> "CustType*"
+  | BoolType ->"CustType*"
+  | ListType -> "CustType*"
+  | JsonType -> "CustType*"
+  | NoType -> "CustType*"
+
+  
+let string_of_vdecl vdecl = (*if vdecl.vexpr = NoExpr then
+                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ "\n"
+                            else*)
+                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
+
+
 let rec string_of_stmt = function
-    Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";"
+    Vdecl(vdecl) -> string_of_vdecl vdecl
+    | Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";"
     | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
 		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n"
 		| Block(stmts) ->
@@ -94,20 +111,6 @@ let rec string_of_stmt = function
         string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
 		| Write(expr, str) -> "CustType::write(" ^ string_of_expr expr ^ "," ^ str ^ ");\n"
 
-
-let string_of_vtype = function
-   IntType -> "CustType*"
-  | StrType -> "CustType*"
-  | BoolType ->"CustType*"
-  | ListType -> "CustType*"
-  | JsonType -> "CustType*"
-  | NoType -> "CustType*"
-
-  
-let string_of_vdecl vdecl = (*if vdecl.vexpr = NoExpr then
-                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ "\n"
-                            else*)
-                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
 
 let string_of_formaldecl vdecl = string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname
 

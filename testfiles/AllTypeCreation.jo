@@ -1,13 +1,18 @@
 /* Creation of all Types */
-
-
+a = 5
+b ="string"
+c = null
+d = #{"name":"harsha"}#
+e = [4,6,7]
+f = true
 
 func main () 
-decl a = "Hello World all variable types created"
-decl b = 10
-decl c = #{"name":"harsha"}#
-decl d = [4,6,7]
-decl e = "true"
-decl f = null
+a = "Hello World all variable types created"
+a = 5
+ b = 10
+ c = #{"name":"harsha"}#
+ d = [4,6,7]
+e = true
+f = null
 print (a)
 end
