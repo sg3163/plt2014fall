@@ -781,6 +781,7 @@ CustType* CustType :: parse (string data, string type)  {
 }
 
 void CustType :: print ( CustType* data) { 
+	//cout << "I am here bitch" << endl ; 
 	data -> print () ;
 }
 
