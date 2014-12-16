@@ -5,25 +5,27 @@ func Merge (a,b)
 	d = a.attrList()
 	e = b.attrList()
 	for attr in d 
-		print (attr)
+		
 		if ( attr in e)
 			if (type(a[attr]) == "Json" && type(b[attr]) == "Json")
-				f = Merge(a,b)
+				
+				c[attr] = Merge(a[attr],b[attr])
 			else
-				c[attr] = a[attr]
-				f = f + b[attr]
+				c[attr] = a[attr] + b[attr]
+				
 			end
 		else
-			f = a[attr]
+			c[attr] = a[attr]
 		end
 	end
 	for attr in e
 		if ( attr in d  )
-			f = a[attr]
+			print ("")
+		else
+			c[attr] = b[attr]
 		end
 	end
-	print ("a")
-	return f
+	return c
 end
 
 func MergeUtil (a,b)
@@ -36,8 +38,8 @@ end
 
 func main ()
 
-a  = #{"name":"harsha"}#
-b  = #{"name":"harsha"}#
-MergeUtil (a,b)
-print (a)
+a  = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
+b  = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
+c = MergeUtil (a,b)
+print (c)
 end
