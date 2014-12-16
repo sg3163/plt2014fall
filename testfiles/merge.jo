@@ -11,8 +11,11 @@ func Merge (a,b)
 				
 				c[attr] = Merge(a[attr],b[attr])
 			else
-				c[attr] = a[attr] + b[attr]
-				
+				if (type(a[attr]) == "List" && type(b[attr]) == "List")
+					c[attr] = a[attr] ++ b[attr]
+				else
+					c[attr] = a[attr] + b[attr]
+				end
 			end
 		else
 			c[attr] = a[attr]

@@ -1055,8 +1055,21 @@ CustType* CustType::add(CustType* t1, CustType* t2) {
     StringType *t = new StringType(str, STRING);
     return t;
   }
+  else if( (t1->getType() == LIST) && (t2->getType() == LIST) ) {
+    ListType *temp1 = dynamic_cast<ListType*>(t1);
+    ListType *temp2 = dynamic_cast<ListType*>(t2);
+    ListType* t = new ListType() ; 
+    for (vector<CustType*> :: iterator it = (temp1->da).begin () ; it != (temp1->da).end () ; ++ it) {
+			t -> add (*it) ; 
+	}
+	for (vector<CustType*> :: iterator it = (temp2->da).begin () ; it != (temp2->da).end () ; ++ it) {
+			t -> add (*it) ; 
+	}
+    
+    return t;
+  }
   else {
-    cout << "ERROR: Add only allowed for NUMBER, NUMBER or STRING, STRING" << endl;
+    cout << "ERROR: ++ only allowed for NUMBER, NUMBER or STRING, STRING or LIST,LIST" << endl;
     return NULL;
   }
 
