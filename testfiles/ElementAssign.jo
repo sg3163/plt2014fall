@@ -1,6 +1,6 @@
 decl a = #{"a":"b"}#
 
 func main()
-	a["c"] = "d"
+	a["c"] = ["d"]
 	print(a["c"])
 end

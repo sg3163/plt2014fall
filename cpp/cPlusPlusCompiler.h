@@ -367,12 +367,14 @@ class ListType : public CustType {
 		return ( CustType :: parse ("List" , "STRING")) ;
 	}
 	void print () {
+		/*
 		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
 			(*it) -> print () ;
 			if ( it != (da.end() - 1) ) {
 			  cout << ",";
 			}
-		} 
+		} */
+		cout << toString () ; 
 	}
 	string toString () { 
 		string ret  = "[" ; 
@@ -631,6 +633,11 @@ class JsonType : public CustType {
 		StringType *keyStr = dynamic_cast<StringType *>(key);
 		string stringKey = keyStr -> toString () ; 
 		da [stringKey] = el ;
+	}
+	void addByKey (CustType* keyStrType, CustType* el) {
+		StringType *keyStr = dynamic_cast<StringType *>(keyStrType);
+		string key = keyStr -> toString () ;
+		da [key] = el ; 
 	}
 	void add (string  key, CustType* el) { 
 		da [key] = el ; 
