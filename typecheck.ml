@@ -11,6 +11,15 @@ let string_of_vtype = function
   | ListType -> "list"
   | NoType	-> "notype"
 
+let vtype_of_ocaml_type = function
+  "int" -> IntType
+  | "string" -> StrType
+  | "bool" -> BoolType
+  | "json" -> JsonType
+  | "list" -> ListType
+  | "notype" -> NoType
+  | "void" -> NoType
+
 let get_sast_type = function
 	Ast.JsonType -> Sast.JsonType
 	| Ast.StrType -> Sast.StrType
@@ -253,8 +262,8 @@ let rec check_expr env = function
 															then raise (Failure("Elements of List and Json can be accessed via index and key respectively"))
 														else
 															Sast.ElemAccess (id, (fst t2)), "notype"
-    | Ast.TypeStruct(id) ->	Sast.TypeStruct (id), id
-	| Ast.AttrList(id) -> Sast.AttrList (id), id
+    | Ast.TypeStruct(id) ->	Sast.TypeStruct(id), "string"
+	| Ast.AttrList(id) -> Sast.AttrList(id), "list"
 	| Ast.DataType(expr) -> let (expr, expr_type) = check_expr env expr in
 							(Sast.DataType(expr , expr_type)), "string"
 	| Ast.Read(str) -> Sast.Read(str), "string"
@@ -306,7 +315,7 @@ let rec check_formals env formals =
 	| hd::tl -> let f, e = (check_formal env hd) in (f, e)::(check_formals e tl) 
 
 let check_local env local =
-	let ret = add_local local.vname (find_vtype local.vexpr) env in
+	let ret = add_local local.vname (vtype_of_ocaml_type (snd (check_expr env local.vexpr))) env in
 	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local.vname ^ " is already defined"))
 	(* update the env with globals from ret *)
 	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
