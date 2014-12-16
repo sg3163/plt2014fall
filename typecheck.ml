@@ -63,11 +63,12 @@ let get_bool_equal_oper_type t1 t2 =
 	raise (Failure ("Cannot Compare different types"))
 
 let get_math_oper_type t1 t2 =
-	if t1 = "notype" && t2 = "notype" then "int" else
+	if t1 = "notype" && t2 = "notype" then "notype" else
 	if t1 = "notype" then t2 else
 	if t2 = "notype" then t1 else
 	if t1 = "int" && t2 = "int" then "int" else
-	raise (Failure ("Mathematical operator work on Number types only"))
+	if t1 = "list" && t2 = "list" then "list" else
+	raise (Failure ("Mathematical operator work on Number types only, ++ works on Number and Lists"))
 
 let get_logical_oper_type t1 t2 =
 	if t1 = "notype" then t2 else

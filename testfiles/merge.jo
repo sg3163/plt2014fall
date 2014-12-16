@@ -5,30 +5,30 @@ func Merge (a,b)
 	d = a.attrList()
 	e = b.attrList()
 	for attr in d 
+		
 		if ( attr in e)
-			if ( type (a[attr]) == "Json" && type (b[attr]) == "Json" )
-				print (f)
+			if (type(a[attr]) == "Json" && type(b[attr]) == "Json")
 				
-				/*c[attr] = Merge (a[attr] , b[attr]) */
-				/*print (attr ++ " : ")
-				print (makeString(f) ++ " \n" ) 
-				*/
+				c[attr] = Merge(a[attr],b[attr])
 			else
-				f = a[attr]
-				f = f + b[attr]
-				/*c[attr] = f */
-				print f
+				if (type(a[attr]) == "List" && type(b[attr]) == "List")
+					c[attr] = a[attr] ++ b[attr]
+				else
+					c[attr] = a[attr] + b[attr]
+				end
 			end
 		else
-			f = a[attr]
-			/*print (attr ++ " : ")
-			print (makeString(f) ++ " \n" ) */	
+			c[attr] = a[attr]
 		end
-
 	end
-	
-	print ("a")
-	return f
+	for attr in e
+		if ( attr in d  )
+			print ("")
+		else
+			c[attr] = b[attr]
+		end
+	end
+	return c
 end
 
 func MergeUtil (a,b)
@@ -41,8 +41,8 @@ end
 
 func main ()
 
-a  = #{"name":"harsha"}#
-b  = #{"name":"harsha"}#
-MergeUtil (a,b)
-print (a)
+a  = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
+b  = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
+c = MergeUtil (a,b)
+print (c)
 end
