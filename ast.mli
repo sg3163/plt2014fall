@@ -47,7 +47,6 @@ type expr =
   | Id of string
   | Not of expr
   | Binop of expr * op * expr
-  | Assign of string * expr
 	| Call of string * expr list
 	| ElemAccess of string * expr
 	| TypeStruct of string
@@ -70,6 +69,7 @@ type loop_var =
     LoopVar of string
 type stmt =
     Block of stmt list
+  | Vdecl of var_decl
   | Expr of expr
   | Return of expr
   | Print of expr

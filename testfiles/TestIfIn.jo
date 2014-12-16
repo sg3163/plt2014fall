@@ -1,7 +1,7 @@
 func main () 
-decl a = "hi"
-decl b = "bye"
-decl c = ["bbye","hello","bye"]
+a = "hi"
+b = "bye"
+c = ["bbye","hello","bye"]
 if(a in c)
 	print(a)
 end
