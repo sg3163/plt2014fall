@@ -58,7 +58,10 @@ function compileAndRun() {
 	# converting from JO to C++
     $JO $prepfile > "${reffile}.cpp" && echo "Ocaml to C++ of $1 succeeded"
 
-
+	if [ ! -s ${reffile}.cpp ] ; then
+		echo "Error in Compilation of ${reffile}"
+		return
+	fi ;
 
     # compliling the C++ file
     if [ -f "${reffile}.cpp" ]; then

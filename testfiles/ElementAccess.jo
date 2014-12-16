@@ -1,10 +1,10 @@
 /* try Element Access */
 
 func main () 
-decl a = [1,"2",[4,["qw",3,4],"name"], {"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}, "number":2324} ]
-decl b = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
-decl c = a[2]
-decl d = b["innerJson"]
+a = [1,"2",[4,["qw",3,4],"name"], {"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}, "number":2324} ]
+b = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
+c = a[2]
+d = b["innerJson"]
 print (d)
 end
 

@@ -11,6 +11,15 @@ let string_of_vtype = function
   | ListType -> "list"
   | NoType	-> "notype"
 
+let vtype_of_ocaml_type = function
+  "int" -> IntType
+  | "string" -> StrType
+  | "bool" -> BoolType
+  | "json" -> JsonType
+  | "list" -> ListType
+  | "notype" -> NoType
+  | "void" -> NoType
+
 let get_sast_type = function
 	Ast.JsonType -> Sast.JsonType
 	| Ast.StrType -> Sast.StrType
@@ -253,8 +262,8 @@ let rec check_expr env = function
 															then raise (Failure("Elements of List and Json can be accessed via index and key respectively"))
 														else
 															Sast.ElemAccess (id, (fst t2)), "notype"
-    | Ast.TypeStruct(id) ->	Sast.TypeStruct (id), id
-	| Ast.AttrList(id) -> Sast.AttrList (id), id
+    | Ast.TypeStruct(id) ->	Sast.TypeStruct(id), "string"
+	| Ast.AttrList(id) -> Sast.AttrList(id), "list"
 	| Ast.DataType(expr) -> let (expr, expr_type) = check_expr env expr in
 							(Sast.DataType(expr , expr_type)), "string"
 	| Ast.Read(str) -> Sast.Read(str), "string"
@@ -353,6 +362,12 @@ let rec check_stmt env func = function
 						   else (Sast.For( e1, fst e2, fst (check_stmt envNew func stmt))), envNew 
 	| Ast.Write(expr, str) -> let (expr, expr_type) = check_expr env expr in
 							(Sast.Write(expr , str)), env
+	| Ast.ElemAssign(id, expr1, expr2) -> let t1 = get_vtype env id in
+											let t2 = check_expr env expr1 in
+														if not ( (t1 = "json" && snd t2 = "string") || (t1="list" && snd t2 ="int") )
+															then raise (Failure("Elements of List and Json can be accessed via index and key respectively"))
+														else
+															Sast.ElemAssign (id, (fst t2), fst (check_expr env expr2)), env
 	
 
 and check_stmt_list env func = function 

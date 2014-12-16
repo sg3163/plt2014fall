@@ -49,6 +49,8 @@ class CustType {
 	static void print(CustType* data) ;
 	static void print (vector<CustType*>  :: iterator it ) ;
 	static void write(CustType* data, string filename);
+	static CustType* typeStruct(CustType* input);
+	static CustType* typeStructList(CustType* input);
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class\n" ;
 	}
@@ -80,6 +82,11 @@ class CustType {
 		cout << "Accesing outside of Json Object "  ; 
 		return NULL ;	
 	}
+	virtual CustType* getElementByOcaml ( CustType* key ) {
+		cout << "In CustType, apparently not in JSON or LIST. Calling from some other type\n" ; 
+		return  NULL ; 
+	}
+	
 	virtual CustType* getElement ( string key ) {
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 		return  NULL ; 
@@ -105,7 +112,9 @@ class CustType {
 	//append to a list
 	virtual void add (CustType* el) { 
 		cout << "In CustType, apparently not in LIST. Calling from some other type\n" ; 
-		
+	}
+	virtual void addByKey (CustType* index , CustType* el){
+		cout << "In CustType, apparently not in LIST or JSON. Calling from some other type\n" ; 
 	}
 
 	//add item to map
@@ -113,6 +122,10 @@ class CustType {
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 
 	}
+	/*virtual void addToJson (CustType* key, CustType* el) { 
+		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
+
+	}*/
 	virtual CustType* contains (CustType* t) {
 		cout << "Only defined for Lists. \n" ;
 		return NULL ; 
@@ -277,32 +290,6 @@ class NumType : public CustType {
 	  da/=temp.da;
 	  return *this;
 	}
-
-	bool operator==(CustType *rhs)
-	{
-	  NumType *temp1 = dynamic_cast<NumType *>(this);
-	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
-
-	  return ((temp1->da)==(temp2->da));
-	}
-
-	bool operator<(CustType *rhs)
-	{
-	  NumType *temp1 = dynamic_cast<NumType *>(this);
-	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
-
-	  return ((temp1->da)<(temp2->da));
-	}
-
-	bool operator>(CustType *rhs)
-	{
-	  NumType *temp1 = dynamic_cast<NumType *>(this);
-	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
-
-	  return ((temp1->da)>(temp2->da));
-	}
-
-
 } ;
 
 class StringType : public CustType { 
@@ -380,12 +367,14 @@ class ListType : public CustType {
 		return ( CustType :: parse ("List" , "STRING")) ;
 	}
 	void print () {
+		/*
 		for (vector<CustType*> :: iterator it = da.begin () ; it != da.end () ; ++ it) {
 			(*it) -> print () ;
 			if ( it != (da.end() - 1) ) {
 			  cout << ",";
 			}
-		} 
+		} */
+		cout << toString () ; 
 	}
 	string toString () { 
 		string ret  = "[" ; 
@@ -407,6 +396,14 @@ class ListType : public CustType {
 		return CustType :: parse(this -> toString() , "STRING" ) ; 
 		
 	}
+	CustType* getElementByOcaml (CustType* indexNumType) {
+		NumType* indexNum = dynamic_cast<NumType *>(indexNumType);
+		double doubleKey = indexNum -> da ; 
+		int index = (int) doubleKey ;
+		if ( index >= da.size())
+			return NULL ; 
+		return da[index] ; 
+	}
 	CustType* getElement (int index) {
 		
 		if ( index >= da.size())
@@ -418,6 +415,18 @@ class ListType : public CustType {
 	}
 	vector<CustType*> :: iterator getListEnd (){
 		return da.end() ; 
+	}
+	void addByKey (CustType* index , CustType* el){
+		NumType* indexNum = dynamic_cast<NumType *>(index);
+		double doubleKey = indexNum -> da ; 
+		int intKey = (int) doubleKey ;
+		if ( intKey >= 0 ){
+			da [intKey]  = el ;
+		}
+		else {
+			cout << "index has value < 0" ;
+			exit (1) ;
+		}
 	}
 	void add ( CustType* el ) { 
 		da.push_back (el) ;
@@ -465,7 +474,7 @@ class JsonType : public CustType {
 	}
     string toString () {
     	string ret = "{" ; 
-    	for ( map<string , CustType* > :: iterator it = (this -> da).begin() ; it != (this -> da).end() ; ++ it ) {
+    	for ( map<string , CustType* > :: iterator it = (this -> da).begin() ; it != (this -> da).end() ; ++ it ) { 
     		if ( it != (this -> da).begin() )
     			ret += "," ; 
     		ret += "\"" ;
@@ -606,14 +615,30 @@ class JsonType : public CustType {
 		map<string , CustType* > :: iterator it = (this -> da ).end ();
 		return it ;	
 	}
-	
+	CustType * getElementByOcaml (CustType* keyStrType) {
+		StringType *keyStr = dynamic_cast<StringType *>(keyStrType);
+		string key = keyStr -> toString () ;
+		if ( da.find(key) == da.end())
+			return NULL ;
+		else
+			return da[key] ;  
+	}
 	CustType * getElement (string key) {
 		if ( da.find(key) == da.end())
 			return NULL ;
 		else
 			return da[key] ;  
 	}
-	
+	void addToJson (CustType* key, CustType* el){
+		StringType *keyStr = dynamic_cast<StringType *>(key);
+		string stringKey = keyStr -> toString () ; 
+		da [stringKey] = el ;
+	}
+	void addByKey (CustType* keyStrType, CustType* el) {
+		StringType *keyStr = dynamic_cast<StringType *>(keyStrType);
+		string key = keyStr -> toString () ;
+		da [key] = el ; 
+	}
 	void add (string  key, CustType* el) { 
 		da [key] = el ; 
 	}
@@ -746,9 +771,12 @@ CustType* CustType :: parse (string data, string type)  {
 		else if (type == "BOOL"){
 			return getBool (data, JSON) ;
 		}
-		else{
+		else if (type == "NUMBER"){
 			//CustType :: dt = NUMBER ; 
 			return getNum (data, NUMBER) ;
+		}
+		else {
+			return NULL ; 
 		}
 }
 
@@ -758,7 +786,7 @@ void CustType :: print ( CustType* data) {
 
 void CustType :: write (CustType * data, string filename) {
   string toWrite = data -> toString();
-
+  
   ofstream file(filename.c_str(), ios::app);
   if ( file.is_open() )
     {
@@ -768,6 +796,7 @@ void CustType :: write (CustType * data, string filename) {
     {
       cout << "Unable to open file" << endl;
     }
+  
 }
 
 void CustType :: print (vector<CustType*>  :: iterator it ) {
@@ -876,8 +905,6 @@ void ListType :: convToListType () {
 		//cout << endl ; 
 		
 	}
-
-
 }
 
 CustType* JsonType :: getAttrList () { 
@@ -891,6 +918,110 @@ CustType* JsonType :: getAttrList () {
 	ListType* attrList = new ListType (atrrListStr) ; 
 	return attrList ; 	
 }
+
+
+CustType* CustType::typeStruct(CustType *input)
+{
+  JsonType *inputJson = dynamic_cast<JsonType *>(input);
+  CustType *returnString = new StringType("{", STRING);
+  CustType *element;
+  
+  for( map<string, CustType*> :: iterator it = (inputJson->da).begin() ; it != (inputJson->da).end() ; ++ it)
+    {
+      int type = (it->second)->getType();
+      if ( type == NUMBER )
+	{
+	  element = new StringType(" String : Number, ", STRING);
+	}
+      else if ( type == STRING )
+	{
+	  element = new StringType(" String : String, ", STRING);
+	}
+      else if ( type == BOOL )
+	{
+	  element = new StringType(" String : Boolean, ", STRING);
+	}
+      else if ( type == JSON )
+	{
+	  CustType *e1 = new StringType(" String : ", STRING);
+	  CustType *e2 = CustType::typeStruct(it->second);
+	  CustType *e3 = new StringType(", ", STRING);
+	  element = CustType::add(e1, e2);
+	  element = CustType::add(element, e3);
+	}
+      else if ( type == LIST )
+	{
+	  //CustType *e1 = CustType::typeStructList(it->second);
+	  //CustType *e2 = new StringType(", ", STRING);
+	  //element = CustType::add(e1, e2);
+
+	  //Use next line instead of above 3 if desired behavior is to simply return "List" instead of the types contained within the list.
+	  element = new StringType(" String : List, ", STRING);
+	}
+
+      returnString = CustType::add(returnString, element);
+    }
+
+  StringType *str = dynamic_cast<StringType *>(returnString);
+  string data = str->da;
+  str->da = data.substr(0, data.size()-2);
+
+  StringType *s = new StringType(" }", STRING);
+  CustType *toReturn = CustType::add(str, s);
+
+  return toReturn;
+}
+
+CustType* CustType::typeStructList(CustType *input)
+{
+  ListType *inputList = dynamic_cast<ListType *>(input);
+  CustType *returnString = new StringType("[", STRING);
+  CustType *element;
+  
+  for (vector<CustType*> :: iterator it = (inputList->da).begin () ; it != (inputList->da).end () ; ++ it) 
+    {
+      int type = (*it)->getType();
+      if ( type == NUMBER )
+	{
+	  element = new StringType(" Number,", STRING);
+	}
+      else if ( type == STRING )
+	{
+	  element = new StringType(" String,", STRING);
+	}
+      else if ( type == BOOL )
+	{
+	  element = new StringType("Boolean, ", STRING);
+	}
+      else if ( type == JSON )
+	{
+	  CustType *e0 = new StringType(" ", STRING);
+	  CustType *e1 = CustType::typeStruct(*it);
+	  CustType *e2 = new StringType(", ", STRING);
+	  element = CustType::add(e0, e1);
+	  element = CustType::add(element, e2);
+	}
+      else if ( type == LIST )
+	{
+	  CustType *e1 = CustType::typeStructList(*it);
+	  CustType *e2 = new StringType(", ", STRING);
+	  element = CustType::add(e1, e2);
+	}
+
+      returnString = CustType::add(returnString, element);
+    }
+
+  StringType *str = dynamic_cast<StringType *>(returnString);
+  string data = str->da;
+  str->da = data.substr(0, data.size()-2);
+
+  StringType *s = new StringType(" ]", STRING);
+  CustType *toReturn = CustType::add(str, s);
+
+  return toReturn;
+}
+
+
 
 CustType* CustType :: concat (CustType* t1, CustType* t2){
 		if ( t1 -> getType () == LIST) {
@@ -1069,7 +1200,7 @@ CustType* operator==(CustType &lhs, CustType &rhs)
 
 CustType* operator!=(CustType &lhs, CustType &rhs)
 {
-  return (new BoolType( !( (lhs == rhs) ->getBoolValue()), BOOL ) ); ; 
+  return (new BoolType( !( (lhs == rhs) ->getBoolValue() ), BOOL ) ); ; 
 
 }
 
@@ -1166,7 +1297,7 @@ CustType* CustType::read(string filename)
     }
   else { cout << "Unable to open file" << endl; }
 
-  CustType *toReturn = CustType::parse(fileText, "LIST");
+  CustType *toReturn = CustType::parse(fileText, "JSON");
   return toReturn;
 }
 //returns index of element if found, otherwise returns -1 
