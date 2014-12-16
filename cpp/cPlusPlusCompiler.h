@@ -105,7 +105,9 @@ class CustType {
 	//append to a list
 	virtual void add (CustType* el) { 
 		cout << "In CustType, apparently not in LIST. Calling from some other type\n" ; 
-		
+	}
+	virtual void addByKey (CustType* index , CustType* el){
+		cout << "In CustType, apparently not in LIST or JSON. Calling from some other type\n" ; 
 	}
 
 	//add item to map
@@ -113,10 +115,10 @@ class CustType {
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 
 	}
-	virtual void addToJson (CustType* key, CustType* el) { 
+	/*virtual void addToJson (CustType* key, CustType* el) { 
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 
-	}
+	}*/
 	virtual CustType* contains (CustType* t) {
 		cout << "Only defined for Lists. \n" ;
 		return NULL ; 
@@ -422,6 +424,18 @@ class ListType : public CustType {
 	}
 	vector<CustType*> :: iterator getListEnd (){
 		return da.end() ; 
+	}
+	void addByKey (CustType* index , CustType* el){
+		NumType* indexNum = dynamic_cast<NumType *>(key);
+		double doubleKey = indexNum -> da ; 
+		int intKey = (int) doubleKey ;
+		if ( intKey >= 0 ){
+			da [intKey]  = el ;
+		}
+		else {
+			cout << "index has value < 0" ;
+			exit (1) ; 
+		}
 	}
 	void add ( CustType* el ) { 
 		da.push_back (el) ;
