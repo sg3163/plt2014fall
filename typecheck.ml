@@ -18,7 +18,7 @@ let vtype_of_ocaml_type = function
   | "json" -> JsonType
   | "list" -> ListType
   | "notype" -> NoType
-  | "void" -> NoType
+  | _ -> NoType
 
 let get_sast_type = function
 	Ast.JsonType -> Sast.JsonType
@@ -76,6 +76,7 @@ let get_logical_oper_type t1 t2 =
 	raise (Failure ("Logical operators can work on only bool types"))
 	
 let get_add_oper_type t1 t2 =
+	if t1 = "notype" && t2 = "notype" then "int" else
 	if t1 = "notype" then t2 else
 	if t2 = "notype" then t1 else
 	if t1 = "int" && t2 = "int" then "int" else
@@ -243,11 +244,11 @@ let rec check_expr env = function
 	(*	let _ = print_string "in binop" in*)
 		match_oper (check_expr env e1) op (check_expr env e2)
 
-	| Ast.Assign(id, e) -> (*Assignment updates the type of the data type as well*)
+	(*| Ast.Assign(id, e) -> (*Assignment updates the type of the data type as well*)
 	(*	let _ = print_string "in assign" in*)
 		let ret = update_local id (get_expr_with_type env e) env in
 		let env = {locals = ret; globals = env.globals; functions = env.functions } in
-		Sast.Assign(id, fst (check_expr env e)), "void"
+		Sast.Assign(id, fst (check_expr env e)), "void" *)
 	| Ast.Call(func, el) ->
 		(* find_function is from the symbol table *)
 		let args = find_function func env in	(* return & arguments type list from definition *)
@@ -258,7 +259,7 @@ let rec check_expr env = function
 				    in Sast.Call(func, List.rev new_list ), hd )
 	| Ast.ElemAccess(id, e) -> let t1 = get_vtype env id in
 														let t2 = check_expr env e in
-														if not ( (t1 = "json" && snd t2 = "string") || (t1="list" && snd t2 ="int") )
+														if not ( (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="int" || snd t2 = "notype")) )
 															then raise (Failure("Elements of List and Json can be accessed via index and key respectively"))
 														else
 															Sast.ElemAccess (id, (fst t2)), "notype"
@@ -269,7 +270,7 @@ let rec check_expr env = function
 	| Ast.Read(str) -> Sast.Read(str), "string"
 	| Ast.MakeString(expr) -> let (expr, expr_type) = check_expr env expr in
 							(Sast.MakeString(expr , expr_type)), "string"
-	| Ast.NoExpr -> Sast.NoExpr, "void"
+	| Ast.NoExpr -> Sast.NoExpr, "notype"
 
 and get_expr_with_type env expr = 
 	let e = check_expr env expr in snd e
@@ -294,19 +295,17 @@ let convert_to_vdecl_type x  =
 		vexpr = NoExpr;
 	}
 	
-let find_vtype = function
+(*let find_vtype = function
 	LitInt(d) -> IntType
   | LitStr(d) -> StrType
   | LitJson(d) -> JsonType
   | LitList(d) -> ListType
   | LitBool(d) -> BoolType
-  | _ -> NoType
+  | _ -> NoType *)
 
 let check_formal env formal = 
-	let ret = add_local formal.vname (find_vtype formal.vexpr) env in
-	if StringMap.is_empty ret then raise (Failure ("local variable " ^ formal.vname ^ " is already defined"))
-	(* update the env with locals from ret *)
-	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
+	let ret = update_local formal.vname (vtype_of_ocaml_type (get_expr_with_type env formal.vexpr)) env in
+	let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
 	convert_to_sast_type formal env, env
 
 let rec check_formals env formals = 
@@ -315,19 +314,16 @@ let rec check_formals env formals =
 	| hd::tl -> let f, e = (check_formal env hd) in (f, e)::(check_formals e tl) 
 
 let check_local env local =
-	let ret = add_local local.vname (vtype_of_ocaml_type (snd (check_expr env local.vexpr))) env in
-	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local.vname ^ " is already defined"))
-	(* update the env with globals from ret *)
-	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
+	let ret = update_local local.vname (vtype_of_ocaml_type (get_expr_with_type env local.vexpr)) env in
+	(*if (snd ret) = "" then Sast.Assign(local.vname, fst (check_expr env local.vexpr)), fst ret
+	else *) let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
 	convert_to_sast_type local env, env
 
-let check_local_for_loop_var env local =
-	let ret = add_local local StrType env in
-	if StringMap.is_empty ret then raise (Failure ("local variable " ^ local ^ " is already defined"))
-	(* update the env with globals from ret *)
-	else let env = {locals = ret; globals = env.globals; functions = env.functions } in
+(*let check_local_for_loop_var env local =
+	let ret = update_local local StrType env in
+	let env = {locals = ret; globals = env.globals; functions = env.functions } in
 	let loop_var_dec = convert_to_vdecl_type local in 
-	convert_to_sast_type  loop_var_dec env, env
+	convert_to_sast_type  loop_var_dec env, env*)
 
 let rec check_locals env locals = 
 	match locals with
@@ -342,7 +338,12 @@ let check_loopvar env = function
         let l, e = (check_local env loopId) in e, Sast.LoopVar(id)
 
 let rec check_stmt env func = function
-	Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
+	Ast.Vdecl(vdecl) -> let ret = update_local vdecl.vname (vtype_of_ocaml_type (get_expr_with_type env vdecl.vexpr)) env in
+							if (snd ret) = "exist" then let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
+							        Sast.Assign(vdecl.vname, fst (check_expr env vdecl.vexpr)), env 
+								else let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
+									Sast.Vdecl(convert_to_sast_type vdecl env), env
+	| Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
 	| Ast.Return(expr) -> let e = check_expr env expr in
 			 (Sast.Return(fst e)), env 
 	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
@@ -478,10 +479,9 @@ let rec check_functions env funcs =
 (* returns the global and its env *)
 let check_global env global =
  	(*let _ = print_string "in iD" in*)
-	let ret = add_global global.vname (find_vtype global.vexpr) env in
-	if StringMap.is_empty ret then raise (Failure ("global variable " ^ global.vname ^ " is already defined"))
+	let ret = update_global global.vname (vtype_of_ocaml_type (get_expr_with_type env global.vexpr)) env in
 	(* update the env with globals from ret *)
-	else let env = {locals = env.locals; globals = ret; functions = env.functions } in
+	let env = {locals = env.locals; globals = ret; functions = env.functions } in
 	convert_to_sast_type global env, env
 
 let rec check_globals env globals = 

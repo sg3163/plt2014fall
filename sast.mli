@@ -47,7 +47,6 @@ type expr_t =
   | Id of string
   | Not of expr_t
   | Binop of expr_t * op_t * expr_t
-  | Assign of string * expr_t
   | Call of string * expr_t list
 	| ElemAccess of string * expr_t
 	| TypeStruct of string
@@ -56,6 +55,12 @@ type expr_t =
 	| Read of string
   | MakeString of expr_t * string
   | NoExpr
+
+type var_decl_t = {
+  vtype : data_type_t;
+  vname : string;
+  vexpr : expr_t;
+}
 
 type for_expr_t = 
     Forid of string
@@ -66,19 +71,15 @@ type loop_var_t =
 type stmt_t =
 	 Expr of expr_t
   | Block of stmt_t list
+  | Vdecl of var_decl_t
   | Return of expr_t
 	| Print of expr_t * string
   | For of loop_var_t * for_expr_t * stmt_t
   | If of expr_t * stmt_t * stmt_t
   | Ifin of string * string * stmt_t * stmt_t
 	| Write of expr_t * string
+  | Assign of string * expr_t
   | ElemAssign of string * expr_t * expr_t
-
-type var_decl_t = {
-  vtype : data_type_t;
-  vname : string;
-  vexpr : expr_t;
-}
 
 type func_decl_t = {
     return : data_type_t;
