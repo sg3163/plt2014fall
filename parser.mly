@@ -86,12 +86,14 @@ stmt:
 	| FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
-    | IF LPAREN ID IN ID RPAREN stmt ELSE stmt      { Ifin($3, $5, $7, $9) }
-    | IF LPAREN ID IN ID RPAREN stmt %prec NOELSE   { Ifin($3, $5, $7,Block([])) }
+    | IF LPAREN in_expr RPAREN stmt ELSE stmt      { Ifin($3, $5, $7) }
+    | IF LPAREN in_expr RPAREN stmt %prec NOELSE   { Ifin($3, $5, Block([])) }
     | LBRACE rev_stmt_list RBRACE                       { Block($2) }
 	| WRITE LPAREN expr COMMA STRING_LIT RPAREN SEMI		{ Write($3, $5) }
     | ID LBRACK expr RBRACK ASSIGN expr SEMI        { ElemAssign($1, $3, $6) }
 
+in_expr:
+    | expr IN expr                  { InExpr($1,$3) }  
 
 for_expr:
     ID                              { Forid($1) }

@@ -62,6 +62,9 @@ type var_decl = {
   vexpr : expr;
 }
 
+type in_expr = 
+    InExpr of expr * expr
+
 type for_expr = 
     Forid of string
 
@@ -74,7 +77,7 @@ type stmt =
   | Return of expr
   | Print of expr
   | If of expr * stmt * stmt
-  | Ifin of string * string * stmt * stmt
+  | Ifin of in_expr * stmt * stmt
   | For of loop_var * for_expr * stmt  
 	| Write of expr * string
   | ElemAssign of string * expr * expr

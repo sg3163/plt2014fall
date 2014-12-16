@@ -62,6 +62,9 @@ type var_decl_t = {
   vexpr : expr_t;
 }
 
+type in_expr_t = 
+    InExpr of expr_t * expr_t
+
 type for_expr_t = 
     Forid of string
 
@@ -76,7 +79,7 @@ type stmt_t =
 	| Print of expr_t * string
   | For of loop_var_t * for_expr_t * stmt_t
   | If of expr_t * stmt_t * stmt_t
-  | Ifin of string * string * stmt_t * stmt_t
+  | Ifin of in_expr_t * stmt_t * stmt_t
 	| Write of expr_t * string
   | Assign of string * expr_t
   | ElemAssign of string * expr_t * expr_t

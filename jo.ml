@@ -37,7 +37,6 @@ let get_for_id e = match e
 let string_of_loop_var_t = function
   LoopVar(l) -> l
 
-
 let rec string_of_expr e = match e with
     LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")"
   | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")"
@@ -77,6 +76,9 @@ let rec string_of_expr e = match e with
   | MakeString(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->makeString()"
   | NoExpr -> ""
 
+let string_of_inexpr_t = function
+  InExpr(expr1, expr2) -> "("^ string_of_expr expr2 ^ ")->contains("^ string_of_expr expr1^")"
+
 let string_of_vtype = function
    IntType -> "CustType*"
   | StrType -> "CustType*"
@@ -93,22 +95,29 @@ let string_of_vdecl vdecl =
 let rec string_of_stmt = function
     Vdecl(vdecl) -> string_of_vdecl vdecl
     | Expr(expr) -> if compare (string_of_expr expr) "" = 0 then "\n" else string_of_expr expr ^ ";"
+
     | Return(expr) -> (*if fname = "main" then "return 0 " else*) " return " ^ string_of_expr expr ^ ";"
+
 		| Print(expr, expr_type) -> "CustType::print(" ^ string_of_expr expr ^ ");\n"
-		| Block(stmts) ->
-        "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
-    | For(e1, e2, s1) ->
-      "for (vector<CustType*> :: iterator  loopVar" ^ string_of_loop_var_t e1 ^ "  = " ^ get_for_id e2 ^ " -> getListBegin () ; loopVar" ^ string_of_loop_var_t e1 ^ " != " ^ get_for_id e2 ^ 
+
+		| Block(stmts) -> "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
+
+    | For(e1, e2, s1) -> "for (vector<CustType*> :: iterator  loopVar" ^ string_of_loop_var_t e1 ^ "  = " ^ get_for_id e2 ^ " -> getListBegin () ; loopVar" ^ string_of_loop_var_t e1 ^ " != " ^ get_for_id e2 ^ 
         " -> getListEnd () ;  " ^ "++loopVar" ^ string_of_loop_var_t e1 ^ ") {\n CustType* "^ string_of_loop_var_t e1 ^ " = *loopVar" ^ string_of_loop_var_t e1 ^ ";\n" 
       ^ string_of_stmt s1 ^ "\n}\n"
+
     | If(e, s, Block([])) -> "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^ string_of_stmt s
-    | If(e, s1, s2) ->  "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^
-        string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
-    | Ifin(var, lst, s, Block([])) -> "if ((" ^ lst ^ "->contains("^ var^"))->getBoolValue())\n" ^ string_of_stmt s
-    | Ifin(var, lst, s1, s2) ->  "if ((" ^ lst ^ "->contains("^ var^"))->getBoolValue())\n" ^
-        string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
+
+    | If(e, s1, s2) ->  "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^ string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
+
+    | Ifin(inExpr, s, Block([])) -> "if ((" ^ string_of_inexpr_t inExpr ^ ")->getBoolValue())\n" ^ string_of_stmt s
+
+    | Ifin(inExpr, s1, s2) ->  "if ((" ^ string_of_inexpr_t inExpr ^ ")->getBoolValue())\n" ^ string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
+
 		| Write(expr, str) -> "CustType::write(" ^ string_of_expr expr ^ "," ^ str ^ ");\n"
+
     | Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";\n"
+
     | ElemAssign(id, expr1, expr2) -> id ^ "-> addByKey("^string_of_expr expr1 ^ ","^string_of_expr expr2 ^ ");\n"
 
 

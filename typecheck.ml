@@ -243,12 +243,6 @@ let rec check_expr env = function
 	| Ast.Binop(e1, op, e2) ->
 	(*	let _ = print_string "in binop" in*)
 		match_oper (check_expr env e1) op (check_expr env e2)
-
-	(*| Ast.Assign(id, e) -> (*Assignment updates the type of the data type as well*)
-	(*	let _ = print_string "in assign" in*)
-		let ret = update_local id (get_expr_with_type env e) env in
-		let env = {locals = ret; globals = env.globals; functions = env.functions } in
-		Sast.Assign(id, fst (check_expr env e)), "void" *)
 	| Ast.Call(func, el) ->
 		(* find_function is from the symbol table *)
 		let args = find_function func env in	(* return & arguments type list from definition *)
@@ -294,14 +288,6 @@ let convert_to_vdecl_type x  =
 		vname = x;
 		vexpr = NoExpr;
 	}
-	
-(*let find_vtype = function
-	LitInt(d) -> IntType
-  | LitStr(d) -> StrType
-  | LitJson(d) -> JsonType
-  | LitList(d) -> ListType
-  | LitBool(d) -> BoolType
-  | _ -> NoType *)
 
 let check_formal env formal = 
 	let ret = update_local formal.vname (vtype_of_ocaml_type (get_expr_with_type env formal.vexpr)) env in
@@ -319,12 +305,6 @@ let check_local env local =
 	else *) let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
 	convert_to_sast_type local env, env
 
-(*let check_local_for_loop_var env local =
-	let ret = update_local local StrType env in
-	let env = {locals = ret; globals = env.globals; functions = env.functions } in
-	let loop_var_dec = convert_to_vdecl_type local in 
-	convert_to_sast_type  loop_var_dec env, env*)
-
 let rec check_locals env locals = 
 	match locals with
 	  [] -> []
@@ -332,6 +312,14 @@ let rec check_locals env locals =
 
 let check_forexpr env = function
 	Ast.Forid(id) -> Sast.Forid(id), get_vtype env id
+
+let check_inexpr env = function
+	Ast.InExpr(expr1, expr2) -> let ret1 = check_expr env expr1 in
+								let ret2 = check_expr env expr2 in
+								if not(snd ret2 = "list" || snd ret2 = "notype") then raise (Failure ("The If in statement must be looking in a list!"))
+							(*else if (fst ret1 = "list") then raise (Failure ("Checking a list in list is not supported!"))
+						else if (fst ret1 = "json") then raise (Failure ("Checking a json in list is not supported!")) *)
+								else Sast.InExpr(fst ret1, fst ret2), env
 
 let check_loopvar env = function
 	Ast.LoopVar(id) -> let loopId = convert_to_vdecl_type id in 
@@ -343,30 +331,33 @@ let rec check_stmt env func = function
 							        Sast.Assign(vdecl.vname, fst (check_expr env vdecl.vexpr)), env 
 								else let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
 									Sast.Vdecl(convert_to_sast_type vdecl env), env
-	| Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
-	| Ast.Return(expr) -> let e = check_expr env expr in
-			 (Sast.Return(fst e)), env 
-	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in
-							(Sast.Print(expr , expr_type)), env
-	| Ast.Block(stmt_list) -> (Sast.Block(check_stmt_list env func stmt_list)), env
+
+	| Ast.Expr(expr) -> Sast.Expr(fst (check_expr env expr)), env
+
+	| Ast.Return(expr) -> let e = check_expr env expr in Sast.Return(fst e), env 
+
+	| Ast.Print(expr) -> let (expr, expr_type) = check_expr env expr in Sast.Print(expr , expr_type), env
+
+	| Ast.Block(stmt_list) -> Sast.Block(check_stmt_list env func stmt_list), env
+
 	| Ast.If(expr, stmt1, stmt2) ->	let e = check_expr env expr in
-								if not(snd e = "bool") then raise (Failure ("The type of the condition in If statement must be boolean!"))
-								(* if() {} else{} *) 
-								else (Sast.If(fst e, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2))), env
-	| Ast.Ifin(var, id, stmt1, stmt2) ->
-								if not(get_vtype env id = "list") then raise (Failure ("The If in statement must be looking in a list!"))
-							else if (get_vtype env var = "list") then raise (Failure ("Checking a list in list is not supported"))
-						else if (get_vtype env var = "json") then raise (Failure ("Checking a json in list is not supported"))
-								else (Sast.Ifin(var, id, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2))), env
+								if not(snd e = "bool" || snd e = "notype") then raise (Failure ("The type of the condition in If statement must be boolean!"))
+								else Sast.If(fst e, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2)), env
+
+	| Ast.Ifin(inExpr, stmt1, stmt2) -> (*Sast.Ifin(fst (check_inexpr inExpr), fst (check_stmt env func stmt1), fst (check_stmt env func stmt2)), env*)
+										Sast.Ifin( fst (check_inexpr env inExpr), fst (check_stmt env func stmt1), fst (check_stmt env func stmt2)), env
+
 	| Ast.For(expr1, expr2, stmt) -> let envNew, e1 = check_loopvar env expr1 in let e2 = check_forexpr envNew expr2 in
-						   if not ( snd e2 = "list" ) then raise (Failure("The type of the expression in a For statement must be path"))
+						   if not ( snd e2 = "list" || snd e2 = "notype") then raise (Failure("The type of the expression in a For statement must be list!"))
 						   else (Sast.For( e1, fst e2, fst (check_stmt envNew func stmt))), envNew 
-	| Ast.Write(expr, str) -> let (expr, expr_type) = check_expr env expr in
-							(Sast.Write(expr , str)), env
+
+	| Ast.Write(expr, str) -> let (expr, expr_type) = check_expr env expr in (Sast.Write(expr , str)), env
+
 	| Ast.ElemAssign(id, expr1, expr2) -> let t1 = get_vtype env id in
 											let t2 = check_expr env expr1 in
-														if not ( (t1 = "notype" && (snd t2 = "string" || snd t2 = "notype" || snd t2 = "int")) || (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="int" || snd t2 = "notype")) ) 
-															then raise (Failure("Elements of List and Json can be accessed via index and key respectively"))
+														if not ( (t1 = "notype" && (snd t2 = "string" || snd t2 = "notype" || snd t2 = "int")) ||
+														 (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="int" || snd t2 = "notype")) ) 
+															then raise (Failure("Elements of List and Json can be accessed via index and key respectively!"))
 														else
 															Sast.ElemAssign (id, (fst t2), fst (check_expr env expr2)), env
 	
