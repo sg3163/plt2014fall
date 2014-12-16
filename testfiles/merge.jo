@@ -1,5 +1,5 @@
 /* func Merge (a,b)
-	decl c = #{}#
+	c = #{}#
 	for ( attr in a.attrList() )
 		if ( true )
 			if (type (a[atrr]) == "Json" && type (b[attr]) == "Json"))
@@ -32,12 +32,12 @@ end
 
 func main ()
 
-decl a  = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
+a  = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
 
-decl b = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
+b = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
 
-decl c = MergeUtil (a,b)
-decl d = #{}#
+c = MergeUtil (a,b)
+d = #{}#
 c["arpit"] = "gupta"
 print (a)
 end

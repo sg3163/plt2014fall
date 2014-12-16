@@ -1,6 +1,6 @@
 /* Testing Function call from Main and printing inside callee */
 
-decl a = "Hello World"
+a = "Hello World"
 
 func test(b)
 print (b)

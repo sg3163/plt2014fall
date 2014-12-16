@@ -2,7 +2,7 @@
 
 func main () 
 
-decl a = #{}#
+a = #{}#
 print(type(a))
 
 end
@@ -10,10 +10,10 @@ end
 
 /*
 
-decl a = #{"a":"b","c":"d"}#
-decl b = null
-decl c = [1,2,3]
-decl d = #{"a":"b","e":"d"}#
+a = #{"a":"b","c":"d"}#
+b = null
+c = [1,2,3]
+d = #{"a":"b","e":"d"}#
 
 func pr(x)
  print (type(x))

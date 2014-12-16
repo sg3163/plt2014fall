@@ -1,4 +1,4 @@
-decl a = #{"a":"b"}#
+a = #{"a":"b"}#
 
 func main()
 	a["c"] = ["d"]

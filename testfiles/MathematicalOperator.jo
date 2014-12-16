@@ -1,8 +1,8 @@
 /* Mathematical Operator */
 
 func main () 
-decl a = 5
-decl b = 6
+a = 5
+b = 6
 print (a ++ b)
 print (b -- a)
 print (a ** b)

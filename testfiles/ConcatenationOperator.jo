@@ -1,7 +1,7 @@
 /* Concatenation */
 
 func main () 
-decl a = 59
-decl b = 600
+a = 59
+b = 600
 print ([13,89] + a)
 end
