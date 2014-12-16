@@ -295,7 +295,7 @@ let convert_to_vdecl_type x  =
 
 let check_formal env formal = 
 	let ret = update_local formal.vname (get_expr_with_type env formal.vexpr) env in
-	let env = {locals = ret; globals = env.globals; functions = env.functions } in
+	let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
 	convert_to_sast_type formal env, env
 
 let rec check_formals env formals = 
@@ -305,7 +305,8 @@ let rec check_formals env formals =
 
 let check_local env local =
 	let ret = update_local local.vname (get_expr_with_type env local.vexpr) env in
-	let env = {locals = ret; globals = env.globals; functions = env.functions } in
+	(*if (snd ret) = "" then Sast.Assign(local.vname, fst (check_expr env local.vexpr)), fst ret
+	else *) let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
 	convert_to_sast_type local env, env
 
 (*let check_local_for_loop_var env local =
@@ -327,7 +328,11 @@ let check_loopvar env = function
         let l, e = (check_local env loopId) in e, Sast.LoopVar(id)
 
 let rec check_stmt env func = function
-	Ast.Vdecl(vdecl) -> let e, env = check_local env vdecl in Sast.Vdecl(e) , env
+	Ast.Vdecl(vdecl) -> let ret = update_local vdecl.vname (get_expr_with_type env vdecl.vexpr) env in
+							if (snd ret) = "exist" then let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
+							        Sast.Assign(vdecl.vname, fst (check_expr env vdecl.vexpr)), env 
+								else let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
+									Sast.Vdecl(convert_to_sast_type vdecl env), env
 	| Ast.Expr(expr) -> (Sast.Expr(fst (check_expr env expr))), env
 	| Ast.Return(expr) -> let e = check_expr env expr in
 			 (Sast.Return(fst e)), env 

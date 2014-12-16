@@ -86,10 +86,8 @@ let string_of_vtype = function
   | NoType -> "CustType*"
 
   
-let string_of_vdecl vdecl = (*if vdecl.vexpr = NoExpr then
-                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ "\n"
-                            else*)
-                              string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
+let string_of_vdecl vdecl = 
+    string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname ^ " = " ^ string_of_expr vdecl.vexpr ^ ";\n"
 
 
 let rec string_of_stmt = function
@@ -110,6 +108,7 @@ let rec string_of_stmt = function
     | Ifin(var, lst, s1, s2) ->  "if ((" ^ lst ^ "->contains("^ var^"))->getBoolValue())\n" ^
         string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
 		| Write(expr, str) -> "CustType::write(" ^ string_of_expr expr ^ "," ^ str ^ ");\n"
+    | Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";\n"
 
 
 let string_of_formaldecl vdecl = string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname

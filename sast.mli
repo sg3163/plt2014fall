@@ -78,6 +78,7 @@ type stmt_t =
   | If of expr_t * stmt_t * stmt_t
   | Ifin of string * string * stmt_t * stmt_t
 	| Write of expr_t * string
+  | Assign of string * expr_t
 
 
 type func_decl_t = {
