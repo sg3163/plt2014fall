@@ -80,6 +80,11 @@ class CustType {
 		cout << "Accesing outside of Json Object "  ; 
 		return NULL ;	
 	}
+	virtual CustType* getElementByOcaml ( CustType* key ) {
+		cout << "In CustType, apparently not in JSON or LIST. Calling from some other type\n" ; 
+		return  NULL ; 
+	}
+	
 	virtual CustType* getElement ( string key ) {
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
 		return  NULL ; 
@@ -413,6 +418,14 @@ class ListType : public CustType {
 		return CustType :: parse(this -> toString() , "STRING" ) ; 
 		
 	}
+	CustType* getElementByOcaml (CustType* indexNumType) {
+		NumType* indexNum = dynamic_cast<NumType *>(indexNumType);
+		double doubleKey = indexNum -> da ; 
+		int index = (int) doubleKey ;
+		if ( index >= da.size())
+			return NULL ; 
+		return da[index] ; 
+	}
 	CustType* getElement (int index) {
 		
 		if ( index >= da.size())
@@ -426,7 +439,7 @@ class ListType : public CustType {
 		return da.end() ; 
 	}
 	void addByKey (CustType* index , CustType* el){
-		NumType* indexNum = dynamic_cast<NumType *>(key);
+		NumType* indexNum = dynamic_cast<NumType *>(index);
 		double doubleKey = indexNum -> da ; 
 		int intKey = (int) doubleKey ;
 		if ( intKey >= 0 ){
@@ -434,7 +447,7 @@ class ListType : public CustType {
 		}
 		else {
 			cout << "index has value < 0" ;
-			exit (1) ; 
+			exit (1) ;
 		}
 	}
 	void add ( CustType* el ) { 
@@ -625,7 +638,14 @@ class JsonType : public CustType {
 		map<string , CustType* > :: iterator it = (this -> da ).end ();
 		return it ;	
 	}
-	
+	CustType * getElementByOcaml (CustType* keyStrType) {
+		StringType *keyStr = dynamic_cast<StringType *>(keyStrType);
+		string key = keyStr -> toString () ;
+		if ( da.find(key) == da.end())
+			return NULL ;
+		else
+			return da[key] ;  
+	}
 	CustType * getElement (string key) {
 		if ( da.find(key) == da.end())
 			return NULL ;
