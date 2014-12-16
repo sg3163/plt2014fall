@@ -10,7 +10,7 @@ func Merge (a,b)
 			if (type(a[attr]) == "Json" && type(b[attr]) == "Json")
 				f = Merge(a,b)
 			else
-				f = a[attr]
+				c[attr] = a[attr]
 				f = f + b[attr]
 			end
 		else
