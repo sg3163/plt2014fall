@@ -365,7 +365,7 @@ let rec check_stmt env func = function
 							(Sast.Write(expr , str)), env
 	| Ast.ElemAssign(id, expr1, expr2) -> let t1 = get_vtype env id in
 											let t2 = check_expr env expr1 in
-														if not ( (t1 = "json" && snd t2 = "string") || (t1="list" && snd t2 ="int") )
+														if not ( (t1 = "notype" && (snd t2 = "string" || snd t2 = "notype" || snd t2 = "int")) || (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="int" || snd t2 = "notype")) ) 
 															then raise (Failure("Elements of List and Json can be accessed via index and key respectively"))
 														else
 															Sast.ElemAssign (id, (fst t2), fst (check_expr env expr2)), env

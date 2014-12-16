@@ -138,7 +138,7 @@ expr:
 
 list_items:
     { Noitem }
-    |  list_element                         { Item($1) }
+    | list_element                         { Item($1) }
     | list_element COMMA list_items        { Seq($1, Comma, $3) }  
 
 list_element:
