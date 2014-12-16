@@ -64,6 +64,8 @@ let rec string_of_expr e = match e with
           | Neq -> "*("^string_of_expr e1 ^ ") " ^ "!=" ^ " *(" ^ string_of_expr e2 ^")"   
           | Concat -> "CustType::concat(" ^ string_of_expr e1 ^ "," ^ string_of_expr e2 ^ ")"
           | Minus ->  string_of_expr e1 ^ "->minus(" ^ string_of_expr e2 ^ ")"
+          | In -> string_of_expr e2 ^ "->contains("^ string_of_expr e1^")"
+          | NotIn -> "!(*("^string_of_expr e2 ^ "->contains("^ string_of_expr e1^")))"
         ) 
   (*| Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";"*)
   | Call(f, el) ->
@@ -75,9 +77,6 @@ let rec string_of_expr e = match e with
   | Read(str) -> "CustType::read(" ^ str ^ ")"
   | MakeString(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->makeString()"
   | NoExpr -> ""
-
-let string_of_inexpr_t = function
-  InExpr(expr1, expr2) -> "("^ string_of_expr expr2 ^ ")->contains("^ string_of_expr expr1^")"
 
 let string_of_vtype = function
    IntType -> "CustType*"
@@ -109,10 +108,6 @@ let rec string_of_stmt = function
     | If(e, s, Block([])) -> "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^ string_of_stmt s
 
     | If(e, s1, s2) ->  "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^ string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
-
-    | Ifin(inExpr, s, Block([])) -> "if ((" ^ string_of_inexpr_t inExpr ^ ")->getBoolValue())\n" ^ string_of_stmt s
-
-    | Ifin(inExpr, s1, s2) ->  "if ((" ^ string_of_inexpr_t inExpr ^ ")->getBoolValue())\n" ^ string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
 
 		| Write(expr, str) -> "CustType::write(" ^ string_of_expr expr ^ "," ^ str ^ ");\n"
 
