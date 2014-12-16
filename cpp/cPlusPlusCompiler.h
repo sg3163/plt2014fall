@@ -49,6 +49,8 @@ class CustType {
 	static void print(CustType* data) ;
 	static void print (vector<CustType*>  :: iterator it ) ;
 	static void write(CustType* data, string filename);
+	static CustType* typeStruct(CustType* input);
+	static CustType* typeStructList(CustType* input);
 	virtual void print () {
 		cout << "Printing in CustType, Ooops!\n Somebody needs to implement this in child class\n" ;
 	}
@@ -288,32 +290,6 @@ class NumType : public CustType {
 	  da/=temp.da;
 	  return *this;
 	}
-
-	bool operator==(CustType *rhs)
-	{
-	  NumType *temp1 = dynamic_cast<NumType *>(this);
-	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
-
-	  return ((temp1->da)==(temp2->da));
-	}
-
-	bool operator<(CustType *rhs)
-	{
-	  NumType *temp1 = dynamic_cast<NumType *>(this);
-	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
-
-	  return ((temp1->da)<(temp2->da));
-	}
-
-	bool operator>(CustType *rhs)
-	{
-	  NumType *temp1 = dynamic_cast<NumType *>(this);
-	  NumType *temp2 = dynamic_cast<NumType *>(rhs);
-
-	  return ((temp1->da)>(temp2->da));
-	}
-
-
 } ;
 
 class StringType : public CustType { 
@@ -496,8 +472,7 @@ class JsonType : public CustType {
 	}
     string toString () {
     	string ret = "{" ; 
-    	for ( map<string , CustType* > :: iterator it = (this -> da).begin() ; it != (this -> da).end() ; ++ it ) {
-    		cout << endl << ret ; 
+    	for ( map<string , CustType* > :: iterator it = (this -> da).begin() ; it != (this -> da).end() ; ++ it ) { 
     		if ( it != (this -> da).begin() )
     			ret += "," ; 
     		ret += "\"" ;
@@ -804,7 +779,7 @@ void CustType :: print ( CustType* data) {
 
 void CustType :: write (CustType * data, string filename) {
   string toWrite = data -> toString();
-
+  
   ofstream file(filename.c_str(), ios::app);
   if ( file.is_open() )
     {
@@ -814,6 +789,7 @@ void CustType :: write (CustType * data, string filename) {
     {
       cout << "Unable to open file" << endl;
     }
+  
 }
 
 void CustType :: print (vector<CustType*>  :: iterator it ) {
@@ -922,8 +898,6 @@ void ListType :: convToListType () {
 		//cout << endl ; 
 		
 	}
-
-
 }
 
 CustType* JsonType :: getAttrList () { 
@@ -937,6 +911,110 @@ CustType* JsonType :: getAttrList () {
 	ListType* attrList = new ListType (atrrListStr) ; 
 	return attrList ; 	
 }
+
+
+CustType* CustType::typeStruct(CustType *input)
+{
+  JsonType *inputJson = dynamic_cast<JsonType *>(input);
+  CustType *returnString = new StringType("{", STRING);
+  CustType *element;
+  
+  for( map<string, CustType*> :: iterator it = (inputJson->da).begin() ; it != (inputJson->da).end() ; ++ it)
+    {
+      int type = (it->second)->getType();
+      if ( type == NUMBER )
+	{
+	  element = new StringType(" String : Number, ", STRING);
+	}
+      else if ( type == STRING )
+	{
+	  element = new StringType(" String : String, ", STRING);
+	}
+      else if ( type == BOOL )
+	{
+	  element = new StringType(" String : Boolean, ", STRING);
+	}
+      else if ( type == JSON )
+	{
+	  CustType *e1 = new StringType(" String : ", STRING);
+	  CustType *e2 = CustType::typeStruct(it->second);
+	  CustType *e3 = new StringType(", ", STRING);
+	  element = CustType::add(e1, e2);
+	  element = CustType::add(element, e3);
+	}
+      else if ( type == LIST )
+	{
+	  //CustType *e1 = CustType::typeStructList(it->second);
+	  //CustType *e2 = new StringType(", ", STRING);
+	  //element = CustType::add(e1, e2);
+
+	  //Use next line instead of above 3 if desired behavior is to simply return "List" instead of the types contained within the list.
+	  element = new StringType(" String : List, ", STRING);
+	}
+
+      returnString = CustType::add(returnString, element);
+    }
+
+  StringType *str = dynamic_cast<StringType *>(returnString);
+  string data = str->da;
+  str->da = data.substr(0, data.size()-2);
+
+  StringType *s = new StringType(" }", STRING);
+  CustType *toReturn = CustType::add(str, s);
+
+  return toReturn;
+}
+
+CustType* CustType::typeStructList(CustType *input)
+{
+  ListType *inputList = dynamic_cast<ListType *>(input);
+  CustType *returnString = new StringType("[", STRING);
+  CustType *element;
+  
+  for (vector<CustType*> :: iterator it = (inputList->da).begin () ; it != (inputList->da).end () ; ++ it) 
+    {
+      int type = (*it)->getType();
+      if ( type == NUMBER )
+	{
+	  element = new StringType(" Number,", STRING);
+	}
+      else if ( type == STRING )
+	{
+	  element = new StringType(" String,", STRING);
+	}
+      else if ( type == BOOL )
+	{
+	  element = new StringType("Boolean, ", STRING);
+	}
+      else if ( type == JSON )
+	{
+	  CustType *e0 = new StringType(" ", STRING);
+	  CustType *e1 = CustType::typeStruct(*it);
+	  CustType *e2 = new StringType(", ", STRING);
+	  element = CustType::add(e0, e1);
+	  element = CustType::add(element, e2);
+	}
+      else if ( type == LIST )
+	{
+	  CustType *e1 = CustType::typeStructList(*it);
+	  CustType *e2 = new StringType(", ", STRING);
+	  element = CustType::add(e1, e2);
+	}
+
+      returnString = CustType::add(returnString, element);
+    }
+
+  StringType *str = dynamic_cast<StringType *>(returnString);
+  string data = str->da;
+  str->da = data.substr(0, data.size()-2);
+
+  StringType *s = new StringType(" ]", STRING);
+  CustType *toReturn = CustType::add(str, s);
+
+  return toReturn;
+}
+
+
 
 CustType* CustType :: concat (CustType* t1, CustType* t2){
 		if ( t1 -> getType () == LIST) {
@@ -1115,7 +1193,7 @@ CustType* operator==(CustType &lhs, CustType &rhs)
 
 CustType* operator!=(CustType &lhs, CustType &rhs)
 {
-  return (new BoolType( !( (lhs == rhs) ->getBoolValue()), BOOL ) ); ; 
+  return (new BoolType( !( (lhs == rhs) ->getBoolValue() ), BOOL ) ); ; 
 
 }
 
@@ -1212,7 +1290,7 @@ CustType* CustType::read(string filename)
     }
   else { cout << "Unable to open file" << endl; }
 
-  CustType *toReturn = CustType::parse(fileText, "LIST");
+  CustType *toReturn = CustType::parse(fileText, "JSON");
   return toReturn;
 }
 //returns index of element if found, otherwise returns -1 

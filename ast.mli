@@ -77,6 +77,7 @@ type stmt =
   | Ifin of string * string * stmt * stmt
   | For of loop_var * for_expr * stmt  
 	| Write of expr * string
+  | ElemAssign of string * expr * expr
 
 type func_decl = {
     return : data_type;
