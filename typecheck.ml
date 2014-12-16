@@ -259,7 +259,7 @@ let rec check_expr env = function
 				    in Sast.Call(func, List.rev new_list ), hd )
 	| Ast.ElemAccess(id, e) -> let t1 = get_vtype env id in
 														let t2 = check_expr env e in
-														if not ( (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="int" || snd t2 = "notype")) )
+														if not ( (t1 = "notype" && (snd t2 = "string" || snd t2 = "notype" || snd t2 = "int")) || (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="int" || snd t2 = "notype")) ) 
 															then raise (Failure("Elements of List and Json can be accessed via index and key respectively"))
 														else
 															Sast.ElemAccess (id, (fst t2)), "notype"
