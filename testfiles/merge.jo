@@ -1,7 +1,12 @@
-/* func Merge (a,b)
-	decl c = #{}#
-	for ( attr in a.attrList() )
-		if ( true )
+func Merge (a,b)
+	decl c = "a"
+	decl e = [1,2,3]
+	decl d = a.attrList()
+	print ("hell")
+	print (type(d))
+	for attr in e
+	/*
+		if ( attr in b.attrList() )
 			if (type (a[atrr]) == "Json" && type (b[attr]) == "Json"))
 				c[attr] = Merge (a[attr] , b[attr])
 			else
@@ -10,7 +15,8 @@
 				c[attr] = c[attr] + b[attr]
 			end
 		else
-		c [attr] = a[attr]
+			c [attr] = a[attr]
+		end
 	end
 	
 	for (attr in b.attrList () )
@@ -18,16 +24,21 @@
 			c[attr] = b[attr]
 		end 
 		c[attr] = b[attr]
+	*/
+	print (attr)
 	end
+	
 	return c
 end
-*/
+
+
 func MergeUtil (a,b)
 	if ( type(a) != "Json" || type(b) != "Json")
 		print("Both the arguments must be JSON")
 		return null
 	end
-	return 1
+
+	return Merge(a,b)
 end
 
 func main ()
@@ -37,7 +48,5 @@ decl a  = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
 decl b = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
 
 decl c = MergeUtil (a,b)
-decl d = #{}#
-c["arpit"] = "gupta"
-print (a)
+print (type(c))
 end
