@@ -2,7 +2,7 @@
 
 func main () 
 
-decl a = #{"name":"harsha", "courses":["PLT", "OS"]}#
-decl b = a.attrList()
+a = #{"name":"harsha", "courses":["PLT", "OS"]}#
+b = a.attrList()
 print (b)
 end

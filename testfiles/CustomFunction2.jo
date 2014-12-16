@@ -1,7 +1,7 @@
 /* Testing Variable declaration inside function and printing */
 
 func createVarAndPrint()
-decl a = "This is a String"
+a = "This is a String"
 print (a)
 return 0
 end

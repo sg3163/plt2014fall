@@ -1,10 +1,10 @@
 /* Comparison equal and not equal */
 
 func main () 
-decl a = 5
-decl b = 6
-decl c = "f"
-decl d = "l"
+a = 5
+b = 6
+c = "f"
+d = "l"
 if(a==b)
   print ("hi")
 end

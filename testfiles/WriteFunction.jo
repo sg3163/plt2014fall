@@ -1,6 +1,6 @@
 /* Test Write function */
 
 func main () 
-decl a = "Text to write into file"
+a = "Text to write into file"
 write (a, "/Users/harsha/git/plt2014fall/testfiles/testfilewriting.txt")
 end

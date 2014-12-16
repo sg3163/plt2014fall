@@ -1,7 +1,7 @@
 /* Test GCD function */
 
-decl a = 45
-decl b = 81
+a = 45
+b = 81
 
 func findGCD(a,b) 
 	if(b == 0) 

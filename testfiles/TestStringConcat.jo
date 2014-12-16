@@ -1,5 +1,5 @@
 func main () 
-decl a = "hi"
-decl b = "bye"
+a = "hi"
+b = "bye"
 print(a ++ b)
 end
