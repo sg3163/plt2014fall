@@ -68,7 +68,7 @@ let rec string_of_expr e = match e with
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";"
 	| Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
-	| ElemAccess(id, e) ->  id ^ "-> getElement("^string_of_expr e ^ ")"           
+	| ElemAccess(id, e) ->  id ^ "-> getElementByOcaml("^string_of_expr e ^ ")"           
 	| TypeStruct(id) -> "CustType::typeStruct(" ^ id ^ ")"
 	| AttrList(id) -> id ^ "-> getAttrList()"
   | DataType(expr, expr_type) -> "(" ^ string_of_expr expr ^ ")->getJoType()"
@@ -93,6 +93,7 @@ let rec string_of_stmt = function
     | Ifin(var, lst, s1, s2) ->  "if ((" ^ lst ^ "->contains("^ var^"))->getBoolValue())\n" ^
         string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
 		| Write(expr, str) -> "CustType::write(" ^ string_of_expr expr ^ "," ^ str ^ ");\n"
+    | ElemAssign(id, expr1, expr2) -> id ^ "-> addByKey("^string_of_expr expr1 ^ ","^string_of_expr expr2 ^ ");\n"
 
 
 let string_of_vtype = function

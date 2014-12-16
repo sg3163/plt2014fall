@@ -89,6 +89,7 @@ stmt:
     | IF LPAREN ID IN ID RPAREN stmt %prec NOELSE   { Ifin($3, $5, $7,Block([])) }
     | LBRACE rev_stmt_list RBRACE                       { Block($2) }
 	| WRITE LPAREN expr COMMA STRING_LIT RPAREN SEMI		{ Write($3, $5) }
+    | ID LBRACK expr RBRACK ASSIGN expr SEMI        { ElemAssign($1, $3, $6) }
 
 
 for_expr:

@@ -72,7 +72,7 @@ type stmt_t =
   | If of expr_t * stmt_t * stmt_t
   | Ifin of string * string * stmt_t * stmt_t
 	| Write of expr_t * string
-
+  | ElemAssign of string * expr_t * expr_t
 
 type var_decl_t = {
   vtype : data_type_t;
