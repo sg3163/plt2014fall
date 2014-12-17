@@ -1,0 +1,5 @@
+a = #{"a":"b"}#
+
+func main()
+	print(a[true])
+end

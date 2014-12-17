@@ -1,0 +1,12 @@
+/* Variable not declared */
+
+func testMeth (a)
+	c = b
+	print (c)
+	return null
+end
+
+func main () 
+	a = "highlight"
+	testMeth(a)
+end

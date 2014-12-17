@@ -1,0 +1,11 @@
+/* Function call with different arguments */
+
+func testMeth (a,b)
+	print (a)
+	return null
+end
+
+func main () 
+	a = "highlight"
+	testMeth(a)
+end

@@ -1,0 +1,11 @@
+/* Variable not declared */
+
+func testMeth ()
+	print ("testMethod")
+	return null
+end
+
+func main () 
+	print (a)
+	a = "highlight"
+end

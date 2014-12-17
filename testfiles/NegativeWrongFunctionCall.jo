@@ -1,0 +1,10 @@
+/* Invalid Function Call */
+
+func testMeth ()
+	print ("testMethod")
+	return null
+end
+
+func main () 
+	invalidFun()
+end

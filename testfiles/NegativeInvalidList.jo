@@ -1,0 +1,6 @@
+/* Invalid List Declaration */
+
+func main () 
+	a = ["name",asdfdf]
+	print (a)
+end

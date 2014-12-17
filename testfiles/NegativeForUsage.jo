@@ -1,7 +1,7 @@
 /* Test If Condition */
 
 func main () 
-a = [2,3,4]
+a = "Hello"
 
 for i in a
 	print (i)
