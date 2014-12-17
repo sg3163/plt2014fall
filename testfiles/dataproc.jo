@@ -1,0 +1,15 @@
+func processYelp(category, data)
+	for entry in data
+		categoryList = entry["categories"]
+		if (category in categoryList)
+			write (entry, "testfiles/processed.txt")
+		end
+	end
+	return null
+end
+
+func main()
+	input = read("testfiles/yelpPlaces.json")
+	datalist = input["data"]
+	processYelp("Pubs", datalist)
+end
