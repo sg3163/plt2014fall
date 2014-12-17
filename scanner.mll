@@ -52,7 +52,7 @@ rule token = parse
 	| "return"		{ RETURN }
 	| "null" 		{ NULL }
 	| eof			{ EOF }			(* do as microC *)
-	| digit+ | (digit* '.' digit+) as lit					{ NUM_LIT(float_of_string lit) }
+	| ('-'? digit+) | ('-'? digit* '.' digit+) as lit					{ NUM_LIT(float_of_string lit) }
 	| quote [^'"']* quote as lit	{ STRING_LIT(lit) } 
 	| "true" | "false" as lit { BOOL_LIT (lit) }
 	| letter | (letter | digit | '_')* as id		{ ID(id) }
