@@ -219,7 +219,7 @@ let rec check_expr env = function
 			[] -> raise (Failure ("undefined function " ^ func))
 			| hd::tl -> let new_list = try List.fold_left2 check_func_arg [] (List.map (check_expr env) el) tl
 						   with Invalid_argument "arg" -> raise(Failure("unmatched argument list"))
-				    in Sast.Call(func, List.rev new_list ), hd )
+				    in Sast.Call(func, List.rev new_list ), "notype" )
 	| Ast.ElemAccess(id, e) -> let t1 = get_vtype env id in
 														let t2 = check_expr env e in
 														if not ( (t1 = "notype" && (snd t2 = "string" || snd t2 = "notype" || snd t2 = "number")) || (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="number" || snd t2 = "notype")) ) 
@@ -230,7 +230,7 @@ let rec check_expr env = function
 	| Ast.AttrList(id) -> Sast.AttrList(id), "list"
 	| Ast.DataType(expr) -> let (expr, expr_type) = check_expr env expr in
 							(Sast.DataType(expr , expr_type)), "string"
-	| Ast.Read(str) -> Sast.Read(str), "string"
+	| Ast.Read(str) -> Sast.Read(str), "json"
 	| Ast.MakeString(expr) -> let (expr, expr_type) = check_expr env expr in
 							(Sast.MakeString(expr , expr_type)), "string"
 	| Ast.NoExpr -> Sast.NoExpr, "notype"
