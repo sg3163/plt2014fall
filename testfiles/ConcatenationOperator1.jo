@@ -1,0 +1,13 @@
+/* Concatenation on Numbers and String */
+
+func main () 
+	a = 59
+	b = 600
+	c = "Hello"
+	d = "world"
+	e = a+b
+	f = c+d
+	print (b + a)
+	print (c + d)
+	print (f + e)
+end

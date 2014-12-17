@@ -1,0 +1,9 @@
+/* Negation Operator List minus List, String */
+
+func main () 
+	list1 =  ["able", "barista", "carrie"]
+	list2 =  ["barista", "carrie"]
+	str = "barista"
+	print (list1 - list2)
+	print (list2 - str)
+end

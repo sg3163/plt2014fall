@@ -1,0 +1,12 @@
+/* Negation Operator List minus Json, Number */
+
+func main () 
+	list1 =  ["able", "barista", {"carrie":"Its a name"}]
+	list2 = [1121, 2323]
+	
+	json1 =  #{"carrie":"Its a name"}#
+	num = 2323
+	
+	print (list1 - json1)
+	print (list2 - num)
+end

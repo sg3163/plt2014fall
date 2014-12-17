@@ -1,0 +1,10 @@
+/* Concatenation of Json */
+
+func main () 
+	a = #{"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}}#
+	b = #{"name":"arpit"}#
+	
+	print (a + b)
+	print (a + 5)
+	print (a + "json")
+end

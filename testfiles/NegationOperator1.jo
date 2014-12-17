@@ -1,0 +1,6 @@
+/* Negation Operator Json minus string */
+
+func main () 
+	json = #{"name": {"first":"chase", "last":"larson"}, "marks": [2,3]}#
+	print (json - "name")
+end

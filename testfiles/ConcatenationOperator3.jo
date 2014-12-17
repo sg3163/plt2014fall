@@ -1,0 +1,11 @@
+/* Concatenation of List */
+
+func main () 
+	a = [[1,2,"a"]]
+	b = ["hi","hello"]
+	c = 5
+	d = "hey"
+	
+	print (a + b)
+	print (a + c +d)
+end
