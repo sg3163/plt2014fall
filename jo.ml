@@ -114,7 +114,7 @@ let rec string_of_stmt = function
 
     | Assign(v, e) -> v ^ " = " ^ string_of_expr e  ^ ";\n"
 
-    | ElemAssign(id, expr1, expr2) -> id ^ "-> addByKey("^string_of_expr expr1 ^ ","^string_of_expr expr2 ^ ");\n"
+    | ElemAssign(id, expr1, expr2) -> id ^ "->addByKey("^string_of_expr expr1 ^ ","^string_of_expr expr2 ^ ");\n"
 
 
 let string_of_formaldecl vdecl = string_of_vtype vdecl.vtype ^ " " ^ vdecl.vname
@@ -124,7 +124,6 @@ let string_of_fdecl fdecl = (if fdecl.fname = "main" then
 else
   string_of_vtype fdecl.return ^ " " ^ fdecl.fname ^ "(" )
  ^   String.concat ", " (List.map string_of_formaldecl fdecl.formals) ^ ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.fnlocals) ^
   String.concat "" (List.map string_of_stmt fdecl.body ) ^
 	 "}\n"
  

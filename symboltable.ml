@@ -9,7 +9,7 @@ type env = {
 }
 
 let string_of_vtype = function
-	IntType -> "int"
+	IntType -> "number"
   | StrType -> "string"
   | BoolType -> "bool"
   | JsonType -> "json"
