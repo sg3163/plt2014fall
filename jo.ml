@@ -30,9 +30,10 @@ and json_value = function
 	| LitListOfJson(l) -> "[" ^ string_of_items l ^ "]"
 	| LitBoolJsonVal(l) -> l
 	| LitNullJsonVal(l) -> l 
-let get_for_id e = match e
-    with
+
+let get_for_id e = match e with
     Forid(id) -> id
+    | AttrList(id) -> "("^id ^ "-> getAttrList())"
 
 let string_of_loop_var_t = function
   LoopVar(l) -> l
@@ -101,8 +102,8 @@ let rec string_of_stmt = function
 
 		| Block(stmts) -> "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "\n}"
 
-    | For(e1, e2, s1) -> "for (vector<CustType*> :: iterator  loopVar" ^ string_of_loop_var_t e1 ^ "  = " ^ get_for_id e2 ^ " -> getListBegin () ; loopVar" ^ string_of_loop_var_t e1 ^ " != " ^ get_for_id e2 ^ 
-        " -> getListEnd () ;  " ^ "++loopVar" ^ string_of_loop_var_t e1 ^ ") {\n CustType* "^ string_of_loop_var_t e1 ^ " = *loopVar" ^ string_of_loop_var_t e1 ^ ";\n" 
+    | For(e1, e2, s1) -> "for (vector<CustType*> :: iterator loopVar" ^ string_of_loop_var_t e1 ^ " = " ^ get_for_id e2 ^ "->getListBegin(); loopVar" ^ string_of_loop_var_t e1 ^ " != " ^ get_for_id e2 ^ 
+        "->getListEnd();  " ^ "++loopVar" ^ string_of_loop_var_t e1 ^ ") {\n CustType* "^ string_of_loop_var_t e1 ^ " = *loopVar" ^ string_of_loop_var_t e1 ^ ";\n" 
       ^ string_of_stmt s1 ^ "\n}\n"
 
     | If(e, s, Block([])) -> "if ((" ^ string_of_expr e ^ ")->getBoolValue())\n" ^ string_of_stmt s

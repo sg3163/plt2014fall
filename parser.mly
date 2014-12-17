@@ -83,6 +83,7 @@ stmt:
 
 for_expr:
     ID                              { Forid($1) }
+    | ID ACCESS ATTRLIST LPAREN RPAREN      { AttrList($1) }
 
 loop_var:
     ID                              { LoopVar($1) }

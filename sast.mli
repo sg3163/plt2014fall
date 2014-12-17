@@ -64,6 +64,7 @@ type var_decl_t = {
 
 type for_expr_t = 
     Forid of string
+    | AttrList of string
 
 type loop_var_t = 
     LoopVar of string
