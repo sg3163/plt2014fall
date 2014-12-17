@@ -1,7 +1,3 @@
-#TARFILES = Makefile scanner.mll parser.mly ast.mli jo.ml
-#	$(TESTS:%=tests/test-%.mc) \
-#        $(TESTS:%=tests/test-%.out)
-
 OBJS = parser.cmo scanner.cmo symboltable.cmo typecheck.cmo Str.cma jo.cmo
 
 .PHONY: default
@@ -24,9 +20,6 @@ parser.ml parser.mli: parser.mly
 
 %.cmi: %.mli
 	ocamlc -c $<
-
-#calculator.tar.gz : $(TARFILES)
-#	cd .. && tar zcf fdl/fdl.tar.gz $(TARFILES:%=jo/%)
 
 .PHONY: clean
 clean:

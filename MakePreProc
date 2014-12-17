@@ -1,8 +1,6 @@
 CC  = gcc
-CXX = g++
 
 CFLAGS   = -g -Wall
-CXXFLAGS = -g -Wall
 
 .PHONY: default
 default: preproc
@@ -15,7 +13,6 @@ clean:
 	rm -rf *.log *.o *~ a.out* core preprocessor *.pjo
 
 .PHONY: preproc
-# header dependency
 preproc: preprocessor.c
 	$(CC) -o preprocessor preprocessor.c
 
