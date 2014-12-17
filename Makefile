@@ -1,4 +1,4 @@
-OBJS = parser.cmo scanner.cmo symboltable.cmo typecheck.cmo Str.cma jo.cmo
+OBJS = parser.cmo scanner.cmo symboltable.cmo analyzer.cmo Str.cma jo.cmo
 
 .PHONY: default
 default: jo
