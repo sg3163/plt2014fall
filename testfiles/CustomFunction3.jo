@@ -1,0 +1,15 @@
+/* Testing Function Return and print */
+
+func returnAValue()
+	return 100
+end
+
+func callAnotherMethod()
+	b = returnAValue()
+	print (b)
+	return 0
+end
+
+func main () 
+	callAnotherMethod()
+end
