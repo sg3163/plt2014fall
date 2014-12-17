@@ -6,7 +6,7 @@ let quote = '"'
 
 rule token = parse
 	[' ' '\r' '\n' '\t']	{ token lexbuf }	
-	| "/*"		{ comment lexbuf }
+	| "/*"			{ comment lexbuf }
 	| '('			{ LPAREN }		
 	| ')'			{ RPAREN }
 	| '{'			{ LBRACE }
@@ -36,33 +36,28 @@ rule token = parse
 	| '#'			{ HASH }
 	| "%%" 			{ MOD }
   	| "func"		{ FUNC }			
-  	| "if"			{ IF }
-  	| "then"		{ THEN }		
+  	| "if"			{ IF }		
 	| "else"		{ ELSE }
 	| "for"			{ FOR }			
 	| "in"			{ IN }
 	| "end"			{ END }			
 	| "not in"		{ NOTIN }			
 	| "read"    	{ READ }  
-	| "write"			{ WRITE }
-	| "print"    	{PRINT}
+	| "write"		{ WRITE }
+	| "print"    	{ PRINT }
 	| "type"    	{ TYPE } 
-	| "typeStruct" { TYPESTRUCT }
-	| "attrList"	{ ATTRLIST }
-	| "join"    	{ JOIN } 
+	| "typeStruct"  { TYPESTRUCT }
+	| "attrList"	{ ATTRLIST } 
 	| "makeString" 	{ MAKESTRING }
 	| "return"		{ RETURN }
-	| "decl"    { DECL }
-	| "null" { NULL }
+	| "null" 		{ NULL }
 	| eof			{ EOF }			(* do as microC *)
 	| digit+ as lit					{ NUM_LIT(int_of_string lit) }
 	| quote [^'"']* quote as lit	{ STRING_LIT(lit) } 
-(*	| "#{" _* "}#" as lit { JSON_LIT(lit) }*)
-(*	| "[" _* "]" as lit { LIST_LIT	(lit) }*)
 	| "true" | "false" as lit { BOOL_LIT (lit) }
 	| letter | (letter | digit | '_')* as id		{ ID(id) }
 	| _ as char 		{ raise (Failure("illegal character " ^ Char.escaped char)) }
 
 and comment = parse
 	"*/"			{ token lexbuf }
-	| _				{ comment lexbuf}
+	| _				{ comment lexbuf }

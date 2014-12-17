@@ -383,37 +383,13 @@ let check_function env func =
 		let f = check_formals env func.formals in
 		(* get the list of formals from f *)
 		let formals = List.map (fun formal -> fst formal) f in
-		
-		(* get the final env from the last formal *)
-		let l, env = 
-		(match f with
-			  [] -> let l = check_locals env func.fnlocals in
-					 l, env
-			| _ -> 	let env = snd (List.hd (List.rev f)) in
-					let l = check_locals env func.fnlocals in
-					l, env
-		) in
-		let fnlocals = List.map (fun fnlocal -> fst fnlocal) l in
-		 (match l with
-		 	(* empty f, no formal args *)
-	            [] -> let body = check_stmt_list env func func.body in
-	                { Sast.return = get_sast_type func.return; 
-	                  Sast.fname = func.fname; 
-	                  Sast.formals = formals; 
-	                  Sast.fnlocals = fnlocals; 
-	                  Sast.body = body
-	                }, env
-
-	            (* get the final env from the last formal *)
-	            | _ -> let e = snd (List.hd (List.rev l)) in
-	                   let body = check_stmt_list e func func.body in
+		(* get the stmt list from body *)
+		let body = check_stmt_list e func func.body in
 	                  { Sast.return = get_sast_type func.return; 
 	                    Sast.fname = func.fname; 
-	                    Sast.formals = formals; 
-	                    Sast.fnlocals = fnlocals; 
+	                    Sast.formals = formals;
 	                    Sast.body = body
-	                  }, e 
-          )
+	                  }, e
 
 	| _ ->
 		if not (func.fname = "main") then raise (Failure ("Return statement is missing for function '"^func.fname^"'"))
