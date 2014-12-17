@@ -1,6 +1,6 @@
 func main()
-	input = read("testfiles/yelpSmall.json")
-	print (input)
+	input = read("testfiles/yelpPlaces.json")
+	
 	datalist = input["data"]
 	
 	c = #{"business_id": "Iu-oeVzv8ZgP18NIB0UMqg", "full_address": "3320 S Hill StSouth East LALos Angeles, CA 90007", "schools": ["University of Southern California"], "open": true, "categories": ["Medical Centers", "Health and Medical"], "photo_url": "http://s3-media1.ak.yelpcdn.com/bphoto/SdUWxREuWuPvvot6faxfXg/ms.jpg", "city": "Los Angeles", "review_count": 2, "name": "Southern California Medical Group", "neighborhoods": ["South East LA"], "url": "http://www.yelp.com/biz/southern-california-medical-group-los-angeles", "longitude": -118.274281, "state": "CA", "stars": 3.5, "latitude": 34.019710000000003, "type": "business"}#

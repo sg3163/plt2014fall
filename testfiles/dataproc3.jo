@@ -1,0 +1,33 @@
+func main()
+	input = read("testfiles/yelpPlaces.json")
+	dataList = input["data"]
+	
+	c = "{ String : String,  String : List,  String : String,  String : String,  String : Number,  String : Number,  String : String,  String : List,  String : Boolean,  String : String,  String : Number,  String : List,  String : Number,  String : String,  String : String,  String : String }"
+
+	allMatched = true
+
+	for jsonEl in dataList
+		if (c != jsonEl.typeStruct())
+			print("not matched")
+			allMatched = false
+		end
+	end
+
+	if (allMatched)
+		print ("\n\n\n\n\nAll Json elements from file have the correct structure!!!\n\n\n\n")
+	end
+
+	print ("Adding a Json that has a different one\n\n\n\n")
+	print ("Changing a list inside that had just a single string to become just that string, without the list\n\n\n\n")
+
+	d = #{"business_id": "Iu-oeVzv8ZgP18NIB0UMqg", "full_address": "3320 S Hill StSouth East LALos Angeles, CA 90007", "schools": ["University of Southern California"], "open": true, "categories": ["Medical Centers", "Health and Medical"], "photo_url": "http://s3-media1.ak.yelpcdn.com/bphoto/SdUWxREuWuPvvot6faxfXg/ms.jpg", "city": "Los Angeles", "review_count": 2, "name": "Southern California Medical Group", "neighborhoods": "South East LA", "url": "http://www.yelp.com/biz/southern-california-medical-group-los-angeles", "longitude": -118.274281, "state": "CA", "stars": 3.5, "latitude": 34.019710000000003, "type": "business"}#
+
+	if (d.typeStruct() == c)
+		print ("Matched the wrong one too\n")
+	else
+		print ("Found the wrong one!!\n")
+	end
+
+end	
+
+
