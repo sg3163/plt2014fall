@@ -1,7 +1,8 @@
 /* Function call with different arguments */
 
-func testMeth (a)
+func testMeth (a,b)
 	print (a)
+	return null
 end
 
 func main () 

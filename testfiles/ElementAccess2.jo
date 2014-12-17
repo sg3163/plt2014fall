@@ -1,4 +1,4 @@
-/* try Element Access */
+/* Element Access in List */
 
 func main () 
 	a = [1,"2",[4,["qw",3,4],"name"], {"name":"harsha", "innerJson":{"sub":"PLT","mark":[5,6,7]}, "number":2324} ]

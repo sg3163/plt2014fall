@@ -1,0 +1,14 @@
+/* Not In Operator */
+
+func main () 
+
+	a = [2243,1232,3454]
+	b = 1232 not in a
+	
+	c = [["a","b"], 45, "ccc"]
+	
+	print(b)
+	print("ccc" not in c)
+	print("ab" not in c)
+	print(["a","c"] not in c)
+end
