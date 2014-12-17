@@ -1,5 +1,7 @@
+/* Test String Concatenation */
+
 func main () 
-a = "hi"
-b = "bye"
-print(a ++ b)
+	a = "hi"
+	b = "bye"
+	print(a ++ b)
 end

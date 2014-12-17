@@ -1,11 +1,11 @@
 /* Creation of all Types */
 
 func main () 
-a = "Hello World all variable types created"
- b = 10
- c = #{"name":"harsha"}#
- d = [4,6,7]
-e = true
-f = null
-print (a)
+	a = "Hello World all variable types created"
+	b = 10
+	c = #{"name":"harsha"}#
+	d = [4,6,7]
+	e = true
+	f = null
+	print (a)
 end

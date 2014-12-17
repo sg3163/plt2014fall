@@ -1,0 +1,13 @@
+/* Change type of variable at run-time */
+
+func test(l)
+	print(l - "d")
+	return null
+end
+
+func main()
+	e = ["a","c", "d"]
+	test(e)
+	e = 5
+	print(e)
+end

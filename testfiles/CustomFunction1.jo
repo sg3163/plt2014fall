@@ -3,12 +3,12 @@
 a = "Hello World"
 
 func test(b)
-print (b)
-return 0
+	print (b)
+	return 0
 end
 
 func main () 
-print (a)
-test(a)
+	print (a)
+	test(a)
 end
 

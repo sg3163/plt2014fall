@@ -2,7 +2,8 @@
 
 func main () 
 
-a = #{"name":"harsha"}#
-b = a.typeStruct()
-print (b)
+	a = #{"name":"harsha"}#
+	b = a.typeStruct()
+	print (b)
+	
 end

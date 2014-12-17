@@ -1,22 +1,22 @@
 func main () 
-a = "hi"
-b = "bye"
-c = ["bbye","hello","bye"]
-if(a in c)
-	print(a)
-end
-if(b in c)
-	print(b)
-else
-	print("Not found")
-end
-
-if(1==2)
-	print("equal")
-end
-if(1!=2)
-	print("not equal")
-else
-	print("equal")
-end
+	a = "hi"
+	b = "bye"
+	c = ["bbye","hello","bye"]
+	if(a in c)
+		print(a)
+	end
+	if(b in c)
+		print(b)
+	else
+		print("Not found")
+	end
+	
+	if(1==2)
+		print("equal")
+	end
+	if(1!=2)
+		print("not equal")
+	else
+		print("equal")
+	end
 end

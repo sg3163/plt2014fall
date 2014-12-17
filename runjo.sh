@@ -84,7 +84,7 @@ fi
 # running the binary
 if [ -f "${reffile}.out" ]; then
     eval ${reffile}.out
-
+    echo
 fi
 
 }

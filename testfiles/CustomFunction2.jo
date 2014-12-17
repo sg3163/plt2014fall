@@ -1,11 +1,11 @@
 /* Testing Variable declaration inside function and printing */
 
 func createVarAndPrint()
-a = "This is a String"
-print (a)
-return 0
+	a = "This is a String"
+	print (a)
+	return 0
 end
 
 func main () 
-createVarAndPrint()
+	createVarAndPrint()
 end

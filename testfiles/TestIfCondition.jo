@@ -2,9 +2,10 @@
 
 func main () 
 
-if ( 5 == 5 )
-	print ("true")
-else
-    print ("false")
-end
+	if ( 5 == 5 )
+		print ("true")
+	else
+	    print ("false")
+	end
+	
 end

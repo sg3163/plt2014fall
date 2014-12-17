@@ -1,6 +1,6 @@
 /* Test Read function */
 
 func main () 
-a = read ("/Users/harsha/git/plt2014fall/testfiles/testreadinput.txt")
-print (a)
+	a = read ("/Users/harsha/git/plt2014fall/testfiles/testreadinput.txt")
+	print (a)
 end

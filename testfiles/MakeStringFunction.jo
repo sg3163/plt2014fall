@@ -3,6 +3,5 @@
 func main () 
 
 a = 2243
-print(makeString(a))
-
+	print(makeString(a))
 end

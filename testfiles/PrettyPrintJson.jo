@@ -3,6 +3,5 @@
 a = #{"name":"harsha","courses":[1,"PLT",true]}#
 
 func main () 
-print (a)
-
+	print (a)
 end

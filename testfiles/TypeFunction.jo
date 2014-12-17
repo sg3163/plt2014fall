@@ -2,25 +2,7 @@
 
 func main () 
 
-a = #{}#
-print(type(a))
+	a = #{}#
+	print(type(a))
 
 end
-
-
-/*
-
-a = #{"a":"b","c":"d"}#
-b = null
-c = [1,2,3]
-d = #{"a":"b","e":"d"}#
-
-func pr(x)
- print (type(x))
- return true
-end
-func main()
-		print(type(pr(c)))
-end
-
-*/

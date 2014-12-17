@@ -1,8 +1,7 @@
 /* Test How AttrList function work */
 
 func main () 
-
-a = #{"name":"harsha", "courses":["PLT", "OS"]}#
-b = a.attrList()
-print (b)
+	a = #{"name":"harsha", "courses":["PLT", "OS"]}#
+	b = a.attrList()
+	print (b)
 end

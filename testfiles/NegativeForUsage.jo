@@ -1,10 +1,10 @@
 /* Test If Condition */
 
 func main () 
-a = "Hello"
-
-for i in a
-	print (i)
-end
+	a = "Hello"
+	
+	for i in a
+		print (i)
+	end
 
 end
