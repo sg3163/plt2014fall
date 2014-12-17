@@ -15,7 +15,6 @@ JO="./jo"
 PRE="./preprocessor"
 TEST_BASE="testfiles"
 
-
 # Compare <outfile> <reffile> <difffile>
 # Compares the outfile with reffile.  Differences, if any, written to difffile
 Compare() {
@@ -64,10 +63,12 @@ fi ;
 
 # compliling the C++ file
 if [ -f "${reffile}.cpp" ]; then
-make inputfile=$basename -f MakeFileCPP
+
+    make inputfile=$basename -f MakeFileCPP
+
 else
-echo "Compiling $1 failed"
-return
+    echo "Compiling $1 failed"
+    return
 fi
 
 # running the binary

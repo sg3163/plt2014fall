@@ -63,10 +63,10 @@ fi ;
 
 # compliling the C++ file
 if [ -f "${reffile}.cpp" ]; then
-make inputfile=$basename -f MakeFileCPP
+    make inputfile=$basename -f MakeFileCPP
 else
-echo "Compiling $1 failed"
-return
+    echo "Compiling $1 failed"
+    return
 fi
 
 # running the binary
