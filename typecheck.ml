@@ -4,7 +4,7 @@ open Symboltable
 module StringMap = Map.Make(String)
 
 let string_of_vtype = function
-   IntType -> "int"
+   IntType -> "number"
   | StrType -> "string"
   | BoolType -> "bool"
   | JsonType -> "json"
@@ -12,7 +12,7 @@ let string_of_vtype = function
   | NoType	-> "notype"
 
 let vtype_of_ocaml_type = function
-  "int" -> IntType
+  "number" -> IntType
   | "string" -> StrType
   | "bool" -> BoolType
   | "json" -> JsonType
@@ -38,15 +38,15 @@ let get_vtype env id =
 
 (* get the type of expression:
  *  -> string if one of the two operands having string type
- *  -> int/boolean if both of the operands having the same type *)
+ *  -> number/boolean if both of the operands having the same type *)
 let get_oper_type t1 t2 =
 	if t1 = "json" then "json" else
 	if t1 = "list" then "list" else
 	if t1 = "string" || t2 = "string" then "string" else
-	if t1 = "int" && t2 = "int" then "bool" else
+	if t1 = "number" && t2 = "number" then "bool" else
 	if t1 = "bool" && t2 = "bool" then "bool" else
-	if t1 = "int" && t2 = "bool" then raise (Failure ("cannot use int with bool type inside expression")) else
-	if t1 = "bool" && t2 = "int" then raise (Failure ("cannot use int with bool type inside expression")) else
+	if t1 = "number" && t2 = "bool" then raise (Failure ("cannot use number with bool type inside expression")) else
+	if t1 = "bool" && t2 = "number" then raise (Failure ("cannot use number with bool type inside expression")) else
 	raise (Failure ("type error in get_oper_type"))
 
 (* TODO ----- NEED TO have checks for boolean op and mathermatical op
@@ -58,7 +58,7 @@ let get_bool_equal_oper_type t1 t2 =
 	if t1 = "json" && t2 = "json" then "bool" else
 	if t1 = "list" && t2 = "list" then "bool" else
 	if t1 = "string" && t2 = "string" then "bool" else
-	if t1 = "int" && t2 = "int" then "bool" else
+	if t1 = "number" && t2 = "number" then "bool" else
 	if t1 = "bool" && t2 = "bool" then "bool" else
 	raise (Failure ("Cannot Compare different types"))
 
@@ -66,7 +66,7 @@ let get_math_oper_type t1 t2 =
 	if t1 = "notype" && t2 = "notype" then "notype" else
 	if t1 = "notype" then t2 else
 	if t2 = "notype" then t1 else
-	if t1 = "int" && t2 = "int" then "int" else
+	if t1 = "number" && t2 = "number" then "number" else
 	if t1 = "list" && t2 = "list" then "list" else
 	raise (Failure ("Mathematical operator work on Number types only, ++ works on Number and Lists"))
 
@@ -77,17 +77,17 @@ let get_logical_oper_type t1 t2 =
 	raise (Failure ("Logical operators can work on only bool types"))
 	
 let get_add_oper_type t1 t2 =
-	if t1 = "notype" && t2 = "notype" then "int" else
+	if t1 = "notype" && t2 = "notype" then "number" else
 	if t1 = "notype" then t2 else
 	if t2 = "notype" then t1 else
-	if t1 = "int" && t2 = "int" then "int" else
+	if t1 = "number" && t2 = "number" then "number" else
 	if t1 = "string" && t2 = "string" then "string" else
-	raise (Failure ("Add operator can work on integers or strings"))
+	raise (Failure ("Add operator can work on numbers or strings"))
 
 let get_comp_oper_type t1 t2 =
 	if t1 = "notype" then t2 else
 	if t2 = "notype" then t1 else
-	if t1 = "int" && t2 = "int" then "bool" else
+	if t1 = "number" && t2 = "number" then "bool" else
 	raise (Failure ("comparison operators can work on only Number types types"))
 
 let get_in_oper_type t1 t2 =
@@ -95,7 +95,7 @@ let get_in_oper_type t1 t2 =
 	else "bool"
 
 let check_listexpr env = function
- 	Ast.ListItemInt(i) -> Sast.ListItemInt(i), "int"
+ 	Ast.ListItemInt(i) -> Sast.ListItemInt(i), "number"
 	| Ast.ListItemStr(s) -> Sast.ListItemStr(s), "string"
 
 (* Might have to do type checking *)
@@ -106,20 +106,20 @@ let match_oper e1 op e2 =
 	(*let expr_t = get_oper_type (snd e1) (snd e2) in*)
 	(match op with
 	   Ast.Add -> let expr_t = get_add_oper_type (snd e1) (snd e2) in 
-					if (expr_t = "int" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Add, fst e2), "int") else
+					if (expr_t = "number" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Add, fst e2), "number") else
 	   			if expr_t = "string" then (Sast.Binop(fst e1, Sast.Add, fst e2), "string") else
-		  		raise (Failure ("Add operator can work on integers or strings"))
+		  		raise (Failure ("Add operator can work on number or strings"))
 	 | Ast.Sub -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
-			 if (expr_t = "int" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Sub, fst e2), "int") else
+			 if (expr_t = "number" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Sub, fst e2), "number") else
 		  raise (Failure ("Mathematical operator work on Number types only"))
 	 | Ast.Mult -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
-						 if (expr_t = "int" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Mult, fst e2), "int") else
+						 if (expr_t = "number" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Mult, fst e2), "number") else
 	 	   raise (Failure ("Mathematical operator work on Number types only"))
 	 | Ast.Div -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
-						 if (expr_t = "int" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Div, fst e2), "int") else
+						 if (expr_t = "number" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Div, fst e2), "number") else
 		  raise (Failure ("Mathematical operator work on Number types only"))
 	 | Ast.Mod -> let expr_t = get_math_oper_type (snd e1) (snd e2) in 
-						 if (expr_t = "int" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Mod, fst e2), "int") else
+						 if (expr_t = "number" || expr_t ="notype") then (Sast.Binop(fst e1, Sast.Mod, fst e2), "number") else
 		  raise (Failure ("Mathematical operator work on Number types only"))
 		  (* equal and not equal have special case for string comparison 
 		  		we may need to add SAST and Eqs and Neqs *)
@@ -164,24 +164,12 @@ let rec check_list_items env = function
 	| Ast.Seq(e1, sep, e2) -> Sast.Seq(fst (check_list_element env e1), Sast.Comma, (check_list_items env e2))
 	| Ast.Noitem -> Sast.Noitem
 and check_list_element env = function 
-	Ast.LitIntElem(i) -> 
-	(*	let _ = print_string "in int" in *)
-		Sast.LitIntElem(i), "int"
-	| Ast.LitStrElem(s) -> 
-	(*	let _ = print_string "in string " in*)
-		Sast.LitStrElem(s), "string"
-	| Ast.LitListOfList(items) -> 
-	(*	let _ = print_string "in list " in*)
-		Sast.LitListOfList(check_list_items env items), "list"
-	| Ast.LitJsonOfList(items) -> 
-	(*	let _ = print_string "in json " in*)
-		Sast.LitJsonOfList(check_json_items env items), "json"
-	| Ast.LitBoolElem(i) -> 
-	(*	let _ = print_string "in int" in *)
-		Sast.LitBoolElem(i), "bool"
-	| Ast.LitNullElem(s) -> 
-	(*	let _ = print_string "in string " in*)
-		Sast.LitNullElem(s), "null"
+	Ast.LitIntElem(i) -> Sast.LitIntElem(i), "number"
+	| Ast.LitStrElem(s) -> Sast.LitStrElem(s), "string"
+	| Ast.LitListOfList(items) -> Sast.LitListOfList(check_list_items env items), "list"
+	| Ast.LitJsonOfList(items) -> Sast.LitJsonOfList(check_json_items env items), "json"
+	| Ast.LitBoolElem(i) -> Sast.LitBoolElem(i), "bool"
+	| Ast.LitNullElem(s) -> Sast.LitNullElem(s), "null"
 
 and check_json_items env = function
 	  Ast.JsonItem(e) -> Sast.JsonItem(check_json_keyValue env e)
@@ -192,68 +180,38 @@ and check_json_keyValue env = function
 	Ast.JsonValPair(e1, colon, e2) -> Sast.JsonValPair(fst (check_json_key env e1) , Sast.Colon, fst (check_json_value env e2))
 	
 and check_json_value env = function 
-	Ast.LitIntJsonVal(i) -> 
-	(*	let _ = print_string "in int" in *)
-		Sast.LitIntJsonVal(i), "int"
-	| Ast.LitStrJsonVal(s) -> 
-	(*	let _ = print_string "in string " in*)
-		Sast.LitStrJsonVal(s), "string"
-	| Ast.LitJsonOfJson(items) -> 
-	(*	let _ = print_string "in json " in*)
-		Sast.LitJsonOfJson(check_json_items env items), "json"
-	| Ast.LitListOfJson(items) -> 
-	(*	let _ = print_string "in list " in*)
-		Sast.LitListOfJson(check_list_items env items), "list"
-	| Ast.LitBoolJsonVal(i) -> 
-	(*	let _ = print_string "in int" in *)
-		Sast.LitBoolJsonVal(i), "bool"
-	| Ast.LitNullJsonVal(s) -> 
-	(*	let _ = print_string "in string " in*)
-		Sast.LitNullJsonVal(s), "null"
+	Ast.LitIntJsonVal(i) -> Sast.LitIntJsonVal(i), "number"
+	| Ast.LitStrJsonVal(s) -> Sast.LitStrJsonVal(s), "string"
+	| Ast.LitJsonOfJson(items) -> Sast.LitJsonOfJson(check_json_items env items), "json"
+	| Ast.LitListOfJson(items) -> Sast.LitListOfJson(check_list_items env items), "list"
+	| Ast.LitBoolJsonVal(i) -> Sast.LitBoolJsonVal(i), "bool"
+	| Ast.LitNullJsonVal(s) -> Sast.LitNullJsonVal(s), "null"
 		
 and check_json_key env = function 
-	Ast.LitStrJsonKey(i) -> 
-	(*	let _ = print_string "in int" in *)
-		Sast.LitStrJsonKey(i), "string"
+	Ast.LitStrJsonKey(i) -> Sast.LitStrJsonKey(i), "string"
 
 (* it returns the expr and its type *)
 let rec check_expr env = function
-	Ast.LitInt(i) -> 
-	(*	let _ = print_string "in int" in *)
-		Sast.LitInt(i), "int"
+	Ast.LitInt(i) -> Sast.LitInt(i), "number"
 
-	| Ast.LitStr(s) -> 
-	(*	let _ = print_string "in string " in*)
-		Sast.LitStr(s), "string"
+	| Ast.LitStr(s) -> Sast.LitStr(s), "string"
 		
-	| Ast.LitJson(items) -> 
-	(*	let _ = print_string "in json " in*)
-		Sast.LitJson(check_json_items env items), "json"
+	| Ast.LitJson(items) -> Sast.LitJson(check_json_items env items), "json"
 		
-	| Ast.LitList(items) -> 
-	(*	let _ = print_string "in list " in*)
-		Sast.LitList(check_list_items env items), "list"
+	| Ast.LitList(items) -> Sast.LitList(check_list_items env items), "list"
 		
-	| Ast.LitBool(s) -> 
-	(*	let _ = print_string "in bool " in*)
-		Sast.LitBool(s), "bool"
+	| Ast.LitBool(s) -> Sast.LitBool(s), "bool"
 	
-	| Ast.LitNull(s) -> 
-		Sast.LitNull(s), "null" 
+	| Ast.LitNull(s) -> Sast.LitNull(s), "null" 
 
-	| Ast.Id(id) ->
-	(*	let _ = print_string "in iD" in*)
-		Sast.Id(id), (get_vtype env id)
+	| Ast.Id(id) -> Sast.Id(id), (get_vtype env id)
 	
 	| Ast.Not(e1) -> 
-	(*	let _ = print_string "in Not " in*)
 		let ret = check_expr env e1 in
 		if (snd ret) = "bool" then Sast.Not(fst ret), "bool"
 		else raise (Failure("! is applicable to bool expressions only"))
 		
-	| Ast.Binop(e1, op, e2) ->
-	(*	let _ = print_string "in binop" in*)
-		match_oper (check_expr env e1) op (check_expr env e2)
+	| Ast.Binop(e1, op, e2) -> match_oper (check_expr env e1) op (check_expr env e2)
 	| Ast.Call(func, el) ->
 		(* find_function is from the symbol table *)
 		let args = find_function func env in	(* return & arguments type list from definition *)
@@ -264,7 +222,7 @@ let rec check_expr env = function
 				    in Sast.Call(func, List.rev new_list ), hd )
 	| Ast.ElemAccess(id, e) -> let t1 = get_vtype env id in
 														let t2 = check_expr env e in
-														if not ( (t1 = "notype" && (snd t2 = "string" || snd t2 = "notype" || snd t2 = "int")) || (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="int" || snd t2 = "notype")) ) 
+														if not ( (t1 = "notype" && (snd t2 = "string" || snd t2 = "notype" || snd t2 = "number")) || (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="number" || snd t2 = "notype")) ) 
 															then raise (Failure("Elements of List and Json can be accessed via index and key respectively"))
 														else
 															Sast.ElemAccess (id, (fst t2)), "notype"
@@ -312,8 +270,7 @@ let rec check_formals env formals =
 
 let check_local env local =
 	let ret = update_local local.vname (vtype_of_ocaml_type (get_expr_with_type env local.vexpr)) env in
-	(*if (snd ret) = "" then Sast.Assign(local.vname, fst (check_expr env local.vexpr)), fst ret
-	else *) let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
+	let env = {locals = fst ret; globals = env.globals; functions = env.functions } in
 	convert_to_sast_type local env, env
 
 let rec check_locals env locals = 
@@ -357,7 +314,7 @@ let rec check_stmt env func = function
 	| Ast.ElemAssign(id, expr1, expr2) -> let t1 = get_vtype env id in
 											let t2 = check_expr env expr1 in
 														if not ( (t1 = "notype" && (snd t2 = "string" || snd t2 = "notype" || snd t2 = "int")) ||
-														 (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="int" || snd t2 = "notype")) ) 
+														 (t1 = "json" && (snd t2 = "string" || snd t2 = "notype")) || (t1="list" && (snd t2 ="number" || snd t2 = "notype")) ) 
 															then raise (Failure("Elements of List and Json can be accessed via index and key respectively!"))
 														else
 															Sast.ElemAssign (id, (fst t2), fst (check_expr env expr2)), env
@@ -432,8 +389,7 @@ let rec check_functions env funcs =
 
 (* returns the global and its env *)
 let check_global env global =
- 	(*let _ = print_string "in iD" in*)
-	let ret = update_global global.vname (vtype_of_ocaml_type (get_expr_with_type env global.vexpr)) env in
+ 	let ret = update_global global.vname (vtype_of_ocaml_type (get_expr_with_type env global.vexpr)) env in
 	(* update the env with globals from ret *)
 	let env = {locals = env.locals; globals = ret; functions = env.functions } in
 	convert_to_sast_type global env, env
