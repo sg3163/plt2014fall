@@ -38,7 +38,7 @@ Compare() {
 function compileAndRun() {
 	basename=`echo $1 | sed 's/.*\\///
                             s/.jo//'`
-    echo $basename
+    echo "Running file $basename" 
 	reffile=`echo $1 | sed 's/.jo$//'`
     prepfile=$TEST_BASE/$basename'.pjo'
     #echo $prepfile
