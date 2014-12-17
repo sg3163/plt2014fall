@@ -1,0 +1,13 @@
+/* Check variable Scope */
+
+func checkScope(x) 
+	x = "Inside Check Scope"
+	print (x)
+	return null
+end
+
+func main () 
+	x = "Inside Main Function"
+	print (x)
+	checkScope(x)
+end

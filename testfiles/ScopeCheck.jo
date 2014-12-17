@@ -1,0 +1,9 @@
+/* Check variable Scope */
+
+x = "Global Declaration"
+
+func main () 
+	print (x)
+	x = "Inside Main Function"
+	print (x)
+end

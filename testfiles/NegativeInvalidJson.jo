@@ -1,0 +1,5 @@
+/* Invalid Json Declaration */
+
+func main () 
+	a = #{"name":asdfdf}#
+end
