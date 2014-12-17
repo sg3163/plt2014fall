@@ -15,7 +15,9 @@ void print_out(const wchar_t *output)
     wcout << output;
     wcout.flush();
 }
-
+void this_is_not_done() { 
+	cout << "arpit " ; 
+}
 string wstringToString (wstring w){
 	string result = "" ;
 	char x ; 
