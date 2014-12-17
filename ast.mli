@@ -7,11 +7,11 @@ type sep = Comma
 type colon = Colon
 
 type list_expr = 
-  ListItemInt of int
+  ListItemInt of float
   | ListItemStr of string
 
 type list_element = 
-  LitIntElem of int
+  LitIntElem of float
   | LitStrElem of string
 	| LitListOfList of items
 	| LitJsonOfList of json_items
@@ -24,7 +24,7 @@ and items =
 and json_key_type =
 	LitStrJsonKey of string
 and json_item_value = 
-  LitIntJsonVal of int
+  LitIntJsonVal of float
   | LitStrJsonVal of string
 	| LitJsonOfJson of json_items
 	| LitListOfJson of items
@@ -38,7 +38,7 @@ and json_items =
   | NoJsonItem
 
 type expr =
-    LitInt of int
+    LitInt of float
   | LitStr of string
   | LitJson of json_items
   | LitList of items

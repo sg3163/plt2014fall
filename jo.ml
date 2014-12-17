@@ -7,7 +7,7 @@ let rec string_of_items = function
                     ^ (string_of_items i2)
   | Noitem -> ""
 and string_of_elements = function
-	LitIntElem(l) ->  string_of_int l 
+	LitIntElem(l) ->  string_of_float l 
   | LitStrElem(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
 	| LitListOfList(l) -> "[" ^ string_of_items l ^ "]"
 	| LitJsonOfList(l) -> "{" ^ json_items l ^ "}"
@@ -24,7 +24,7 @@ and json_key_value = function
 and json_key = function 
 	LitStrJsonKey(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
 and json_value = function
-	LitIntJsonVal(l) -> string_of_int l
+	LitIntJsonVal(l) -> string_of_float l
 	| LitStrJsonVal(l) -> Str.global_replace (Str.regexp "\"") "\\\"" l 
 	| LitJsonOfJson(l) -> "{" ^ json_items l ^ "}"
 	| LitListOfJson(l) -> "[" ^ string_of_items l ^ "]"
@@ -39,7 +39,7 @@ let string_of_loop_var_t = function
   LoopVar(l) -> l
 
 let rec string_of_expr e = match e with
-    LitInt(l) -> "CustType::parse(\"" ^ string_of_int l ^ "\",\"NUMBER\")"
+    LitInt(l) -> "CustType::parse(\"" ^ string_of_float l ^ "\",\"NUMBER\")"
   | LitStr(l) -> "CustType::parse(" ^ l ^ ",\"STRING\")"
   | LitJson(l) -> "CustType::parse(\"{" ^ json_items l ^ "}\",\"JSON\")"
   | LitList(l) -> "CustType::parse(\"[" ^ string_of_items l ^ "]\",\"LIST\")"
