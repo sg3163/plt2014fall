@@ -3,7 +3,7 @@
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA SEMI 
 %token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS COLON
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
-%token RETURN IF THEN ELSE HASH NULL
+%token RETURN IF ELSE HASH NULL
 %token AND OR FOR IN NOTIN
 %token FUNC END DECL
 %token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST WRITE
@@ -44,7 +44,6 @@ fdecl:
         return = Ast.StrType;
         fname = $2;
         formals = $4;
-        fnlocals = [];
         body = List.rev $7 }}
 
 formals_opt:
