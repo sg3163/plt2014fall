@@ -957,7 +957,7 @@ void ListType :: convToListType () {
 }
 
 CustType* JsonType :: getAttrList () { 
-
+	/*
 	vector <string> atrrListStr;
 	for ( map<string , CustType* > ::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
 		
@@ -965,6 +965,7 @@ CustType* JsonType :: getAttrList () {
 		atrrListStr.push_back(keyString) ;
 	}
 	ListType* attrList = new ListType (atrrListStr) ; 
+	*/
 	return attrList ; 	
 }
 
