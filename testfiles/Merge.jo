@@ -1,8 +1,9 @@
 func Merge (a,b)
 	c = #{ }#
-	
-	for attr in a.attrList()
-		if ( attr in b.attrList())
+	d = a.attrList()
+	e = b.attrList()
+	for attr in d
+		if ( attr in e)
 			if (type(a[attr]) == "Json" && type(b[attr]) == "Json")
 				
 				c[attr] = Merge(a[attr],b[attr])
@@ -17,8 +18,8 @@ func Merge (a,b)
 			c[attr] = a[attr]
 		end
 	end
-	for attr in b.attrList()
-		if ( attr not in a.attrList()  )
+	for attr in e
+		if ( attr not in d  )
 			c[attr] = b[attr]
 		end
 	end
