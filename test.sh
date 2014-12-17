@@ -44,6 +44,13 @@ prepfile=$TEST_BASE/$basename'.pjo'
 #echo $prepfile
 basedir="`echo $1 | sed 's/\/[^\/]*$//'`/"
 
+#Remove all Old Generated File
+rm -rf ${reffile}.fdlp
+rm -rf ${reffile}.cpp
+rm -rf ${reffile}.out
+rm -rf ${reffile}.o
+rm -rf ${reffile}.output
+
 # gets the path of the test output file
 testoutput=`echo ${basedir}test_outputs/$basename.c.out`
 
