@@ -15,8 +15,16 @@ void print_out(const wchar_t *output)
     wcout << output;
     wcout.flush();
 }
-void this_is_not_done() { 
-	cout << "arpit " ; 
+string funcRemoveStr (string s) {
+	int a  = 0 ; 
+	string p = "\\n" ; 
+	while ( a != -1){
+		a = s.find(p) ; 
+		if (a == -1)
+			break ;
+		s = s.substr(0,a) + s.substr(a+2);
+	}
+	return s ; 
 }
 string wstringToString (wstring w){
 	string result = "" ;
@@ -752,11 +760,14 @@ JsonType* getJson (string data, int type){
 
 CustType* CustType :: parse (string data, string type)  { 
 	
+		data = funcRemoveStr (data) ; 
+		
 		if (type == "STRING"){
 			 
 			return getString ( data , STRING) ;
 	      	
 		}
+
 		else if (type == "LIST"){
 
 			data = "{ \"List\" : " + data + " }" ;
@@ -1305,12 +1316,13 @@ CustType* CustType::read(string filename)
       while ( getline(file, line) )
 	{
 	  fileText+=line;
+	  
 	}
       file.close();
     }
   else { cout << "Unable to open file" << endl; }
-
-  CustType *toReturn = CustType::parse(fileText, "JSON");
+  
+  CustType *toReturn = CustType::parse( fileText , "JSON");
   return toReturn;
 }
 //returns index of element if found, otherwise returns -1 
