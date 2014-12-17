@@ -1,0 +1,22 @@
+/* Comparison Operator with Not */
+
+func main () 
+	a = true
+	b = false
+	
+	c = 5
+	d = 6
+	
+	if(!b)
+	  print ("hi")
+	end
+
+	if (a && !b)
+	  print ("hello")
+	end 
+	
+	if (!(c==d))
+	  print ("hello1")
+	end 
+	
+end

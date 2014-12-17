@@ -1,0 +1,20 @@
+/* Test If Condition */
+
+func main () 
+
+	if ( 5 == 5 )
+		print ("true")
+		
+		if(true)
+			print("Iinside 1st nested loop")
+			
+			if("hi" == "hi")
+				print("Inside 2nd Nested If")
+			end
+			
+		end
+	else
+	    print ("false")
+	end
+	
+end

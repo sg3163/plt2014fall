@@ -1,4 +1,4 @@
-/* Test If Condition */
+/* Test For Condition */
 
 func main () 
 	a = [2,3,4]
