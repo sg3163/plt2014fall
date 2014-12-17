@@ -1,12 +1,5 @@
 #!/bin/sh
 
-
-#if [ ! -f "c/libraries/liblist.a" ] || [ ! -f "c/libraries/libpath.a" ] ; then
-#    cd c/libraries
-#    make >> lib_msgs.txt
-#    cd ../..
-#fi
-#
 if [ ! -f "./preprocessor" ]; then
 make -f MakePreProc >> make.log
 fi
@@ -22,8 +15,6 @@ JO="./jo"
 PRE="./preprocessor"
 TEST_BASE="testfiles"
 
-# Error directory
-#ERR=/testfiles/errors
 
 # Compare <outfile> <reffile> <difffile>
 # Compares the outfile with reffile.  Differences, if any, written to difffile
@@ -73,8 +64,6 @@ fi ;
 
 # compliling the C++ file
 if [ -f "${reffile}.cpp" ]; then
-#   	gcc -Ic/libraries -Lc/libraries -llist -lpath -w -o "${reffile}" "${reffile}.c" 2>> errors.txt
-#		g++ "${reffile}.cpp" -o "${reffile}.out" 2>> error.txt
 make inputfile=$basename -f MakeFileCPP
 else
 echo "Compiling $1 failed"
@@ -86,11 +75,8 @@ if [ -f "${reffile}.out" ]; then
 eval ${reffile}.out >> ${reffile}.output
 Compare ${reffile}.output ${reffile}.exp ${reffile}.error
 
-#        rm -rf ${reffile}.fdlp
-#        rm -rf ${reffile}.cpp
-#rm -rf ${reffile}.out
 rm -rf ${reffile}.o
-#rm -rf ${reffile}.output
+
 echo "ran $1 successfully"
 else
 echo "C++ to binary of ${reffile}.cpp failed"
@@ -99,11 +85,6 @@ fi
 }
 
 files=$TEST_BASE/*.jo
-
-#for file in $files
-#do
-#compileAndRun $file
-#done
 
 if [ -f $1 ]; then
 	compileAndRun $1

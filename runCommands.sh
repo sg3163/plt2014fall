@@ -7,7 +7,7 @@ ocamlc -c scanner.ml
 ocamlc -c parser.ml
 ocamlc -c sast.mli 
 ocamlc -c symboltable.ml
-ocamlc -c typecheck.ml
+ocamlc -c analyzer.ml
 #load Str.cma
 ocamlc -c jo.ml
-ocamlc -o jo parser.cmo scanner.cmo symboltable.cmo typecheck.cmo Str.cma jo.cmo
+ocamlc -o jo parser.cmo scanner.cmo symboltable.cmo analyzer.cmo Str.cma jo.cmo

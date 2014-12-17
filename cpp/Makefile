@@ -18,9 +18,6 @@ $(EXECUTABLE): $(OBJECTS)
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
 
-#obj/%.o: %.cpp $(HEADERS)
-#	$(CC) $(CFLAGS) $(@:obj/%.o=%.cpp) -o $@
-
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE) *~ SampleOutput.txt
 
