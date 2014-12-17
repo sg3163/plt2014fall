@@ -4,7 +4,7 @@
 %token PLUS MINUS TIMES DIVIDE ASSIGN ACCESS COMPLUS COMMINUS COLON
 %token EQ NEQ LT GT LEQ GEQ NOT MOD
 %token RETURN IF THEN ELSE HASH NULL
-%token AND OR FOR IN
+%token AND OR FOR IN NOTIN
 %token FUNC END DECL
 %token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST WRITE
 %token <int> NUM_LIT
@@ -26,7 +26,7 @@
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left COMPLUS COMMINUS
-%right NOT
+%right NOT NOTIN IN
 
 %start program
 %type <Ast.program> program
@@ -57,15 +57,6 @@ formal_list:
 
 formal:
     ID      { { vtype = NoType;  vname = $1; vexpr = NoExpr; } }
-    
-/* Var declarations can also be optional */
-/*vdecl_opt:
-    { [] }
-    | vdecl_list    { $1 }
-
-vdecl_list:
-    vdecl              { [$1] }
-    | vdecl_list vdecl { $2 :: $1 }*/
 
 vdecl:
     ID ASSIGN expr SEMI { { vtype = StrType ;  vname = $1; vexpr = $3 } }
@@ -79,42 +70,39 @@ rev_stmt_list:
 
 /* using SEMI ';' to separate stmts */
 stmt:
-    vdecl                                     {Vdecl($1)}
-    | expr SEMI                                           { Expr($1) }
+    vdecl                                               {Vdecl($1)}
+    | expr SEMI                                         { Expr($1) }
     | RETURN expr_opt SEMI                              { Return($2) } 
     | PRINT LPAREN expr RPAREN SEMI                     { Print($3) }
-	| FOR loop_var IN for_expr stmt       { For($2, $4, $5 ) } 
+	| FOR loop_var IN for_expr stmt                     { For($2, $4, $5 ) } 
     | IF LPAREN expr RPAREN stmt ELSE stmt              { If($3, $5, $7) }
     | IF LPAREN expr RPAREN stmt %prec NOELSE           { If($3, $5, Block([])) }
-    | IF LPAREN in_expr RPAREN stmt ELSE stmt      { Ifin($3, $5, $7) }
-    | IF LPAREN in_expr RPAREN stmt %prec NOELSE   { Ifin($3, $5, Block([])) }
     | LBRACE rev_stmt_list RBRACE                       { Block($2) }
-	| WRITE LPAREN expr COMMA STRING_LIT RPAREN SEMI		{ Write($3, $5) }
-    | ID LBRACK expr RBRACK ASSIGN expr SEMI        { ElemAssign($1, $3, $6) }
-
-in_expr:
-    | expr IN expr                  { InExpr($1,$3) }  
+	| WRITE LPAREN expr COMMA STRING_LIT RPAREN SEMI	{ Write($3, $5) }
+    | ID LBRACK expr RBRACK ASSIGN expr SEMI            { ElemAssign($1, $3, $6) }
 
 for_expr:
     ID                              { Forid($1) }
+    | ID ACCESS ATTRLIST LPAREN RPAREN      { AttrList($1) }
+
 loop_var:
     ID                              { LoopVar($1) }
 
 expr_opt:
-    /* nothing */ { NoExpr }
+    { NoExpr }
   | expr          { $1 }
 
 expr:
-    | NUM_LIT                      { LitInt($1) }
-    | STRING_LIT                   { LitStr($1) }
-    | HASH LBRACE json_items RBRACE HASH       { LitJson($3) }
-    | LBRACK list_items RBRACK         { LitList($2) } 
+    | NUM_LIT                               { LitInt($1) }
+    | STRING_LIT                            { LitStr($1) }
+    | HASH LBRACE json_items RBRACE HASH    { LitJson($3) }
+    | LBRACK list_items RBRACK              { LitList($2) } 
     | BOOL_LIT                     { LitBool($1) }
     | NULL                         { LitNull("null") }
-    | ID                           { Id($1) }
-    | NOT LPAREN expr  RPAREN             {Not($3)}
-    | NOT expr                      {Not($2)}
-    | expr COMPLUS    expr        { Binop($1, Concat,  $3) }
+    | ID                           { Id($1)  }
+    | NOT LPAREN expr  RPAREN      { Not($3) }
+    | NOT expr                     { Not($2) }
+    | expr COMPLUS    expr         { Binop($1, Concat,  $3) }
     | expr COMMINUS    expr        { Binop($1, Minus,   $3) }
     | expr PLUS   expr             { Binop($1, Add,      $3) }
     | expr MINUS  expr             { Binop($1, Sub,      $3) }
@@ -129,13 +117,15 @@ expr:
     | expr MOD    expr             { Binop($1, Mod,   $3) }
     | expr AND expr                { Binop($1, And,      $3) }
     | expr OR expr                 { Binop($1, Or,       $3) }
+    | expr IN expr                 { Binop($1,In, $3) }  
+    | expr NOTIN expr             { Binop($1,NotIn, $3) } 
     | ID LPAREN actuals_opt RPAREN { Call($1,   $3) }
-    | ID LBRACK expr RBRACK   { ElemAccess($1, $3) }
-    | ID ACCESS TYPESTRUCT LPAREN   RPAREN   { TypeStruct($1) }
-    | ID ACCESS ATTRLIST LPAREN RPAREN   { AttrList($1) }
-    | TYPE LPAREN expr RPAREN       { DataType($3) }
+    | ID LBRACK expr RBRACK        { ElemAccess($1, $3) }
+    | ID ACCESS TYPESTRUCT LPAREN   RPAREN  { TypeStruct($1) }
+    | ID ACCESS ATTRLIST LPAREN RPAREN      { AttrList($1) }
+    | TYPE LPAREN expr RPAREN               { DataType($3) }
     | READ LPAREN STRING_LIT RPAREN         { Read($3) }
-    | MAKESTRING LPAREN expr RPAREN    { MakeString($3) }
+    | MAKESTRING LPAREN expr RPAREN         { MakeString($3) }
     
 
 list_items:

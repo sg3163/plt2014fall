@@ -1,4 +1,4 @@
-type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | And | Or | Concat | Minus | Mod
+type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | And | Or | Concat | Minus | Mod | In | NotIn
 
 type data_type =  StrType | IntType | BoolType | JsonType | ListType | NoType
 
@@ -62,14 +62,13 @@ type var_decl = {
   vexpr : expr;
 }
 
-type in_expr = 
-    InExpr of expr * expr
-
 type for_expr = 
     Forid of string
+    | AttrList of string
 
 type loop_var = 
     LoopVar of string
+
 type stmt =
     Block of stmt list
   | Vdecl of var_decl
@@ -77,7 +76,6 @@ type stmt =
   | Return of expr
   | Print of expr
   | If of expr * stmt * stmt
-  | Ifin of in_expr * stmt * stmt
   | For of loop_var * for_expr * stmt  
 	| Write of expr * string
   | ElemAssign of string * expr * expr

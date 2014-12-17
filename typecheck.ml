@@ -90,6 +90,10 @@ let get_comp_oper_type t1 t2 =
 	if t1 = "int" && t2 = "int" then "bool" else
 	raise (Failure ("comparison operators can work on only Number types types"))
 
+let get_in_oper_type t1 t2 =
+	if not(t2 = "list" || t2 = "notype") then raise (Failure ("The 'in' and 'not in' statements must be checking in a list!")) 
+	else "bool"
+
 let check_listexpr env = function
  	Ast.ListItemInt(i) -> Sast.ListItemInt(i), "int"
 	| Ast.ListItemStr(s) -> Sast.ListItemStr(s), "string"
@@ -139,10 +143,16 @@ let match_oper e1 op e2 =
                   raise (Failure ("Comparison operators can work on only Number types types")) 
      | Ast.And -> let expr_t = get_logical_oper_type (snd e1) (snd e2) in 
 								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.And, fst e2), "bool") else
-                  raise (Failure ("Logical operators can work on only bool types")) 
+                  					raise (Failure ("Logical operators can work on only bool types")) 
      | Ast.Or -> let expr_t = get_logical_oper_type (snd e1) (snd e2) in 
 								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.Or, fst e2), "bool") else
-                  raise (Failure ("Logical operators can work on only bool types")) 
+									raise (Failure ("Logical operators can work on only bool types"))
+	 | Ast.In -> let expr_t = get_in_oper_type (snd e1) (snd e2) in 
+								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.In, fst e2), "bool") else
+                  					raise (Failure ("The 'in' and 'not in' statements must be checking in a list!")) 
+     | Ast.NotIn -> let expr_t = get_in_oper_type (snd e1) (snd e2) in 
+								if expr_t = "bool" then (Sast.Binop(fst e1, Sast.NotIn, fst e2), "bool") else
+                  					raise (Failure ("The 'in' and 'not in' statements must be checking in a list!")) 
      | Ast.Concat -> (Sast.Binop(fst e1, Sast.Concat, fst e2), "list")
      | Ast.Minus -> if (snd e1) = "list" || (snd e1) = "notype" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "list") else
 					if (snd e1) = "json" || (snd e1) = "notype" then (Sast.Binop(fst e1, Sast.Minus, fst e2), "json") else
@@ -313,14 +323,7 @@ let rec check_locals env locals =
 
 let check_forexpr env = function
 	Ast.Forid(id) -> Sast.Forid(id), get_vtype env id
-
-let check_inexpr env = function
-	Ast.InExpr(expr1, expr2) -> let ret1 = check_expr env expr1 in
-								let ret2 = check_expr env expr2 in
-								if not(snd ret2 = "list" || snd ret2 = "notype") then raise (Failure ("The If in statement must be looking in a list!"))
-							(*else if (fst ret1 = "list") then raise (Failure ("Checking a list in list is not supported!"))
-						else if (fst ret1 = "json") then raise (Failure ("Checking a json in list is not supported!")) *)
-								else Sast.InExpr(fst ret1, fst ret2), env
+	| Ast.AttrList(id) -> Sast.AttrList(id), "list"
 
 let check_loopvar env = function
 	Ast.LoopVar(id) -> let loopId = convert_to_vdecl_type id in 
@@ -344,9 +347,6 @@ let rec check_stmt env func = function
 	| Ast.If(expr, stmt1, stmt2) ->	let e = check_expr env expr in
 								if not(snd e = "bool" || snd e = "notype") then raise (Failure ("The type of the condition in If statement must be boolean!"))
 								else Sast.If(fst e, fst (check_stmt env func stmt1), fst (check_stmt env func stmt2)), env
-
-	| Ast.Ifin(inExpr, stmt1, stmt2) -> (*Sast.Ifin(fst (check_inexpr inExpr), fst (check_stmt env func stmt1), fst (check_stmt env func stmt2)), env*)
-										Sast.Ifin( fst (check_inexpr env inExpr), fst (check_stmt env func stmt1), fst (check_stmt env func stmt2)), env
 
 	| Ast.For(expr1, expr2, stmt) -> let envNew, e1 = check_loopvar env expr1 in let e2 = check_forexpr envNew expr2 in
 						   if not ( snd e2 = "list" || snd e2 = "notype") then raise (Failure("The type of the expression in a For statement must be list!"))

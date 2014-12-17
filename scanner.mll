@@ -42,7 +42,7 @@ rule token = parse
 	| "for"			{ FOR }			
 	| "in"			{ IN }
 	| "end"			{ END }			
-	| "not_in"		{ NOTIN }			
+	| "not in"		{ NOTIN }			
 	| "read"    	{ READ }  
 	| "write"			{ WRITE }
 	| "print"    	{PRINT}
