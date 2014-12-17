@@ -323,6 +323,7 @@ let rec check_locals env locals =
 
 let check_forexpr env = function
 	Ast.Forid(id) -> Sast.Forid(id), get_vtype env id
+	| Ast.AttrList(id) -> Sast.AttrList(id), "list"
 
 let check_loopvar env = function
 	Ast.LoopVar(id) -> let loopId = convert_to_vdecl_type id in 
