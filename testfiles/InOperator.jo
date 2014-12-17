@@ -1,0 +1,14 @@
+/* In Operator */
+
+func main () 
+
+	a = [2243,1232,3454]
+	b = 1232 in a
+	
+	c = [["a","b"], 45, "ccc"]
+	
+	print(b)
+	print("ccc" in c)
+	print("ab" in c)
+	print(["a","b"] in c)
+end

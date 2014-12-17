@@ -1,0 +1,7 @@
+/* String Concatenation with number */
+
+func main () 
+	a = "hi"
+	b = 121
+	print(a ++ b)
+end

@@ -1,7 +1,0 @@
-/* Concatenation */
-
-func main () 
-	a = 59
-	b = 600
-	print ([13,89] + a)
-end

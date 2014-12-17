@@ -1,0 +1,14 @@
+/* MakeString Function of Number, List and Json */
+
+func main () 
+
+	a = 2243
+	b = ["abc","bac"]
+	c = #{"name":"harsha"}#
+	
+	d = makeString(a) ++ makeString(b)
+	
+	print(d)
+	
+	print(makeString(d) ++ makeString(c))
+end

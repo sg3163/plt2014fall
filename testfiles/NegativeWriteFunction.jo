@@ -1,0 +1,6 @@
+/* Test Write function */
+
+func main () 
+a = "Text to write into file"
+write (a, /Users/harsha/testfilewriting.txt)
+end

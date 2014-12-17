@@ -1,7 +1,12 @@
-/* Test MakeString Function */
+/* Use makeString and Concatente Strings */
 
 func main () 
 
-a = 2243
+	a = 2243
+	b = ["abc","bac"]
+	c = #{"name":"harsha"}#
+	
 	print(makeString(a))
+	print(makeString(b))
+	print(makeString(c))
 end

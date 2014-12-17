@@ -1,0 +1,15 @@
+/* Element Assignment in a List */
+
+
+
+func main()
+	
+	a = [1,2,3,4]
+
+	a[0] = "High"
+	a[1] = "School"
+	a[2] = #{"name":"Veer"}#
+	
+	print(a[0])
+	print(a)
+end

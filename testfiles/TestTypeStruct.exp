@@ -1,1 +1,1 @@
-{ String : String }
+{ String : Boolean,  String : { String : String },  String : List,  String : String,  String : Number }

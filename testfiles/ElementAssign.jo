@@ -1,6 +1,10 @@
+/* Element Assignment in a Json */
+
 a = #{"a":"b"}#
 
 func main()
 	a["c"] = ["d"]
+	a["school"] = #{"names":["Columbia","Caltech"]}#
 	print(a["c"])
+	print(a)
 end

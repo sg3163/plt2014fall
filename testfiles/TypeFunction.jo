@@ -1,8 +1,19 @@
-/* Test Type Function */
+/* Type Function simple types */
 
 func main () 
 
-	a = #{}#
+	a = true
+	b = "asdfasdf"
+	c = false
+	d = 345534
+	e = []
+	f = #{}#
+	
 	print(type(a))
+	print(type(b))
+	print(type(c))
+	print(type(d))
+	print(type(e))
+	print(type(f))
 
 end
