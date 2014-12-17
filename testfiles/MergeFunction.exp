@@ -1,1 +1,0 @@
-{ "Name":{ "First":[ "Arpit", "Abhinav" ], "Last":[ "Gupta", "Bajaj" ] }, "School":"Columbia", "Age":[ 18, 22 ], "Courses":[ "PLT", "ML", "CV", { "Audit":"Algorithms" } ] }
