@@ -1,0 +1,19 @@
+/* Comparison Operator with booleans */
+
+func main () 
+	a = true
+	b = false
+	
+	if(a && b)
+	  print ("hi")
+	end
+
+	if (a || b)
+	  print ("hello")
+	end 
+	
+	if (a || b && true)
+	  print ("hello1")
+	end 
+	
+end
