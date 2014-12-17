@@ -15,7 +15,17 @@ void print_out(const wchar_t *output)
     wcout << output;
     wcout.flush();
 }
-
+string funcRemoveStr (string s) {
+	int a  = 0 ; 
+	string p = "\\n" ; 
+	while ( a != -1){
+		a = s.find(p) ; 
+		if (a == -1)
+			break ;
+		s = s.substr(0,a) + s.substr(a+2);
+	}
+	return s ; 
+}
 string wstringToString (wstring w){
 	string result = "" ;
 	char x ; 
@@ -82,19 +92,6 @@ class CustType {
 		cout << "Accesing outside of Json Object "  ; 
 		return NULL ;	
 	}
-	virtual vector <CustType*> :: iterator getAttrListBegin () {
-		vector <CustType*> :: iterator it ;
-		cout << "Accesing outside of JSON Object "  ; 
-		return it ;	
-	}
-	virtual vector <CustType*> :: iterator getAttrListEnd () {
-		vector <CustType*> :: iterator it ;
-		cout << "Accesing outside of JSON Object "  ; 
-		return it ;		
-	}
-	virtual void updateAttrList (CustType *attr) {
-		cout << "Accesing outside of Json Object "  ; 
-	}
 	virtual CustType* getElementByOcaml ( CustType* key ) {
 		cout << "In CustType, apparently not in JSON or LIST. Calling from some other type\n" ; 
 		return  NULL ; 
@@ -137,7 +134,6 @@ class CustType {
 	}
 	/*virtual void addToJson (CustType* key, CustType* el) { 
 		cout << "In CustType, apparently not in JSON. Calling from some other type\n" ; 
-
 	}*/
 	virtual CustType* contains (CustType* t) {
 		cout << "Only defined for Lists. \n" ;
@@ -442,7 +438,6 @@ class ListType : public CustType {
 		}
 	}
 	void add ( CustType* el ) { 
-		//cout << "now in List" << endl ; 
 		da.push_back (el) ;
 	}
 	bool operator==(CustType *rhs)
@@ -467,18 +462,13 @@ class JsonType : public CustType {
 
     public :
     JSONObject data ;
-    ListType* attrList ;
     map <string , CustType* > da ;
     void convToJsonType () ;  
     JsonType(JSONObject data, int type) : CustType() {
-        attrList= new ListType ; 
         this -> data= data;
         this -> type = type;
         //this -> da = new map <string , CustType* >  ; 
         convToJsonType() ;
-        //CustType* arpit  = CustType::parse("[arpit]", "STRING") ; 
-        //cout << "arpit" ; 
-        // updateAttrList (arpit) ;
     }
 
     JsonType() {}
@@ -612,21 +602,6 @@ class JsonType : public CustType {
     int getType() {
         return JSON;
     }
-    void updateAttrList (CustType* attr) {
-    	//cout << "gupta" << endl ; 
-    	if (attr -> getType() != STRING)
-			cout << "attribute should be of string type\n" ;
-		else{
-			attrList->add (attr) ; 
-		} 
-
-    }
-    vector <CustType*>::iterator getAttrListBegin (){
-    	return (attrList->da).begin () ; 
-    }
-    vector <CustType*>::iterator getAttrListEnd (){
-    	return (attrList->da).end() ; 
-    } 
     CustType* getAttrList () ;
 
     vector<string> getStringAttrList () {
@@ -667,18 +642,14 @@ class JsonType : public CustType {
 		StringType *keyStr = dynamic_cast<StringType *>(key);
 		string stringKey = keyStr -> toString () ; 
 		da [stringKey] = el ;
-		updateAttrList (keyStr) ;
 	}
 	void addByKey (CustType* keyStrType, CustType* el) {
 		StringType *keyStr = dynamic_cast<StringType *>(keyStrType);
 		string key = keyStr -> toString () ;
 		da [key] = el ; 
-		updateAttrList (keyStr) ;
 	}
 	void add (string  key, CustType* el) { 
 		da [key] = el ; 
-		CustType* keyStr = CustType::parse (key,"STRING") ;
-		updateAttrList (keyStr) ;
 	}
 	CustType* minus (CustType* c){
 		string k = c -> toString () ; 
@@ -689,13 +660,7 @@ class JsonType : public CustType {
 				t -> add (iter -> first,iter -> second) ; 
 			
 		}
-		CustType* tempAttrList = attrList -> minus (c) ;
-		ListType *temp2 = dynamic_cast<ListType*>(tempAttrList);
-		(attrList->da).clear() ; 
-		for (vector<CustType*>::iterator itTemp  = (temp2->getListBegin()) ; itTemp != temp2 -> getListEnd () ; ++itTemp ) {
-			(attrList->da).push_back ((*itTemp)) ; 
-		}
-		return t ;
+		return t ; 
 	}
 	CustType* contains (CustType* c){
 		if (c ->getType() != STRING){
@@ -729,9 +694,7 @@ NumType* getNum(string data, int type)
 
 StringType* getString (string data, int type){
 	/*if ( data.at(0) !='"' || data.at(data.length() - 1 ) != '"')  {
-
 		return NULL ;
-
 	}*/
 	//data.erase(0,1) ; 
 	//data.erase(data.length() - 1, 1) ;
@@ -797,11 +760,14 @@ JsonType* getJson (string data, int type){
 
 CustType* CustType :: parse (string data, string type)  { 
 	
+		data = funcRemoveStr (data) ; 
+		
 		if (type == "STRING"){
 			 
 			return getString ( data , STRING) ;
 	      	
 		}
+
 		else if (type == "LIST"){
 
 			data = "{ \"List\" : " + data + " }" ;
@@ -872,7 +838,6 @@ void JsonType :: convToJsonType (){
 	for ( JSONObject::iterator iter  = (this -> data).begin() ; iter !=  (this -> data).end () ; iter ++ ) {
 		
 		string key = wstringToString ( iter -> first ) ; 
-		CustType* keyStr = CustType::parse(key,"STRING") ; 
 		if ( (iter -> second)-> IsString () ) {
 			string val = wstringToString ((iter-> second)-> AsString () ) ; 
 			StringType* t = new StringType (val, STRING) ; 
@@ -906,9 +871,6 @@ void JsonType :: convToJsonType (){
 		}
 		//cout << endl ; 
 		
-		//cout << "arpit" << endl ; 
-		updateAttrList (keyStr) ;
-		//(attrList->da).push_back (keyStr) ; 
 	}
 
 	da.insert ( a.begin() , a.end () ) ; 
@@ -957,7 +919,7 @@ void ListType :: convToListType () {
 }
 
 CustType* JsonType :: getAttrList () { 
-	/*
+
 	vector <string> atrrListStr;
 	for ( map<string , CustType* > ::iterator iter  =  getBeginIterator() ; iter !=  getEndIterator () ; iter ++ ) {
 		
@@ -965,7 +927,6 @@ CustType* JsonType :: getAttrList () {
 		atrrListStr.push_back(keyString) ;
 	}
 	ListType* attrList = new ListType (atrrListStr) ; 
-	*/
 	return attrList ; 	
 }
 
@@ -1355,12 +1316,13 @@ CustType* CustType::read(string filename)
       while ( getline(file, line) )
 	{
 	  fileText+=line;
+	  
 	}
       file.close();
     }
   else { cout << "Unable to open file" << endl; }
-
-  CustType *toReturn = CustType::parse(fileText, "JSON");
+  
+  CustType *toReturn = CustType::parse( fileText , "JSON");
   return toReturn;
 }
 //returns index of element if found, otherwise returns -1 

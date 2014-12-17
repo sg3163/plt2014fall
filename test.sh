@@ -63,7 +63,9 @@ fi ;
 
 # compliling the C++ file
 if [ -f "${reffile}.cpp" ]; then
+
     make inputfile=$basename -f MakeFileCPP
+
 else
     echo "Compiling $1 failed"
     return
@@ -74,11 +76,8 @@ if [ -f "${reffile}.out" ]; then
 eval ${reffile}.out >> ${reffile}.output
 Compare ${reffile}.output ${reffile}.exp ${reffile}.error
 
-#        rm -rf ${reffile}.fdlp
-#        rm -rf ${reffile}.cpp
-#rm -rf ${reffile}.out
 rm -rf ${reffile}.o
-#rm -rf ${reffile}.output
+
 echo "ran $1 successfully"
 else
 echo "C++ to binary of ${reffile}.cpp failed"

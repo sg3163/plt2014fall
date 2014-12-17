@@ -7,7 +7,7 @@
 %token AND OR FOR IN NOTIN
 %token FUNC END DECL
 %token NOTIN READ PRINT TYPE TYPESTRUCT JOIN MAKESTRING ATTRLIST WRITE
-%token <int> NUM_LIT
+%token <float> NUM_LIT
 %token <string> STRING_LIT
 %token <string> JSON_LIT
 %token <string> LIST_LIT

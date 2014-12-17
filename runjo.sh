@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 if [ ! -f "./preprocessor" ]; then
 make -f MakePreProc >> make.log
 fi
@@ -15,9 +14,6 @@ JO="./jo"
 # preprocessor executable
 PRE="./preprocessor"
 TEST_BASE="testfiles"
-
-# Error directory
-#ERR=/testfiles/errors
 
 # Compare <outfile> <reffile> <difffile>
 # Compares the outfile with reffile.  Differences, if any, written to difffile
