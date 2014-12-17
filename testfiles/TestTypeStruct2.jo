@@ -1,0 +1,10 @@
+/* Nested Json TypeStruct test */
+
+func main () 
+
+	a = #{ "glossary": { "title": "example glossary","GlossDiv": {"title": "S","GlossList": {"GlossEntry": { "ID": "SGML","SortAs": "SGML", "GlossTerm": "Standard Generalized Markup Language",	"Acronym": "SGML",	"Abbrev": "ISO 8879:1986", "GlossSee": "markup" }   }  } } }#
+		
+		b = a.typeStruct()
+		print (b)
+	
+end

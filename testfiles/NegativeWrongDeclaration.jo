@@ -1,0 +1,8 @@
+/* Wrong declaration */
+
+func main () 
+	a = "highlight
+	b = treu
+	
+	print(b)
+end

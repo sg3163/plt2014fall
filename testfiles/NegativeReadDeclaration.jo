@@ -1,0 +1,7 @@
+/* Test Read function */
+
+func main () 
+	b = 23324
+	a = read (b)
+	print (a)
+end

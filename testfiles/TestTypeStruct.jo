@@ -2,7 +2,7 @@
 
 func main () 
 
-	a = #{"name":"harsha"}#
+	a = #{"name":"harsha", "number":12223, "list":[], "json":{"name":"harsha"}, "boolean":true}#
 	b = a.typeStruct()
 	print (b)
 	
